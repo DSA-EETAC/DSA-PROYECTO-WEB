@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Temple Run | Dungeon Access</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="dungeon-overlay"></div>
+
+<div class="card">
+    <header>
+        <div class="idol-icon"></div>
+        <h1>TEMPLE RUN</h1>
+        <p class="subtitle">MAZMORRA DE ACCESO</p>
+    </header>
+
+    <main>
+        <div id="seccion-login" class="form-fade">
+            <div class="input-container">
+                <input type="text" id="login-nombre" required>
+                <label>NOMBRE DEL EXPLORADOR</label>
+                <div class="bar"></div>
+            </div>
+            <div class="input-container">
+                <input type="password" id="login-pass" required>
+                <label>CONTRASEÑA</label>
+                <div class="bar"></div>
+            </div>
+            <button class="btn-primary" onclick="hacerLogin()">DESCENDER</button>
+            <p class="switch-text">¿Eres nuevo? <span onclick="cambiarVista('registro')">CREA UN AVATAR</span></p>
+        </div>
+
+        <div id="seccion-registro" class="form-fade hidden">
+            <div class="input-container">
+                <input type="text" id="reg-nombre" required>
+                <label>NUEVO ALIAS</label>
+                <div class="bar"></div>
+            </div>
+            <div class="input-container">
+                <input type="password" id="reg-pass" required>
+                <label>CONTRASEÑA</label>
+                <div class="bar"></div>
+            </div>
+            <div class="input-container">
+                <input type="email" id="reg-correo" required>
+                <label>CORREO ELECTRÓNICO</label>
+                <div class="bar"></div>
+            </div>
+            <button class="btn-primary" onclick="hacerRegistro()">UNIRSE A LA EXPEDICIÓN</button>
+            <p class="switch-text">¿Ya tienes cuenta? <span onclick="cambiarVista('login')">VOLVER</span></p>
+        </div>
+    </main>
+
+    <footer id="mensaje-sistema"></footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

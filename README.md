@@ -1,0 +1,1 @@
+Por ahora ya esta toda la parte de web con el registrar usuario y el login, ademas del html. Al usar una web que he creado he separado el swagger con una clase para poder hacer las pruebas con el y luego comprobarlo en la web que vera el cliente.

@@ -1,0 +1,157 @@
+/* --- MODERN DUNGEON STYLE --- */
+:root {
+    --gold: #ffcc33;
+    --gold-glow: rgba(255, 204, 51, 0.4);
+    --stone-dark: #1a1a1a;
+    --fire: #e25822;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #0a0a0a url('https://www.transparenttextures.com/patterns/dark-matter.png');
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
+}
+
+/* Efecto de sombra en los bordes de la pantalla */
+.dungeon-overlay {
+    position: fixed;
+    top:0; left:0; width:100%; height:100%;
+    background: radial-gradient(circle, transparent 20%, black 120%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.card {
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(145deg, #222, #111);
+    padding: 3rem;
+    border-radius: 5px;
+    border: 2px solid #333;
+    box-shadow: 0 0 50px rgba(0,0,0,1), inset 0 0 20px rgba(0,0,0,0.5);
+    width: 400px;
+    text-align: center;
+}
+
+/* Borde dorado de lujo */
+.card::before {
+    content: '';
+    position: absolute;
+    top: -5px; left: -5px; right: -5px; bottom: -5px;
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+h1 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 2.5rem;
+    margin: 0;
+    letter-spacing: 5px;
+    text-shadow: 0 0 10px var(--gold-glow);
+}
+
+.subtitle {
+    color: #666;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    margin-bottom: 2rem;
+}
+
+/* --- INPUTS MODERNOS (Estilo Material Design pero oscuro) --- */
+.input-container {
+    position: relative;
+    margin-bottom: 2.5rem;
+}
+
+.input-container input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #444;
+    color: white;
+    padding: 10px 0;
+    font-size: 1.1rem;
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-container label {
+    position: absolute;
+    top: 10px; left: 0;
+    color: #555;
+    pointer-events: none;
+    transition: 0.3s;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+/* Animación del label al escribir */
+.input-container input:focus ~ label,
+.input-container input:valid ~ label {
+    top: -15px;
+    color: var(--gold);
+    font-size: 0.7rem;
+}
+
+.input-container .bar {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px; width: 0;
+    background: var(--gold);
+    transition: 0.4s;
+}
+
+.input-container input:focus ~ .bar {
+    width: 100%;
+}
+
+/* --- BOTÓN DE ACCIÓN --- */
+.btn-primary {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 1rem 2rem;
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: 0.4s;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    background: var(--gold);
+    color: black;
+    box-shadow: 0 0 20px var(--gold-glow);
+}
+
+.switch-text {
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.switch-text span {
+    color: var(--gold);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.hidden { display: none; }
+
+#mensaje-sistema {
+    margin-top: 2rem;
+    min-height: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
