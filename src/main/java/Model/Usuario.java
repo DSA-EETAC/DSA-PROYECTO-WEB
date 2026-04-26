@@ -1,11 +1,17 @@
 package Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Usuario {
     //DATOS DE REGISTRO (WEB)
     private String nombre;
     private String password;
     private String correo;
     private String telefono;
+
+    private int monedas = 500;  // Les damos monedas iniciales
+    private List<String> inventario = new ArrayList<>(); // Creamos la mochila vacía;
 
     //DATOS DEL JUEGO (temple run)
     private int nivel=1;
@@ -50,6 +56,8 @@ public class Usuario {
     public int getResistencia(){
         return resistencia;
     }
+    public int getMonedas() { return monedas; }
+    public List<String> getInventario() { return inventario; }
 
     //SETTERS
 
@@ -77,11 +85,19 @@ public class Usuario {
     public void setResistencia(int resistencia) {
         this.resistencia = resistencia;
     }
+    public void setMonedas(int monedas) { this.monedas = monedas; }
+    public void setInventario(List<String> inventario) { this.inventario = inventario; }
+
     public void subirNivel() {
         this.nivel++;
         this.ataque += 2; // Al subir nivel, mejora el ataque
         this.defensa += 1;
     }
+
+    public void añadirAlInventario(String nombreObjeto) {
+        this.inventario.add(nombreObjeto);
+    }
+
 
     @Override
     public String toString() {

@@ -155,3 +155,67 @@ h1 {
     text-transform: uppercase;
     font-size: 0.8rem;
 }
+
+
+/* --- TABS DEL CAMPAMENTO (Dashboard) --- */
+.tabs-menu {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 204, 51, 0.3); /* Usa el tono dorado de la variable */
+}
+
+.tab-btn {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.6);
+    color: #888;
+    border: 1px solid #444;
+    padding: 10px;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    transition: 0.3s;
+    border-radius: 4px 4px 0 0;
+    text-transform: uppercase;
+}
+
+.tab-btn:hover {
+    background: rgba(255, 204, 51, 0.1);
+    color: var(--gold);
+}
+
+.tab-btn.active {
+    background: rgba(255, 204, 51, 0.2);
+    color: var(--gold);
+    border-color: var(--gold);
+    border-bottom: none;
+}
+
+/* --- TARJETAS DEL BAZAR --- */
+.item-card {
+    flex: 1;
+    border: 1px solid #444;
+    padding: 15px;
+    border-radius: 5px;
+    background: rgba(0,0,0,0.5);
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.item-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 0 15px var(--gold-glow);
+}
+
+.item-card h4 {
+    color: white;
+    margin: 0 0 5px 0;
+    font-family: 'Cinzel', serif;
+}
+
+.item-card .precio {
+    color: var(--gold);
+    font-weight: bold;
+    margin-bottom: 15px;
+}

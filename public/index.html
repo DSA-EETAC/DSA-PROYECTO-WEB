@@ -51,6 +51,48 @@
             <button class="btn-primary" onclick="hacerRegistro()">UNIRSE A LA EXPEDICIÓN</button>
             <p class="switch-text">¿Ya tienes cuenta? <span onclick="cambiarVista('login')">VOLVER</span></p>
         </div>
+
+        <div id="seccion-dashboard" class="form-fade hidden">
+
+            <div class="dashboard-header" style="text-align: center; border-bottom: 2px solid gold; padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 id="mensaje-bienvenida" style="color: white; font-family: 'Cinzel', serif; margin-bottom: 5px;">CAMPAMENTO BASE</h2>
+                <p style="color: gold; font-size: 1.2em; font-weight: bold; margin: 0;">🪙 Monedas: <span id="contador-monedas">0</span></p>
+                <button class="btn-primary" style="background-color: #d35400; border-color: #e67e22; margin-top: 15px;" onclick="abrirUnity()">🏃 ADENTRARSE EN LA MAZMORRA</button>
+            </div>
+
+            <div class="tabs-menu" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button id="btn-perfil" class="tab-btn active" onclick="cambiarPestana('tab-perfil', 'btn-perfil')">Perfil</button>
+                <button id="btn-tienda" class="tab-btn" onclick="cambiarPestana('tab-tienda', 'btn-tienda')">Tienda</button>
+                <button id="btn-inventario" class="tab-btn" onclick="cambiarPestana('tab-inventario', 'btn-inventario')">Mochila</button>
+            </div>
+
+            <div id="tab-tienda" class="tab-content">
+                <h3 style="color: white; text-align: center;">Bienes del Mercader</h3>
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1; border: 1px solid rgba(255,255,255,0.2); padding: 10px; text-align: center; background: rgba(0,0,0,0.5);">
+                        <h4 style="color: white;">Espada de diamante</h4><p style="color: gold;">150 🪙</p>
+                        <button class="btn-primary" style="padding: 5px; font-size: 0.8em;" onclick="comprarItem('Espada de diamante', 150)">COMPRAR</button>
+                    </div>
+                    <div style="flex: 1; border: 1px solid rgba(255,255,255,0.2); padding: 10px; text-align: center; background: rgba(0,0,0,0.5);">
+                        <h4 style="color: white;">Botas Ligeras</h4><p style="color: gold;">50 🪙</p>
+                        <button class="btn-primary" style="padding: 5px; font-size: 0.8em;" onclick="comprarItem('Botas Ligeras', 50)">COMPRAR</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-inventario" class="tab-content" style="display: none;">
+                <h3 style="color: white; text-align: center;">Tus Pertinencias</h3>
+                <p style="color: #aaa; text-align: center;">Tu mochila está vacía por ahora.</p>
+            </div>
+
+            <div id="tab-perfil" class="tab-content" style="display: none;">
+                <h3 style="color: white; text-align: center;">Datos del Explorador</h3>
+                <p style="color: white;">Nombre: <span id="perfil-nombre"></span></p>
+                <button class="btn-primary" style="background: transparent; border: 1px solid red; color: red;" onclick="cerrarSesion()">Abandonar Campamento (Cerrar Sesión)</button>
+            </div>
+
+        </div>
+
     </main>
 
     <footer id="mensaje-sistema"></footer>

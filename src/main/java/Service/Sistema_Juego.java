@@ -3,6 +3,7 @@ package Service;
 import Model.Usuario;
 import Manager.JuegoManagerImpl;
 import Manager.JuegoManager;
+import Model.PeticionCompra;
 import org.apache.log4j.Logger;
 
 import javax.ws.rs.*;
@@ -37,7 +38,7 @@ public class Sistema_Juego {
 
         if (manager.registrarUsuario(nuevoUsuario)) {
             // 201 Se guardo correctamente
-            return Response.status(201).entity(nuevoUsuario).header("Access-Control-Allow-Origin","*").build();
+            return Response.status(201).entity(nuevoUsuario).build();
         } else {
             // 409 ya existe alguien con ese nombre
             return Response.status(409).entity("Error: El usuario ya existe").build();
@@ -65,5 +66,36 @@ public class Sistema_Juego {
             // 401 Contraseña o nombre falsos
             return Response.status(401).entity("Error: Usuario o contraseña incorrectos").build();
         }
+    }
+
+    @POST
+    @Path("/comprar")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response procesarCompra(PeticionCompra peticion) {
+
+        // 1. Buscamos al usuario en el sistema.
+        Usuario jugador = manager.consultarUsuario(peticion.getNombreJugador());
+
+        if (jugador != null) {
+            // 2. Comprobamos si tiene suficiente dinero
+            if (jugador.getMonedas() >= peticion.getPrecio()) {
+
+                // 3. Le cobramos y le damos el objeto
+                jugador.setMonedas(jugador.getMonedas() - peticion.getPrecio());
+                jugador.añadirAlInventario(peticion.getNombreObjeto());
+
+                System.out.println("El jugador " + jugador.getNombre() + " ha comprado " + peticion.getNombreObjeto());
+
+                // 200 = Compra exitosa
+                return Response.status(200).build();
+            } else {
+                // 402 = Payment Required (No tiene dinero suficiente)
+                return Response.status(402).build();
+            }
+        }
+
+        // 404 = Usuario no encontrado
+        return Response.status(404).build();
     }
 }

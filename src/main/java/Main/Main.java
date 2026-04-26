@@ -1,3 +1,5 @@
+package Main;
+
 import Service.Sistema_Juego;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.StaticHttpHandler;
@@ -15,6 +17,7 @@ public class Main {
         final ResourceConfig rc = new ResourceConfig()
                 .register(Sistema_Juego.class) // Tu servicio
                 .register(JacksonFeature.class) // <--- ESTA LÍNEA ARREGLA EL ERROR 415
+                .register(CORSFilter.class) // Filtro para conectar la web con el servidor
                 .register(io.swagger.jaxrs.listing.ApiListingResource.class) // Swagger
                 .register(io.swagger.jaxrs.listing.SwaggerSerializers.class); // Swagger
 
