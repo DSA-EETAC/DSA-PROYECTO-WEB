@@ -5,19 +5,30 @@ async function hacerRegistro() {
     const nombre = document.getElementById('reg-nombre').value;
     const password = document.getElementById('reg-pass').value;
     const correo = document.getElementById('reg-correo').value;
-    // const telefono = document.getElementById('reg-telefono').value;
+    const confirmarPassword = document.getElementById('reg-pass-confirm').value.trim();
 
     // No enviar campos vacíos
-    if (!nombre || !password) {
-        avisar("¡Nombre y contraseña son obligatorios!", true);
+    if (!nombre || !password || !confirmarPassword|| !correo) {
+        avisar("¡Nombre, contraseñam confirmación y correo son obligatorios!", true);
         return;
     }
+
+    if (password !== confirmarPassword) {
+            avisar("Las contraseñas no coinciden. Revisa que las hayas escrito igual.", true);
+            return;
+        }
+
+    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Comprobacion de formato de correo
+        if (!regexCorreo.test(correo)) {
+            avisar("El formato del correo electrónico no es válido.", true);
+            return; // Cortamos la ejecución aquí
+        }
 
     // Creamos objeto formato JSON
     const datosUsuario = {
         nombre: nombre,
         password: password,
-        correo: correo,
+        correo: correo
         //telefono: telefono
     };
 
@@ -31,32 +42,30 @@ async function hacerRegistro() {
             body: JSON.stringify(datosUsuario)
         });
 
-        // 4. Analizamos qué nos dice Java
+        // 4. Analizamos qué nos dice BackEnd
         if (respuesta.status === 201) {
             avisar("¡Explorador registrado con éxito!", false);
-
-            // Traducimos el paquete JSON que nos mandó Java
             const datosUsuario = await respuesta.json();
 
-            // Guardamos el nombre del jugador para usarlo en la tienda/juego
             localStorage.setItem("jugadorActual", nombre);
-
-            // Configuramos la pantalla con la VERDAD de Java
             document.getElementById("mensaje-bienvenida").innerText = "CAMPAMENTO DE " + datosUsuario.nombre.toUpperCase();
             document.getElementById("perfil-nombre").innerText = datosUsuario.nombre;
-
-            // ¡LEEMOS LAS MONEDAS DESDE JAVA!
             document.getElementById("contador-monedas").innerText = datosUsuario.monedas;
-
-            // Cargamos la mochila (que vendrá vacía desde Java, como debe ser)
             cargarMochilaDesdeJava(datosUsuario.inventario);
+            //Limpiar campos de register
+            document.getElementById('reg-nombre').value = "";
+            document.getElementById('reg-pass').value = "";
+            document.getElementById('reg-pass-confirm').value = "";
+            document.getElementById('reg-correo').value = "";
 
-            // Ocultamos la caja de registro y mostramos la tienda directamente
             document.getElementById("seccion-registro").classList.add("hidden");
             document.getElementById("seccion-dashboard").classList.remove("hidden");
 
-            // Se abre primero el perfil del usuario
             cambiarPestana('tab-perfil', 'btn-perfil');
+
+        } else if (respuesta.status === 400) {
+                    const mensajeError = await respuesta.text();
+                    avisar(mensajeError, true);
 
         } else if (respuesta.status === 409) {
             avisar("Ese nombre ya ha sido reclamado en este templo.", true);
@@ -119,6 +128,9 @@ async function hacerLogin() {
             document.getElementById("seccion-dashboard").classList.remove("hidden");
             cambiarPestana('tab-perfil', 'btn-perfil');
 
+        } else if (respuesta.status === 400) {
+                     const mensajeError = await respuesta.text();
+                     avisar(mensajeError, true);
         } else if (respuesta.status === 401) {
             avisar("Nombre o contraseña incorrectos.", true);
         } else {
