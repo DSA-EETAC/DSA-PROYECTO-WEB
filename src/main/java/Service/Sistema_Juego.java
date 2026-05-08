@@ -29,7 +29,7 @@ public class Sistema_Juego {
     private boolean esNuloOVacio(String text){
         return text == null || text.trim().isEmpty();
     }
-
+ 
     @POST
     @ApiOperation(value = "Registrar un nuevo usuario en el sistema")
     @ApiResponses(value = {

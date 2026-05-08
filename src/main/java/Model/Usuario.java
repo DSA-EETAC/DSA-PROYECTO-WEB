@@ -8,7 +8,6 @@ public class Usuario {
     private String nombre;
     private String password;
     private String correo;
-    private String telefono;
 
     private int monedas = 500;  // Les damos monedas iniciales
     private List<String> inventario = new ArrayList<>(); // Creamos la mochila vacía;
@@ -27,7 +26,6 @@ public class Usuario {
         this.nombre = nombre;
         this.password = password;
         this.correo = correo;
-        this.telefono = telefono;
     }
 
     // GETTERS
@@ -40,9 +38,6 @@ public class Usuario {
     }
     public String getCorreo() {
         return correo;
-    }
-    public String getTelefono() {
-        return telefono;
     }
     public int getNivel() {
         return nivel;
@@ -69,9 +64,6 @@ public class Usuario {
     }
     public void setCorreo(String correo) {
         this.correo = correo;
-    }
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
     }
     public void setNivel(int nivel) {
         this.nivel = nivel;
