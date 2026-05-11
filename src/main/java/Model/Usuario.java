@@ -21,7 +21,7 @@ public class Usuario {
     public Usuario(){}
 
     // CONSTRUCTOR: Se ejecuta cuando alguien se registra
-    public Usuario(String nombre, String password, String correo, String telefono) {
+    public Usuario(String nombre, String password, String correo) {
         // Guardamos los datos del formulario
         this.nombre = nombre;
         this.password = password;

@@ -27,7 +27,7 @@ public class Sistema_JuegoTest {
 
     @Test
     public void testRegistrarUsuario_Ok() {
-        Usuario nuevo = new Usuario("Yerald", "1234", "yerald@mail.com", "5551234");
+        Usuario nuevo = new Usuario("Yerald", "1234", "yerald@mail.com");
 
         // Llamamos al método correcto: registrarUsuario
         Response respuesta = sistema.registrarUsuario(nuevo);
@@ -42,8 +42,8 @@ public class Sistema_JuegoTest {
 
     @Test
     public void testRegistrarUsuario_Duplicado() {
-        Usuario user1 = new Usuario("Yerald", "1234", "yerald@mail.com", "5551234");
-        Usuario user2 = new Usuario("Yerald", "abcd", "javier@mail.com", "1235434");
+        Usuario user1 = new Usuario("Yerald", "1234", "yerald@mail.com");
+        Usuario user2 = new Usuario("Yerald", "abcd", "javier@mail.com");
 
         sistema.registrarUsuario(user1); // Primer registro exitoso
         Response respuesta = sistema.registrarUsuario(user2); // Segundo registro (duplicado)
@@ -55,7 +55,7 @@ public class Sistema_JuegoTest {
     @Test
     public void testLogin_NoExiste() {
         // Probamos login con un usuario que no ha sido registrado
-        Usuario intento = new Usuario("NoExiste", "1234", "", "");
+        Usuario intento = new Usuario("NoExiste", "1234", "");
 
         Response respuesta = sistema.login(intento);
 
