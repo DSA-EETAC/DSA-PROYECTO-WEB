@@ -3,7 +3,7 @@ package Model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Usuario {
+public class User {
     //DATOS DE REGISTRO (WEB)
     private String nombre;
     private String password;
@@ -18,10 +18,10 @@ public class Usuario {
     private int defensa=5;
     private int resistencia=5;
 
-    public Usuario(){}
+    public User(){}
 
     // CONSTRUCTOR: Se ejecuta cuando alguien se registra
-    public Usuario(String nombre, String password, String correo) {
+    public User(String nombre, String password, String correo) {
         // Guardamos los datos del formulario
         this.nombre = nombre;
         this.password = password;

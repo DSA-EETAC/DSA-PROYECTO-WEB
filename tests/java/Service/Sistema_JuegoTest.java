@@ -1,6 +1,6 @@
 package Service;
 
-import Model.Usuario;
+import Model.User;
 import Manager.JuegoManagerImpl;
 import org.junit.After;
 import org.junit.Assert;
@@ -27,7 +27,7 @@ public class Sistema_JuegoTest {
 
     @Test
     public void testRegistrarUsuario_Ok() {
-        Usuario nuevo = new Usuario("Yerald", "1234", "yerald@mail.com");
+        User nuevo = new User("Yerald", "1234", "yerald@mail.com");
 
         // Llamamos al método correcto: registrarUsuario
         Response respuesta = sistema.registrarUsuario(nuevo);
@@ -36,14 +36,14 @@ public class Sistema_JuegoTest {
         Assert.assertEquals("El código de respuesta debería ser 201.", 201, respuesta.getStatus());
 
         // Verificamos que el objeto devuelto sea el usuario
-        Usuario u = (Usuario) respuesta.getEntity();
+        User u = (User) respuesta.getEntity();
         Assert.assertEquals("Yerald", u.getNombre());
     }
 
     @Test
     public void testRegistrarUsuario_Duplicado() {
-        Usuario user1 = new Usuario("Yerald", "1234", "yerald@mail.com");
-        Usuario user2 = new Usuario("Yerald", "abcd", "javier@mail.com");
+        User user1 = new User("Yerald", "1234", "yerald@mail.com");
+        User user2 = new User("Yerald", "abcd", "javier@mail.com");
 
         sistema.registrarUsuario(user1); // Primer registro exitoso
         Response respuesta = sistema.registrarUsuario(user2); // Segundo registro (duplicado)
@@ -55,7 +55,7 @@ public class Sistema_JuegoTest {
     @Test
     public void testLogin_NoExiste() {
         // Probamos login con un usuario que no ha sido registrado
-        Usuario intento = new Usuario("NoExiste", "1234", "");
+        User intento = new User("NoExiste", "1234", "");
 
         Response respuesta = sistema.login(intento);
 

@@ -1,6 +1,6 @@
 package Manager;
 
-import Model.Usuario;
+import Model.User;
 import org.apache.log4j.Logger;
 import java.util.*;
 
@@ -10,7 +10,7 @@ public class JuegoManagerImpl implements JuegoManager {
     final static Logger log = Logger.getLogger(JuegoManagerImpl.class.getName());
 
     // Estructuras de datos
-    private Map<String, Usuario> usuariosBD;
+    private Map<String, User> usuariosBD;
 
     // Constructor privado
     private JuegoManagerImpl() {
@@ -26,7 +26,7 @@ public class JuegoManagerImpl implements JuegoManager {
     }
 
     @Override
-    public boolean registrarUsuario(Usuario u) {
+    public boolean registrarUsuario(User u) {
         log.info("INICIO registrarUsuario: nombre=" + u.getNombre());
 
         if (usuariosBD.containsKey(u.getNombre())) {
@@ -40,16 +40,16 @@ public class JuegoManagerImpl implements JuegoManager {
     }
 
     @Override
-    public Usuario consultarUsuario(String nombre) {
+    public User consultarUsuario(String nombre) {
         log.info("Consulta usuario: " + nombre);
         return usuariosBD.get(nombre);
     }
 
     @Override
-    public Usuario procesarLogin(String nombre, String password) {
+    public User procesarLogin(String nombre, String password) {
         log.info("INICIO procesarLogin: nombre=" + nombre);
 
-        Usuario u = usuariosBD.get(nombre);
+        User u = usuariosBD.get(nombre);
 
         // Verificamos si existe y si la contraseña coincide
         if (u != null && u.getPassword().equals(password)) {

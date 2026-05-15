@@ -1,6 +1,6 @@
 package Service;
 
-import Model.Usuario;
+import Model.User;
 import Manager.JuegoManagerImpl;
 import Manager.JuegoManager;
 import Model.PeticionCompra;
@@ -15,8 +15,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
-import java.util.regex.Pattern;
 
 @Api(value = "/juego", description = "Web para Temple Run")
 @Path("/juego") // Esta es la ruta base: http://localhost:8080/api/juego
@@ -38,12 +36,12 @@ public class Sistema_Juego {
             @ApiResponse(code = 400, message = "Faltan campos o el formato es incorrecto")
     })
     @Path("/registro")
-    @Consumes(MediaType.APPLICATION_JSON) // Esperara con JSON
-    @Produces(MediaType.APPLICATION_JSON) // Respondera cn JSON
-    public Response registrarUsuario(Usuario nuevoUsuario) {
+    @Consumes(MediaType.APPLICATION_JSON) // Esperará con JSON
+    @Produces(MediaType.APPLICATION_JSON) // Responderá cn JSON
+    public Response registrarUsuario(User nuevoUsuario) {
 
         log.info("API REST - Petición de registro para: " + nuevoUsuario.getNombre());
-        // Validamos que esten tdos los campos rellenos
+        // Validamos que estén todos los campos rellenos
         if (esNuloOVacio(nuevoUsuario.getNombre()) ||
                 esNuloOVacio(nuevoUsuario.getPassword()) ||
                 esNuloOVacio(nuevoUsuario.getCorreo())) {
@@ -68,14 +66,14 @@ public class Sistema_Juego {
     @POST
     @ApiOperation(value = "Iniciar sesión en el juego")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Login exitoso", response = Usuario.class),
+            @ApiResponse(code = 200, message = "Login exitoso", response = User.class),
             @ApiResponse(code = 400, message = "Campos de login vacíos"),
             @ApiResponse(code = 401, message = "Credenciales incorrectas")
     })
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(Usuario credenciales) {
+    public Response login(User credenciales) {
         log.info("API REST - Petición de login para: " + credenciales.getNombre());
 
         // Validamos q no queden campos en blanco en el login
@@ -84,7 +82,7 @@ public class Sistema_Juego {
             return Response.status(400).entity("Error: Debes introducir tu nombre de usuario y contraseña.").build();
         }
 
-        Usuario userValidado = manager.procesarLogin(credenciales.getNombre(), credenciales.getPassword());
+        User userValidado = manager.procesarLogin(credenciales.getNombre(), credenciales.getPassword());
 
         if (userValidado != null) {
             return Response.status(200).entity(userValidado).build();
@@ -100,7 +98,7 @@ public class Sistema_Juego {
     public Response procesarCompra(PeticionCompra peticion) {
 
         // 1. Buscamos al usuario en el sistema.
-        Usuario jugador = manager.consultarUsuario(peticion.getNombreJugador());
+        User jugador = manager.consultarUsuario(peticion.getNombreJugador());
 
         if (jugador != null) {
             // 2. Comprobamos si tiene suficiente dinero

@@ -1,13 +1,13 @@
 package Manager;
-import Model.Usuario;
+import Model.User;
 
 public interface JuegoManager {
 
-    boolean registrarUsuario(Usuario u);
+    boolean registrarUsuario(User u);
 
-    Usuario consultarUsuario(String nombre);
+    User consultarUsuario(String nombre);
 
-    Usuario procesarLogin(String nombre, String password);
+    User procesarLogin(String nombre, String password);
 
     int obtenerNumeroUsuarios();
 
