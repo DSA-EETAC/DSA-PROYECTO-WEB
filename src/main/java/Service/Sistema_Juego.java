@@ -16,6 +16,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.util.regex.Pattern;
+
 @Api(value = "/juego", description = "Web para Temple Run")
 @Path("/juego") // Esta es la ruta base: http://localhost:8080/api/juego
 public class Sistema_Juego {
@@ -27,6 +29,14 @@ public class Sistema_Juego {
     private boolean esNuloOVacio(String text){
         return text == null || text.trim().isEmpty();
     }
+
+    private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$";
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
+
+    private boolean esPasswordSeguro(String password) {
+        return PASSWORD_PATTERN.matcher(password).matches();
+    }
+
  
     @POST
     @ApiOperation(value = "Registrar un nuevo usuario en el sistema")
@@ -53,6 +63,18 @@ public class Sistema_Juego {
         if (!EmailValidator.getInstance().isValid(nuevoUsuario.getMail())) {
             log.warn("Registro fallido: Formato de correo inválido (" + nuevoUsuario.getMail() + ").");
             return Response.status(400).entity("Error: El formato del correo electrónico no es válido.").build();
+        }
+        // Validamos el formato del correo
+        if (!EmailValidator.getInstance().isValid(nuevoUsuario.getMail())) {
+            log.warn("Registro fallido: Formato de correo inválido (" + nuevoUsuario.getMail() + ").");
+            return Response.status(400).entity("Error: El formato del correo electrónico no es válido.").build();
+        }
+
+        // Seguridad de la contraseña
+        if (!esPasswordSeguro(nuevoUsuario.getPassword())) {
+            log.warn("Registro fallido: Contraseña débil para el usuario " + nuevoUsuario.getNombre());
+            return Response.status(400).entity("Error: La contraseña es demasiado débil. " +
+                    "Debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula, un número y un carácter especial (@#$%^&+=!).").build();
         }
 
         // Procesar el registro en el Manager
