@@ -44,14 +44,14 @@ public class Sistema_Juego {
         // Validamos que estén todos los campos rellenos
         if (esNuloOVacio(nuevoUsuario.getNombre()) ||
                 esNuloOVacio(nuevoUsuario.getPassword()) ||
-                esNuloOVacio(nuevoUsuario.getCorreo())) {
+                esNuloOVacio(nuevoUsuario.getMail())) {
             log.warn("Registro fallido: Campos en blanco.");
             return Response.status(400).entity("Error: Todos los campos (nombre, password, correo) son obligatorios y no pueden estar vacíos.").build();
         }
 
         // Validamos formato de correo electrónico
-        if (!EmailValidator.getInstance().isValid(nuevoUsuario.getCorreo())) {
-            log.warn("Registro fallido: Formato de correo inválido (" + nuevoUsuario.getCorreo() + ").");
+        if (!EmailValidator.getInstance().isValid(nuevoUsuario.getMail())) {
+            log.warn("Registro fallido: Formato de correo inválido (" + nuevoUsuario.getMail() + ").");
             return Response.status(400).entity("Error: El formato del correo electrónico no es válido.").build();
         }
 

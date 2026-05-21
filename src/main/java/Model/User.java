@@ -5,9 +5,10 @@ import java.util.List;
 
 public class User {
     //DATOS DE REGISTRO (WEB)
+    private int id;
     private String nombre;
     private String password;
-    private String correo;
+    private String mail;
 
     private int monedas = 500;  // Les damos monedas iniciales
     private List<String> inventario = new ArrayList<>(); // Creamos la mochila vacía;
@@ -25,19 +26,20 @@ public class User {
         // Guardamos los datos del formulario
         this.nombre = nombre;
         this.password = password;
-        this.correo = correo;
+        this.mail = correo;
     }
 
     // GETTERS
 
+    public int getId() {return id;}
     public String getNombre() {
         return nombre;
     }
     public String getPassword() {
         return password;
     }
-    public String getCorreo() {
-        return correo;
+    public String getMail() {
+        return mail;
     }
     public int getNivel() {
         return nivel;
@@ -56,14 +58,15 @@ public class User {
 
     //SETTERS
 
+    public void setId(int id) {this.id = id;}
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
     public void setPassword(String password) {
         this.password = password;
     }
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setMail(String correo) {
+        this.mail = correo;
     }
     public void setNivel(int nivel) {
         this.nivel = nivel;
