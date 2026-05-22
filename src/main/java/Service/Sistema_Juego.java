@@ -1,15 +1,18 @@
 package Service;
 
+import Model.Item;
 import Model.User;
 import Manager.JuegoManagerImpl;
 import Manager.JuegoManager;
 import Model.PeticionCompra;
 import org.apache.log4j.Logger;
 import org.apache.commons.validator.routines.EmailValidator;
+import BDD.orm.dao.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.*;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -118,29 +121,20 @@ public class Sistema_Juego {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response procesarCompra(PeticionCompra peticion) {
+        boolean compraOk = manager.comprarObjeto(peticion.getNombreJugador(), peticion.getNombreObjeto());
 
-        // 1. Buscamos al usuario en el sistema.
-        User jugador = manager.consultarUsuario(peticion.getNombreJugador());
-
-        if (jugador != null) {
-            // 2. Comprobamos si tiene suficiente dinero
-            if (jugador.getMonedas() >= peticion.getPrecio()) {
-
-                // 3. Le cobramos y le damos el objeto
-                jugador.setMonedas(jugador.getMonedas() - peticion.getPrecio());
-                jugador.añadirAlInventario(peticion.getNombreObjeto());
-
-                System.out.println("El jugador " + jugador.getNombre() + " ha comprado " + peticion.getNombreObjeto());
-
-                // 200 = Compra exitosa
-                return Response.status(200).build();
-            } else {
-                // 402 = Payment Required (No tiene dinero suficiente)
-                return Response.status(402).build();
-            }
+        if (compraOk) {
+            return Response.status(200).build(); // 200 OK
+        } else {
+            return Response.status(402).entity("Error: Fondos insuficientes o error de datos.").build();
         }
+    }
 
-        // 404 = Usuario no encontrado
-        return Response.status(404).build();
+    @GET
+    @Path("/inventario/{nombre}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response obtenerInventario(@PathParam("nombre") String nombre) {
+        List<String> inventario = manager.obtenerInventarioUsuario(nombre);
+        return Response.status(200).entity(inventario).build();
     }
 }

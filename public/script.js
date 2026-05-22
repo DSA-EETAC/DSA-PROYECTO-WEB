@@ -9,26 +9,26 @@ async function hacerRegistro() {
 
     // No enviar campos vacíos
     if (!nombre || !password || !confirmarPassword|| !correo) {
-        avisar("¡Nombre, contraseñam confirmación y correo son obligatorios!", true);
+        avisar("¡Nombre, contraseña, confirmación y correo son obligatorios!", true);
         return;
     }
 
     if (password !== confirmarPassword) {
-            avisar("Las contraseñas no coinciden. Revisa que las hayas escrito igual.", true);
-            return;
-        }
+        avisar("Las contraseñas no coinciden. Revisa que las hayas escrito igual.", true);
+        return;
+    }
 
     const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Comprobacion de formato de correo
-        if (!regexCorreo.test(correo)) {
-            avisar("El formato del correo electrónico no es válido.", true);
-            return; // Cortamos la ejecución aquí
-        }
+    if (!regexCorreo.test(correo)) {
+        avisar("El formato del correo electrónico no es válido.", true);
+        return; // Cortamos la ejecución aquí
+    }
 
     // Creamos objeto formato JSON
     const datosUsuario = {
         nombre: nombre,
         password: password,
-        correo: correo
+        mail: correo
         //telefono: telefono
     };
 
@@ -37,8 +37,8 @@ async function hacerRegistro() {
         const respuesta = await fetch(`${URL_BASE}/registro`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json',
-             'Accept' : 'application/json'
-             },
+                'Accept' : 'application/json'
+            },
             body: JSON.stringify(datosUsuario)
         });
 
@@ -51,7 +51,9 @@ async function hacerRegistro() {
             document.getElementById("mensaje-bienvenida").innerText = "CAMPAMENTO DE " + datosUsuario.nombre.toUpperCase();
             document.getElementById("perfil-nombre").innerText = datosUsuario.nombre;
             document.getElementById("contador-monedas").innerText = datosUsuario.monedas;
-            cargarMochilaDesdeJava(datosUsuario.inventario);
+
+            await actualizarMochilaDesdeBaseDeDatos(datosUsuario.nombre);
+
             //Limpiar campos de register
             document.getElementById('reg-nombre').value = "";
             document.getElementById('reg-pass').value = "";
@@ -64,8 +66,8 @@ async function hacerRegistro() {
             cambiarPestana('tab-perfil', 'btn-perfil');
 
         } else if (respuesta.status === 400) {
-                    const mensajeError = await respuesta.text();
-                    avisar(mensajeError, true);
+            const mensajeError = await respuesta.text();
+            avisar(mensajeError, true);
 
         } else if (respuesta.status === 409) {
             avisar("Ese nombre ya ha sido reclamado en este templo.", true);
@@ -83,9 +85,10 @@ async function hacerLogin() {
     const nombre = document.getElementById('login-nombre').value;
     const password = document.getElementById('login-pass').value;
 
+    // 1. CORRECCIÓN: Todo dentro de las llaves del if
     if (!nombre || !password) {
         avisar("Rellena tus credenciales, explorador.", true);
-        return;
+        return; // Ahora solo corta la ejecución si falta algún campo
     }
 
     const credenciales = {
@@ -94,43 +97,36 @@ async function hacerLogin() {
     };
 
     try {
+        // 2. CORRECCIÓN: El fetch envuelve correctamente a los parámetros y se cierra al final
         const respuesta = await fetch(`${URL_BASE}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept':'application/json'
+                'Accept': 'application/json'
             },
             body: JSON.stringify(credenciales)
-        });
+        }); // <-- Ahora se cierra en el lugar correcto
 
         if (respuesta.status === 200) {
             avisar("¡Acceso concedido! Abriendo el campamento...", false);
-
-            // 1. Traducimos el paquete JSON que nos mandó Java
             const datosUsuario = await respuesta.json();
             console.log("Datos cargados desde Java:", datosUsuario);
 
-            // 2. Guardamos el nombre en la "mochila" del navegador
             localStorage.setItem("jugadorActual", datosUsuario.nombre);
 
-            // 3. Actualizamos toda la información visual en el HTML
             document.getElementById("mensaje-bienvenida").innerText = "CAMPAMENTO DE " + datosUsuario.nombre.toUpperCase();
             document.getElementById("perfil-nombre").innerText = datosUsuario.nombre;
-
-            // cargamos las monedas
             document.getElementById("contador-monedas").innerText = datosUsuario.monedas;
 
-            // 4. Cargamos los objetos que ya tenía comprados
-            cargarMochilaDesdeJava(datosUsuario.inventario);
+            await actualizarMochilaDesdeBaseDeDatos(datosUsuario.nombre);
 
-            // 5. Ocultamos el login y abrimos el Dashboard en la pestaña Perfil
             document.getElementById("seccion-login").classList.add("hidden");
             document.getElementById("seccion-dashboard").classList.remove("hidden");
             cambiarPestana('tab-perfil', 'btn-perfil');
 
         } else if (respuesta.status === 400) {
-                     const mensajeError = await respuesta.text();
-                     avisar(mensajeError, true);
+            const mensajeError = await respuesta.text();
+            avisar(mensajeError, true);
         } else if (respuesta.status === 401) {
             avisar("Nombre o contraseña incorrectos.", true);
         } else {
@@ -141,6 +137,23 @@ async function hacerLogin() {
         console.error("Error en fetch:", error);
     }
 }
+
+async function actualizarMochilaDesdeBaseDeDatos(nombreUsuario) {
+    try {
+        const respuesta = await fetch(`${URL_BASE}/inventario/${nombreUsuario}`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+
+        if (respuesta.status === 200) {
+            const listaItems = await respuesta.json(); // Esto recibe el array de Strings de Java
+            cargarMochilaDesdeJava(listaItems); // Se lo pasamos a la función que pinta en HTML
+        }
+    } catch (error) {
+        console.error("Error al recuperar el inventario relacional:", error);
+    }
+}
+
 
 // Cambio visual entre Login y Registro
 function cambiarVista(vista) {

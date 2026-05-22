@@ -11,7 +11,7 @@ public class User {
     private String mail;
 
     private int monedas = 500;  // Les damos monedas iniciales
-    private List<String> inventario = new ArrayList<>(); // Creamos la mochila vacía;
+    //private List<String> inventario = new ArrayList<>(); // Creamos la mochila vacía;
 
     //DATOS DEL JUEGO (temple run)
     private int nivel=1;
@@ -54,7 +54,7 @@ public class User {
         return resistencia;
     }
     public int getMonedas() { return monedas; }
-    public List<String> getInventario() { return inventario; }
+    //public List<String> getInventario() { return inventario; }
 
     //SETTERS
 
@@ -81,7 +81,7 @@ public class User {
         this.resistencia = resistencia;
     }
     public void setMonedas(int monedas) { this.monedas = monedas; }
-    public void setInventario(List<String> inventario) { this.inventario = inventario; }
+    //public void setInventario(List<String> inventario) { this.inventario = inventario; }
 
     public void subirNivel() {
         this.nivel++;
@@ -89,9 +89,9 @@ public class User {
         this.defensa += 1;
     }
 
-    public void añadirAlInventario(String nombreObjeto) {
+    /*public void añadirAlInventario(String nombreObjeto) {
         this.inventario.add(nombreObjeto);
-    }
+    }*/
 
 
     @Override

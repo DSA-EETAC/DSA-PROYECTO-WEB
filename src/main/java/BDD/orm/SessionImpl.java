@@ -33,7 +33,7 @@ public class SessionImpl implements Session {
                 pstm.setObject(i++, ObjectHelper.getter(entity, field));
             }
 
-            pstm.executeQuery();
+            pstm.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -98,34 +98,25 @@ public class SessionImpl implements Session {
     }
 
     public void update(Object object) {
+        User usuario = (User) object;
+        String sql = "UPDATE user SET nombre = ?, password = ?, mail = ?, monedas = ? WHERE id = ?";
 
+        try (PreparedStatement ptsm = conn.prepareStatement(sql)) {
+            ptsm.setString(1, usuario.getNombre());
+            ptsm.setString(2, usuario.getPassword());
+            ptsm.setString(3, usuario.getMail());
+            ptsm.setInt(4, usuario.getMonedas());
+            ptsm.setInt(5, usuario.getId());
 
-            User usuario = (User) object;
-
-            String sql = "UPDATE usuario SET name = ?, password = ?, mail = ? WHERE id = ?";
-
-            try (PreparedStatement ptsm = conn.prepareStatement(sql)) {
-
-                // Reemplazamos los signos de interrogación '?' por los datos reales del usuario
-                ptsm.setString(1, usuario.getNombre());
-                ptsm.setString(2, usuario.getPassword());
-                ptsm.setString(3, usuario.getMail());
-                ptsm.setInt(4, usuario.getId()); // Este es el WHERE id = ?
-
-                // Ejecutamos la actualización
-                int filasModificadas = ptsm.executeUpdate();
-
-                if (filasModificadas > 0) {
-                    System.out.println("¡Usuario actualizado con éxito en la BD!");
-                } else {
-                    System.out.println("No se encontró ningún usuario con el ID: " + usuario.getId());
-                }
-
-            } catch (SQLException e) {
-                System.out.println("Error al actualizar el usuario: " + e.getMessage());
+            int filasModificadas = ptsm.executeUpdate();
+            if (filasModificadas > 0) {
+                System.out.println("¡Usuario actualizado con éxito en la BD!");
+            } else {
+                System.out.println("No se encontró ningún usuario con el ID: " + usuario.getId());
             }
-
-
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar el usuario: " + e.getMessage());
+        }
     }
 
     public void delete(Object object) {
