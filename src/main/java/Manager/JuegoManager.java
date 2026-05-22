@@ -1,5 +1,6 @@
 package Manager;
 import Model.User;
+import Model.Item;
 
 import java.util.List;
 
@@ -18,5 +19,7 @@ public interface JuegoManager {
     int obtenerNumeroUsuarios();
 
     void clear();
+
+    List<Item> obtenerItemsTienda();
 
 }

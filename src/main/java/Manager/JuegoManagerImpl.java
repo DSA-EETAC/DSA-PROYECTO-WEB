@@ -68,7 +68,7 @@ public class JuegoManagerImpl implements JuegoManager {
     public boolean comprarObjeto(String nombreJugador, String nombreObjeto) {
         User jugador = usuarioDAO.getUsuario(nombreJugador);
 
-        // ¡OJO! Tu ItemDAOImpl no tiene getItemPorNombre, usa el método genérico getItem
+        // ¡OJO! Tu ItemDAOImpl no tiene getItemPorNombre, usa el metodo genérico getItem
         Item item = itemDAO.getItem("nombre", nombreObjeto);
 
         if (jugador != null && item != null) {
@@ -103,6 +103,11 @@ public class JuegoManagerImpl implements JuegoManager {
 
     @Override
     public void clear() {
+    }
+
+    @Override
+    public List<Item> obtenerItemsTienda() {
+        return this.itemDAO.getItems();
     }
 }
 

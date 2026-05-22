@@ -137,4 +137,14 @@ public class Sistema_Juego {
         List<String> inventario = manager.obtenerInventarioUsuario(nombre);
         return Response.status(200).entity(inventario).build();
     }
+
+    @GET
+    @Path("/tienda")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response obtenerTienda() {
+        // Pedimos la lista al manager
+        List<Item> items = manager.obtenerItemsTienda();
+        // La devolvemos con un código 200 (OK). Java/Jersey la pasará a JSON automáticamente.
+        return Response.status(200).entity(items).build();
+    }
 }

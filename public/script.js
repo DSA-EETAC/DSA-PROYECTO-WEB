@@ -296,3 +296,43 @@ function cargarMochilaDesdeJava(listaInventario) {
     // Inyectamos el HTML en la caja del inventario
     cajaInventario.innerHTML = htmlLista;
 }
+
+// Función para pedir los ítems al servidor
+function cargarTienda() {
+    fetch('http://localhost:8080/api/juego/tienda')
+        .then(response => response.json())
+        .then(listaItems => {
+            dibujarTienda(listaItems);
+        })
+        .catch(error => console.error('Error al cargar la tienda:', error));
+}
+
+// Función que pinta el HTML de la tienda
+function dibujarTienda(listaItems) {
+    const contenedor = document.getElementById('contenedor-items-tienda');
+    contenedor.innerHTML = ''; // Vaciamos por si acaso
+
+    if (!listaItems || listaItems.length === 0) {
+        contenedor.innerHTML = '<p style="color: #aaa; text-align: center;">El mercader no tiene existencias hoy.</p>';
+        return;
+    }
+
+    // Recorremos el array de JSON (cada item tiene id, nombre, precio, tipo)
+    listaItems.forEach(item => {
+        // Ponemos el item.id a comprarItem en lugar del nombre.
+        const tarjetaHtml = `
+            <div style="flex: 1; min-width: 150px; border: 1px solid rgba(255,255,255,0.2); padding: 10px; text-align: center; background: rgba(0,0,0,0.5);">
+                <h4 style="color: white;">${item.nombre}</h4>
+                <p style="color: gold;">${item.precio} 🪙</p>
+                <p style="color: #ccc; font-size: 0.8em; margin-bottom: 8px;">${item.tipo}</p>
+                <button class="btn-primary" style="padding: 5px; font-size: 0.8em;" onclick="comprarItem('${item.id}', ${item.precio})">COMPRAR</button>
+            </div>
+        `;
+        contenedor.innerHTML += tarjetaHtml;
+    });
+}
+
+// Llamar a cargarTienda() cuando la página arranque
+window.onload = function() {
+    cargarTienda();
+};
