@@ -269,31 +269,44 @@ function cerrarSesion() {
     document.getElementById("login-pass").value = "";
 }
 
-// Función que dibuja el inventario que nos manda Java al iniciar sesión
+// FUNCIÓN QUE CONECTA CON JAVA Y PIDE LOS DATOS
+function obtenerInventarioDelServidor(nombreUsuario) {
+    // Pon la URL exacta de tu servidor (revisa tu puerto y el @Path general de la clase)
+    const url = 'http://localhost:8080/api/juego/inventario/${nombreUsuario}';
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("No se pudo obtener el inventario de la BDD");
+            }
+            return response.json(); // Java nos manda un JSON, lo convertimos a array de JS
+        })
+        .then(listaInventario => {
+            // Llamamos a tu función de dibujar y le pasamos los datos que acaban de llegar de Java
+            cargarMochilaDesdeJava(listaInventario);
+        })
+        .catch(error => {
+            console.error("Error al conectar con el servidor:", error);
+        });
+}
+
+// Funcion que dibuja el inventario
 function cargarMochilaDesdeJava(listaInventario) {
     const cajaInventario = document.getElementById("tab-inventario");
-
-    // Si la lista no existe o está vacía (0 objetos)
     if (!listaInventario || listaInventario.length === 0) {
         cajaInventario.innerHTML = `
             <h3 style="color: white; text-align: center;">Tus Pertinencias</h3>
             <p style="color: #aaa; text-align: center;">Tu mochila está vacía por ahora.</p>`;
         return;
     }
-
-    // Si tiene objetos, creamos la lista visual con todos ellos
     let htmlLista = `
         <h3 style="color: white; text-align: center;">Tus Pertinencias</h3>
         <ul id="lista-mochila" style="color: gold; font-size: 1.1em; list-style-type: none; padding: 0; text-align: center;">`;
 
-    // Recorremos los objetos que envió Java y los pintamos
     listaInventario.forEach(objeto => {
         htmlLista += `<li style="margin-bottom: 10px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 5px;">✨ ${objeto}</li>`;
     });
-
     htmlLista += `</ul>`;
-
-    // Inyectamos el HTML en la caja del inventario
     cajaInventario.innerHTML = htmlLista;
 }
 
