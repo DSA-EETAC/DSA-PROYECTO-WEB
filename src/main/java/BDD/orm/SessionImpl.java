@@ -99,7 +99,7 @@ public class SessionImpl implements Session {
 
     public void update(Object object) {
         User usuario = (User) object;
-        String sql = "UPDATE user SET nombre = ?, password = ?, mail = ?, monedas = ? WHERE id = ?";
+        String sql = "UPDATE User SET nombre = ?, password = ?, mail = ?, monedas = ? WHERE id = ?";
 
         try (PreparedStatement ptsm = conn.prepareStatement(sql)) {
             ptsm.setString(1, usuario.getNombre());
