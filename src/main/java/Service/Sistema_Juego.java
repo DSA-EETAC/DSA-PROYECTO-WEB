@@ -12,6 +12,7 @@ import BDD.orm.dao.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.GenericEntity;
 import java.util.*;
 
 import io.swagger.annotations.Api;
@@ -135,6 +136,7 @@ public class Sistema_Juego {
     @Produces(MediaType.APPLICATION_JSON)
     public Response obtenerInventario(@PathParam("nombre") String nombre) {
         List<String> inventario = manager.obtenerInventarioUsuario(nombre);
+        GenericEntity<List<String>> entidad = new GenericEntity<List<String>>(inventario) {};
         return Response.status(200).entity(inventario).build();
     }
 
