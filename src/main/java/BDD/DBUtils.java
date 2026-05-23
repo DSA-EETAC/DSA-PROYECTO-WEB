@@ -7,8 +7,8 @@ import java.sql.SQLException;
 public class DBUtils {
 
     public static final String DB_NAME = "templerun";
-    public static final String DB_HOST = "127.0.0.1";
-    public static final String DB_USER = "root";
+    public static final String DB_HOST = "localhost";
+    public static final String DB_USER = "user";
     public static final String DB_PASS = "templerun";
     public static final String DB_PORT = "3306";
 
@@ -40,10 +40,17 @@ public class DBUtils {
         String pass = DBUtils.getDbPasswd();
 
 
+        String URL = "jdbc:mariadb://"+host+":"+port+"/"+db+" useR: :"+user+" pass" +pass;
+	System.out.println(URL);
         Connection connection = DriverManager.getConnection("jdbc:mariadb://"+host+":"+port+"/"+
                 db+"?user="+user+"&password="+pass);
 
         return connection;
+    }
+
+    public static void main(String[] args) throws SQLException {
+	    System.out.println("DBUTILS!!!!!");
+	    Connection c = DBUtils.getConnection();
     }
 
 }
