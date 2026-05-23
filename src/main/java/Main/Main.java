@@ -14,7 +14,7 @@ import io.swagger.jersey.listing.ApiListingResourceJSON;
 
 public class Main {
     // La URI base donde escuchará la API
-    public static final String BASE_URI = "http://192.168.10.133:8080/api/";
+    public static final String BASE_URI = "http://0.0.0.0:8080/api/"; //"http://192.168.10.133:8080/api/";
 
     public static void main(String[] args) throws Exception {
 
@@ -43,7 +43,7 @@ public class Main {
 
         System.out.println("----------------------------------------------");
         System.out.println("Templo de Temple Run abierto en: " + BASE_URI);
-        System.out.println("Accede a la web en: http://localhost:8080/index.html");
+        System.out.println("Accede a la web en: http://localhost:8080/api/");
         System.out.println("Presiona ENTER para detener el servidor...");
         System.out.println("----------------------------------------------");
 
