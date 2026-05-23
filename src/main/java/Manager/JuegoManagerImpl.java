@@ -107,6 +107,7 @@ public class JuegoManagerImpl implements JuegoManager {
 
     @Override
     public List<Item> obtenerItemsTienda() {
+        System.out.println(this.itemDAO.getItems());
         return this.itemDAO.getItems();
     }
 }
