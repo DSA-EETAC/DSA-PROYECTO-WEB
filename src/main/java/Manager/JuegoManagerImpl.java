@@ -100,6 +100,11 @@ public class JuegoManagerImpl implements JuegoManager {
         List<User> lista = usuarioDAO.getUsuarios();
         return (lista != null) ? lista.size() : 0;
     }
+    @Override
+    public List<User> obtenerUsuarios(){
+        List<User> lista = usuarioDAO.getUsuarios();
+        return lista;
+    }
 
     @Override
     public void clear() {

@@ -149,4 +149,11 @@ public class Sistema_Juego {
         // La devolvemos con un código 200 (OK). Java/Jersey la pasará a JSON automáticamente.
         return Response.status(200).entity(items).build();
     }
+    @GET
+    @Path("usuarios")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response obtenerUsuarios() {
+        List<User> usuarios = manager.obtenerUsuarios();
+        return Response.status(200).entity(usuarios).build();
+    }
 }

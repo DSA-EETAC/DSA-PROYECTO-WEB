@@ -18,6 +18,8 @@ public interface JuegoManager {
 
     int obtenerNumeroUsuarios();
 
+    List<User> obtenerUsuarios();
+
     void clear();
 
     List<Item> obtenerItemsTienda();
