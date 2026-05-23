@@ -31,7 +31,11 @@ public class Main {
         System.out.println("Presiona ENTER para detener el servidor...");
         System.out.println("----------------------------------------------");
 
-        System.in.read();
-        server.shutdownNow();
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 }

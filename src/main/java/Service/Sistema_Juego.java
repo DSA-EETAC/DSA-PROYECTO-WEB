@@ -71,7 +71,7 @@ public class Sistema_Juego {
         if (!EmailValidator.getInstance().isValid(nuevoUsuario.getMail())) {
             log.warn("Registro fallido: Formato de correo inválido (" + nuevoUsuario.getMail() + ").");
             return Response.status(400).entity("Error: El formato del correo electrónico no es válido.").build();
-        }
+        }     
 
         // Seguridad de la contraseña
         if (!esPasswordSeguro(nuevoUsuario.getPassword())) {
