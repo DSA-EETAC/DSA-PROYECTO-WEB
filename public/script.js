@@ -1,4 +1,4 @@
-const URL_BASE = "http://dsa2/upc/edu";
+const URL_BASE = "https://dsa2.upc.edu/api/juego";
 
 async function hacerRegistro() {
     // Datos del HTML

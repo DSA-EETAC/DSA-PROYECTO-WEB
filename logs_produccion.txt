@@ -1,0 +1,35 @@
+nohup: ignoring input
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--------------------< [0;36medu.upc.dsa:DSA-PROYECTO-WEB[0;1m >--------------------[m
+[[1;34mINFO[m] [1mBuilding DSA2 1.0-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-clean-plugin:2.5:clean[m [1m(default-clean)[m @ [36mDSA-PROYECTO-WEB[0;1m ---[m
+[[1;34mINFO[m] Deleting /home/dsa/DSA-PROYECTO-WEB/target
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:2.6:resources[m [1m(default-resources)[m @ [36mDSA-PROYECTO-WEB[0;1m ---[m
+[[1;34mINFO[m] Using 'UTF-8' encoding to copy filtered resources.
+[[1;34mINFO[m] Copying 1 resource
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:2.5.1:compile[m [1m(default-compile)[m @ [36mDSA-PROYECTO-WEB[0;1m ---[m
+[[1;34mINFO[m] Compiling 22 source files to /home/dsa/DSA-PROYECTO-WEB/target/classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m>>> [0;32mexec-maven-plugin:1.2.1:java[m [1m(default-cli)[0;1m > [0;1mvalidate[m @ [36mDSA-PROYECTO-WEB[0;1m >>>[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m<<< [0;32mexec-maven-plugin:1.2.1:java[m [1m(default-cli)[0;1m < [0;1mvalidate[m @ [36mDSA-PROYECTO-WEB[0;1m <<<[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mexec-maven-plugin:1.2.1:java[m [1m(default-cli)[m @ [36mDSA-PROYECTO-WEB[0;1m ---[m
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+May 23, 2026 10:24:17 AM org.glassfish.grizzly.http.server.NetworkListener start
+INFO: Started listener bound to [0.0.0.0:8080]
+May 23, 2026 10:24:17 AM org.glassfish.grizzly.http.server.HttpServer start
+INFO: [HttpServer] Started.
+----------------------------------------------
+Templo de Temple Run abierto en: http://0.0.0.0:8080/api/
+Accede a la web en: http://localhost:8080/api/
+Presiona ENTER para detener el servidor...
+----------------------------------------------
