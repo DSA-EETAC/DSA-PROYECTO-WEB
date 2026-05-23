@@ -1,4 +1,4 @@
-const URL_BASE = "http://localhost:8080/api/juego";
+const URL_BASE = "http://dsa2/upc/edu";
 
 async function hacerRegistro() {
     // Datos del HTML
