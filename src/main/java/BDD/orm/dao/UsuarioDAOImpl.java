@@ -200,27 +200,34 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
         try {
             session = FactorySession.openSession();
 
-            // 1. Pedimos todos los registros para buscar si el jugador ya lo tiene
             List<Inventario> inventarioCompleto = session.findAll(Inventario.class);
             Inventario objetoExistente = null;
 
+            // Chivato 1: Ver qué datos entran al método
+            System.out.println("---> [DEBUG] Buscando si USER " + userId + " ya tiene el ITEM " + itemId);
+
             if (inventarioCompleto != null) {
+                // Chivato 2: Ver cuántas filas lee el ORM en total
+                System.out.println("---> [DEBUG] Filas totales en la tabla Inventario: " + inventarioCompleto.size());
+
                 for (Inventario inv : inventarioCompleto) {
-                    // Si coinciden el jugador y el objeto, significa que ya lo ha comprado antes
+                    // Chivato 3: Ver qué valores tienen las variables de cada fila que ha leído el ORM
+                    System.out.println("---> [DEBUG] Fila leída -> ID=" + inv.getId() + " | User_ID=" + inv.getUser_id() + " | Item_ID=" + inv.getItem_id() + " | Cantidad=" + inv.getQuantity());
+
                     if (inv.getUser_id() == userId && inv.getItem_id() == itemId) {
                         objetoExistente = inv;
-                        break; // ¡Encontrado! Cortamos el bucle.
+                        break;
                     }
                 }
             }
 
             if (objetoExistente != null) {
-                // CASO A (Ya lo tiene): Le sumamos 1 a la cantidad y actualizamos la fila
+                System.out.println("---> [DEBUG] ¡Encontrado en mochila! Modificando cantidad existente...");
                 int cantidadActual = objetoExistente.getQuantity();
                 objetoExistente.setQuantity(cantidadActual + 1);
                 session.update(objetoExistente);
             } else {
-                // CASO B (Es nuevo): Creamos una fila nueva en la base de datos
+                System.out.println("---> [DEBUG] No encontrado en mochila. Creando fila nueva...");
                 Inventario nuevoRegistro = new Inventario(userId, itemId, 1);
                 session.save(nuevoRegistro);
             }
