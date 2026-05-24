@@ -1,7 +1,7 @@
 package BDD.orm;
 
 import BDD.orm.util.*;
-
+import java.util.ArrayList; // <--- ESTO ARREGLA EL ERROR DE ARRAYLIST
 import java.sql.*;
 import java.util.HashMap;
 import java.util.List;
@@ -124,9 +124,25 @@ public class SessionImpl implements Session {
     }
 
     public List<Object> findAll(Class theClass) {
-        return null;
+        List<Object> results = new ArrayList<>();
+        String sql = "SELECT * FROM " + theClass.getSimpleName();
+        try {
+            PreparedStatement pstm = conn.prepareStatement(sql);
+            ResultSet rs = pstm.executeQuery();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int numColumns = rsmd.getColumnCount();
+            while (rs.next()) {
+                Object o = theClass.getDeclaredConstructor().newInstance();
+                for (int i = 1; i <= numColumns; i++) {
+                    String columnName = rsmd.getColumnName(i);
+                    Object value = rs.getObject(i);
+                    if (value != null) BDD.orm.util.ObjectHelper.setter(o, columnName, value);
+                }
+                results.add(o);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return results;
     }
-
     public List<Object> findAll(Class theClass, HashMap params) {
      /*   String theQuery = QueryHelper.createSelectFindAll(theClass, params);
         PreparedStatement pstm = null;
