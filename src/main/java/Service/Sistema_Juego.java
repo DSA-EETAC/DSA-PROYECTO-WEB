@@ -146,8 +146,8 @@ public class Sistema_Juego {
     public Response obtenerTienda() {
         // Pedimos la lista al manager
         List<Item> items = manager.obtenerItemsTienda();
-        GenericEntity<List<Item>> entidad = new GenericEntity<List<Item>>(items) {};
-        return Response.status(200).entity(items).build();
+        Model.TiendaJuego respuesta = new Model.TiendaJuego(items);
+        return Response.status(200).entity(respuesta).build();
     }
     @GET
     @Path("usuarios")

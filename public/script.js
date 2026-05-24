@@ -299,7 +299,9 @@ function cargarTienda() {
             }
             return response.json();
         })
-        .then(listaItems => {
+        .then(datosTienda => {
+            // ¡OJO AQUÍ! Extraemos la lista 'items' de dentro del objeto
+            const listaItems = datosTienda.items;
             dibujarTienda(listaItems);
         })
         .catch(error => {
