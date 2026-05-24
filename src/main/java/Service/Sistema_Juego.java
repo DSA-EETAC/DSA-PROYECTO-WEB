@@ -136,7 +136,7 @@ public class Sistema_Juego {
     @Produces(MediaType.APPLICATION_JSON)
     public Response obtenerInventario(@PathParam("nombre") String nombre) {
         List<String> inventario = manager.obtenerInventarioUsuario(nombre);
-        String[] inventarioArray = inventario.toArray(new String[0]);
+        Model.InventarioJugador respuesta = new Model.InventarioJugador(inventario);
         return Response.status(200).entity(inventario).build();
     }
 
