@@ -199,8 +199,32 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
         Session session = null;
         try {
             session = FactorySession.openSession();
-            Inventario nuevoRegistro = new Inventario(userId, itemId, 1);
-            session.save(nuevoRegistro);
+
+            // 1. Pedimos todos los registros para buscar si el jugador ya lo tiene
+            List<Inventario> inventarioCompleto = session.findAll(Inventario.class);
+            Inventario objetoExistente = null;
+
+            if (inventarioCompleto != null) {
+                for (Inventario inv : inventarioCompleto) {
+                    // Si coinciden el jugador y el objeto, significa que ya lo ha comprado antes
+                    if (inv.getUser_id() == userId && inv.getItem_id() == itemId) {
+                        objetoExistente = inv;
+                        break; // ¡Encontrado! Cortamos el bucle.
+                    }
+                }
+            }
+
+            if (objetoExistente != null) {
+                // CASO A (Ya lo tiene): Le sumamos 1 a la cantidad y actualizamos la fila
+                int cantidadActual = objetoExistente.getQuantity();
+                objetoExistente.setQuantity(cantidadActual + 1);
+                session.update(objetoExistente);
+            } else {
+                // CASO B (Es nuevo): Creamos una fila nueva en la base de datos
+                Inventario nuevoRegistro = new Inventario(userId, itemId, 1);
+                session.save(nuevoRegistro);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
