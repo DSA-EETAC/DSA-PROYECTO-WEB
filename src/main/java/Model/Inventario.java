@@ -1,6 +1,7 @@
 package Model;
 
 public class Inventario {
+    private int id;       // ID autoincremental
     private int user_id;  // Relación con tabla user
     private int item_id;  // Relación con tabla item
     private int quantity;
@@ -14,6 +15,9 @@ public class Inventario {
     }
 
     // Getters y Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
     public int getUser_id() { return user_id; }
     public void setUser_id(int user_id) { this.user_id = user_id; }
     public int getItem_id() { return item_id; }
