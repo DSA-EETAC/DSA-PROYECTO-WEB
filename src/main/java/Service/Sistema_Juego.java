@@ -137,7 +137,7 @@ public class Sistema_Juego {
     public Response obtenerInventario(@PathParam("nombre") String nombre) {
         List<String> inventario = manager.obtenerInventarioUsuario(nombre);
         Model.InventarioJugador respuesta = new Model.InventarioJugador(inventario);
-        return Response.status(200).entity(inventario).build();
+        return Response.status(200).entity(respuesta).build();
     }
 
     @GET
