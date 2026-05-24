@@ -146,6 +146,7 @@ async function actualizarMochilaDesdeBaseDeDatos(nombreUsuario) {
         });
 
         if (respuesta.status === 200) {
+            const inventarioJugador = await respuesta.json();
             const listaItems = await respuesta.json(); // Esto recibe el array de Strings de Java
             cargarMochilaDesdeJava(listaItems); // Se lo pasamos a la función que pinta en HTML
         }
@@ -269,27 +270,6 @@ function cerrarSesion() {
     document.getElementById("login-pass").value = "";
 }
 
-// FUNCIÓN QUE CONECTA CON JAVA Y PIDE LOS DATOS
-function obtenerInventarioDelServidor(nombreUsuario) {
-    // Pon la URL exacta de tu servidor (revisa tu puerto y el @Path general de la clase)
-    const url = 'http://localhost:8080/api/juego/inventario/${nombreUsuario}';
-
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("No se pudo obtener el inventario de la BDD");
-            }
-            return response.json(); // Java nos manda un JSON, lo convertimos a array de JS
-        })
-        .then(listaInventario => {
-            // Llamamos a tu función de dibujar y le pasamos los datos que acaban de llegar de Java
-            cargarMochilaDesdeJava(listaInventario);
-        })
-        .catch(error => {
-            console.error("Error al conectar con el servidor:", error);
-        });
-}
-
 // Funcion que dibuja el inventario
 function cargarMochilaDesdeJava(listaInventario) {
     const cajaInventario = document.getElementById("tab-inventario");
@@ -312,12 +292,21 @@ function cargarMochilaDesdeJava(listaInventario) {
 
 // Función para pedir los ítems al servidor
 function cargarTienda() {
-    fetch('http://localhost:8080/api/juego/tienda')
-        .then(response => response.json())
+    fetch(`${URL_BASE}/tienda`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Error en la respuesta del servidor");
+            }
+            return response.json();
+        })
         .then(listaItems => {
             dibujarTienda(listaItems);
         })
-        .catch(error => console.error('Error al cargar la tienda:', error));
+        .catch(error => {
+            console.error('Error al cargar la tienda:', error);
+            const contenedor = document.getElementById('contenedor-items-tienda');
+            contenedor.innerHTML = '<p style="color: #ff4444; text-align: center;">Error de conexión con el mercader.</p>';
+        });
 }
 
 // Función que pinta el HTML de la tienda
@@ -338,7 +327,7 @@ function dibujarTienda(listaItems) {
                 <h4 style="color: white;">${item.nombre}</h4>
                 <p style="color: gold;">${item.precio} 🪙</p>
                 <p style="color: #ccc; font-size: 0.8em; margin-bottom: 8px;">${item.tipo}</p>
-                <button class="btn-primary" style="padding: 5px; font-size: 0.8em;" onclick="comprarItem('${item.id}', ${item.precio})">COMPRAR</button>
+                <button class="btn-primary" style="padding: 5px; font-size: 0.8em;" onclick="comprarItem('${item.nombre}', ${item.precio})">COMPRAR</button>
             </div>
         `;
         contenedor.innerHTML += tarjetaHtml;
