@@ -147,7 +147,7 @@ async function actualizarMochilaDesdeBaseDeDatos(nombreUsuario) {
 
         if (respuesta.status === 200) {
             const inventarioJugador = await respuesta.json();
-            const listaItems = inventarioJugador.json(); // Esto recibe el array de Strings de Java
+            const listaItems = inventarioJugador.objetos; // Esto recibe el array de Strings de Java
             cargarMochilaDesdeJava(listaItems); // Se lo pasamos a la función que pinta en HTML
         }
     } catch (error) {
