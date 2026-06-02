@@ -2,6 +2,7 @@ package Service;
 
 import Model.Item;
 import Model.User;
+import Model.Grupo;
 import Manager.JuegoManagerImpl;
 import Manager.JuegoManager;
 import Model.PeticionCompra;
@@ -155,5 +156,34 @@ public class Sistema_Juego {
     public Response obtenerUsuarios() {
         List<User> usuarios = manager.obtenerUsuarios();
         return Response.status(200).entity(usuarios).build();
+    }
+
+    // T2: Ruta ficticia que devuelve una lista de grupos inventada
+    @GET
+    @Path("/grupos")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getListaGrupos() {
+        System.out.println("Enviando lista de grupos dummy al móvil...");
+
+        // TRUCO: Usamos un Array nativo de Java en lugar de ArrayList.
+        // Jersey convierte esto a JSON de forma instantánea sin dar el error de MessageBodyWriter.
+        Grupo[] arrayGrupos = new Grupo[3];
+        arrayGrupos[0] = new Grupo("1", "Gryffindor");
+        arrayGrupos[1] = new Grupo("2", "Equipo Alfa Buena Maravilla");
+        arrayGrupos[2] = new Grupo("3", "Los Porxinos");
+
+        // Lo metemos directo en el entity
+        return Response.status(200).entity(arrayGrupos).build();
+    }
+
+    // T3: Ruta ficticia para cuando el usuario le da al botón "Unirse"
+    @POST
+    @Path("/grupos/{id}/unirse")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response unirseAlGrupo(@PathParam("id") String id, User usuario) {
+        // Solo lo imprimimos por la consola de IntelliJ para demostrar que funciona
+        System.out.println("¡ÉXITO! El usuario " + usuario.getNombre() + " se quiere unir al grupo con ID: " + id);
+
+        return Response.status(200).build();
     }
 }
