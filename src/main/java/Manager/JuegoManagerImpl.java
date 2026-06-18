@@ -1,5 +1,6 @@
 package Manager;
 
+import BDD.orm.FactorySession;
 import BDD.orm.Session;
 import BDD.orm.dao.IItemDAO;
 import BDD.orm.dao.IUsuarioDAO;
@@ -7,6 +8,7 @@ import BDD.orm.dao.ItemDAOImpl;
 import BDD.orm.dao.UsuarioDAOImpl;
 import Model.Item;
 import Model.User;
+import Model.Grupo;
 import org.apache.log4j.Logger;
 import java.util.*;
 
@@ -114,6 +116,56 @@ public class JuegoManagerImpl implements JuegoManager {
     public List<Item> obtenerItemsTienda() {
         System.out.println(this.itemDAO.getItems());
         return this.itemDAO.getItems();
+    }
+
+    @Override
+    public List<Grupo> obtenerGrupos() {
+        Session session = null;
+        List<Grupo> listaGrupos = new ArrayList<>();
+        try {
+            session = FactorySession.openSession();
+
+            // Usamos tu ORM para traer todos los registros de la tabla Grupo
+            List<Object> objetos = session.findAll(Grupo.class);
+
+            if (objetos != null) {
+                for (Object obj : objetos) {
+                    listaGrupos.add((Grupo) obj); // Casteamos de Object a Grupo
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error al obtener los grupos: ", e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+        return listaGrupos;
+    }
+
+    @Override
+    public boolean unirUsuarioAGrupo(String nombreUsuario, String idGrupo) {
+        Session session = null;
+        try {
+            session = FactorySession.openSession();
+
+            // 1. Obtenemos el usuario real para saber su ID
+            User u = usuarioDAO.getUsuario(nombreUsuario);
+
+            if (u != null) {
+                u.setId_grupo(Integer.parseInt(idGrupo));
+                session.update(u);
+
+                return true; // Éxito al guardar
+            }
+        } catch (Exception e) {
+            log.error("Error al unir usuario al grupo: ", e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+        return false;
     }
 }
 

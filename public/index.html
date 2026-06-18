@@ -71,6 +71,7 @@
                 <button id="btn-perfil" class="tab-btn active" onclick="cambiarPestana('tab-perfil', 'btn-perfil')">Perfil</button>
                 <button id="btn-tienda" class="tab-btn" onclick="cambiarPestana('tab-tienda', 'btn-tienda')">Tienda</button>
                 <button id="btn-inventario" class="tab-btn" onclick="cambiarPestana('tab-inventario', 'btn-inventario')">Mochila</button>
+                <button id="btn-grupos" class="tab-btn" onclick="cambiarPestana('tab-grupos', 'btn-grupos')">Grupos</button>
             </div>
 
             <div id="tab-tienda" class="tab-content">
@@ -89,6 +90,13 @@
                 <h3 style="color: white; text-align: center;">Datos del Explorador</h3>
                 <p style="color: white;">Nombre: <span id="perfil-nombre"></span></p>
                 <button class="btn-primary" style="background: transparent; border: 1px solid red; color: red;" onclick="cerrarSesion()">Abandonar Campamento (Cerrar Sesión)</button>
+            </div>
+
+            <div id="tab-grupos" class="tab-content" style="display: none;">
+                <h3 style="color: white; text-align: center;">Grupos de Exploradores</h3>
+                <div id="contenedor-grupos" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                    <p style="color: #aaa; text-align: center;">Buscando grupos en la zona...</p>
+                </div>
             </div>
 
         </div>

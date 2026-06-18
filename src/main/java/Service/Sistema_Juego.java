@@ -2,6 +2,7 @@ package Service;
 
 import Model.Item;
 import Model.User;
+import Model.Grupo;
 import Manager.JuegoManagerImpl;
 import Manager.JuegoManager;
 import Model.PeticionCompra;
@@ -155,5 +156,34 @@ public class Sistema_Juego {
     public Response obtenerUsuarios() {
         List<User> usuarios = manager.obtenerUsuarios();
         return Response.status(200).entity(usuarios).build();
+    }
+
+    // T2: Ruta ficticia que devuelve una lista de grupos inventada
+    @GET
+    @Path("/grupos")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getListaGrupos() {
+        List<Grupo> listaGrupos = manager.obtenerGrupos();
+
+        if (listaGrupos != null) {
+            return Response.status(200).entity(listaGrupos).build();
+        } else {
+            return Response.status(500).entity("Error al obtener los grupos de la base de datos").build();
+        }
+    }
+
+    @POST
+    @Path("/grupos/{id}/unirse")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response unirseAlGrupo(@PathParam("id") String id, User usuario) {
+
+        // Llamamos al manager pasando el nombre del jugador y el ID del grupo
+        boolean exito = manager.unirUsuarioAGrupo(usuario.getNombre(), id);
+
+        if (exito) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(400).entity("Error: No se ha podido unir al grupo.").build();
+        }
     }
 }

@@ -243,11 +243,13 @@ function cambiarPestana(idPestana, idBoton) {
     document.getElementById('tab-tienda').style.display = 'none';
     document.getElementById('tab-inventario').style.display = 'none';
     document.getElementById('tab-perfil').style.display = 'none';
+    document.getElementById('tab-grupos').style.display = 'none';
 
     // 2. Le quitamos el color 'activo' a todos los botones
     document.getElementById('btn-tienda').classList.remove('active');
     document.getElementById('btn-inventario').classList.remove('active');
     document.getElementById('btn-perfil').classList.remove('active');
+    document.getElementById('btn-grupos').classList.remove('active');
 
     // 3. Mostramos la caja pedida y encendemos su botón
     document.getElementById(idPestana).style.display = 'block';
@@ -255,6 +257,10 @@ function cambiarPestana(idPestana, idBoton) {
 
     // Borramos cualquier mensaje que hubiera en pantalla
     document.getElementById('mensaje-sistema').innerText = "";
+    //cargamos los grupos al abrir la pestaña
+    if (idPestana === 'tab-grupos') {
+        cargarGrupos();
+    }
 }
 
 // Función para cerrar sesión y volver a la pantalla de inicio
@@ -340,3 +346,74 @@ function dibujarTienda(listaItems) {
 window.onload = function() {
     cargarTienda();
 };
+
+// Función para pedir los grupos al servidor
+async function cargarGrupos() {
+    try {
+        const respuesta = await fetch(`${URL_BASE}/grupos`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+
+        if (respuesta.status === 200) {
+            const listaGrupos = await respuesta.json();
+            dibujarGrupos(listaGrupos);
+        }
+    } catch (error) {
+        console.error("Error al cargar grupos:", error);
+        document.getElementById('contenedor-grupos').innerHTML =
+            '<p style="color: #ff4444; text-align: center;">Error de conexión con el gremio.</p>';
+    }
+}
+
+// Función para pintar el HTML de los grupos
+function dibujarGrupos(listaGrupos) {
+    const contenedor = document.getElementById('contenedor-grupos');
+    contenedor.innerHTML = ''; // Vaciamos primero
+
+    if (!listaGrupos || listaGrupos.length === 0) {
+        contenedor.innerHTML = '<p style="color: #aaa; text-align: center;">No hay grupos disponibles ahora mismo.</p>';
+        return;
+    }
+
+    listaGrupos.forEach(grupo => {
+        const tarjetaHtml = `
+            <div style="flex: 1; min-width: 150px; border: 1px solid rgba(255,255,255,0.2); padding: 10px; text-align: center; background: rgba(0,0,0,0.5);">
+                <h4 style="color: white;">${grupo.nombre}</h4>
+                <p style="color: #ccc; font-size: 0.8em; margin-bottom: 8px;">ID: ${grupo.id}</p>
+                <button class="btn-primary" style="padding: 5px; font-size: 0.8em; background-color: #27ae60; border-color: #2ecc71;" 
+                onclick="unirseGrupo('${grupo.id}', '${grupo.nombre}')">UNIRSE</button>
+            </div>
+        `;
+        contenedor.innerHTML += tarjetaHtml;
+    });
+}
+
+// Función para unirse a un grupo
+async function unirseGrupo(idGrupo, nombreGrupo) {
+    const nombreJugador = localStorage.getItem("jugadorActual");
+
+    // Tu backend actual pide un objeto User en el body del POST para unirse
+    const datosUsuario = {
+        nombre: nombreJugador
+    };
+
+    try {
+        const respuesta = await fetch(`${URL_BASE}/grupos/${idGrupo}/unirse`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(datosUsuario)
+        });
+
+        if (respuesta.status === 200) {
+            avisar(`¡Éxito! Has solicitado unirte a ${nombreGrupo}.`, false);
+        } else {
+            avisar(`Error al intentar unirte a ${nombreGrupo}.`, true);
+        }
+    } catch (error) {
+        avisar("El servidor de clanes no responde.", true);
+    }
+}

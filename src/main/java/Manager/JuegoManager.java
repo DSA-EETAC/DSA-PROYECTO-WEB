@@ -1,4 +1,5 @@
 package Manager;
+import Model.Grupo;
 import Model.User;
 import Model.Item;
 
@@ -23,5 +24,9 @@ public interface JuegoManager {
     void clear();
 
     List<Item> obtenerItemsTienda();
+
+    List<Grupo> obtenerGrupos();
+
+    boolean unirUsuarioAGrupo(String nombreUsuario, String idGrupo);
 
 }

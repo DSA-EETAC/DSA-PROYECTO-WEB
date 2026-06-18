@@ -18,6 +18,7 @@ public class User {
     private int ataque=10;
     private int defensa=5;
     private int resistencia=5;
+    private int id_grupo;
 
     public User(){}
 
@@ -54,6 +55,7 @@ public class User {
         return resistencia;
     }
     public int getMonedas() { return monedas; }
+    public int getId_grupo() { return id_grupo;}
     //public List<String> getInventario() { return inventario; }
 
     //SETTERS
@@ -81,6 +83,7 @@ public class User {
         this.resistencia = resistencia;
     }
     public void setMonedas(int monedas) { this.monedas = monedas; }
+    public void setId_grupo(int id_grupo) {this.id_grupo = id_grupo;}
     //public void setInventario(List<String> inventario) { this.inventario = inventario; }
 
     public void subirNivel() {
