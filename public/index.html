@@ -90,13 +90,14 @@
                 <h3 style="color: white; text-align: center;">Datos del Explorador</h3>
                 <p style="color: white;">Nombre: <span id="perfil-nombre"></span></p>
                 <button class="btn-primary" style="background: transparent; border: 1px solid red; color: red;" onclick="cerrarSesion()">Abandonar Campamento (Cerrar Sesión)</button>
-                <button class="btn-perfil" onclick="consultarMiGrupo()">Mostrar Grupo</button>
 
-                <div id="contenedor-grupo" class="hidden" style="border: 1px solid #ccc; padding: 15px; margin-top: 10px;">
+                <button class="btn-mostrar-grupo" onclick="consultarMiGrupo()">MOSTRAR GRUPO</button>
+
+                <div id="contenedor-grupo" class="hidden">
                     <h3 id="grupo-titulo"></h3>
                     <p id="grupo-mensaje"></p>
                     <ul id="grupo-lista-miembros"></ul>
-                    <button onclick="document.getElementById('contenedor-grupo').classList.add('hidden')">Cerrar</button>
+                    <button class="btn-primary" style="margin-top: 10px; padding: 0.5rem;" onclick="document.getElementById('contenedor-grupo').classList.add('hidden')">CERRAR</button>
                 </div>
             </div>
 

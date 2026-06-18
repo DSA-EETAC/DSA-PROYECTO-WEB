@@ -134,6 +134,55 @@ h1 {
     box-shadow: 0 0 20px var(--gold-glow);
 }
 
+/* ---  BOTÓN MOSTRAR GRUPO --- */
+.btn-mostrar-grupo {
+    background-color: var(--gold);
+    color: black;
+    border: 2px solid #b38b22;
+    padding: 1rem;
+    margin-top: 15px;
+    width: 100%;
+    font-family: 'Cinzel', serif;
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+    border-radius: 4px;
+}
+
+.btn-mostrar-grupo:hover {
+    background-color: #f1c43f;
+    box-shadow: 0 0 15px var(--gold-glow);
+    transform: scale(1.02);
+}
+
+/* --- NUEVO CONTENEDOR DE GRUPO --- */
+#contenedor-grupo {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.75);
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 15px;
+    text-align: left;
+    font-family: 'Roboto', sans-serif;
+}
+
+#contenedor-grupo h3 {
+    color: var(--gold);
+    margin-top: 0;
+    font-family: 'Cinzel', serif;
+    text-align: center;
+    text-shadow: 0 0 5px var(--gold-glow);
+}
+
+#contenedor-grupo ul {
+    list-style-type: square;
+    padding-left: 20px;
+}
+
+/* --- OTROS ESTILOS --- */
 .switch-text {
     margin-top: 2rem;
     font-size: 0.8rem;
@@ -162,7 +211,7 @@ h1 {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 204, 51, 0.3); /* Usa el tono dorado de la variable */
+    border-bottom: 1px solid rgba(255, 204, 51, 0.3);
 }
 
 .tab-btn {
