@@ -158,7 +158,6 @@ public class Sistema_Juego {
         return Response.status(200).entity(usuarios).build();
     }
 
-    // T2: Ruta ficticia que devuelve una lista de grupos inventada
     @GET
     @Path("/grupos")
     @Produces(MediaType.APPLICATION_JSON)
