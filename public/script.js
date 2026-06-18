@@ -356,7 +356,8 @@ async function cargarGrupos() {
         });
 
         if (respuesta.status === 200) {
-            const listaGrupos = await respuesta.json();
+            const datosJson = await respuesta.json();
+            const listaGrupos = datosJson.grupos;
             dibujarGrupos(listaGrupos);
         }
     } catch (error) {
