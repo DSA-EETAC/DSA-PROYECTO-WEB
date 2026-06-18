@@ -43,8 +43,8 @@ public class Main {
 
         System.out.println("----------------------------------------------");
         System.out.println("Templo de Temple Run abierto en: " + BASE_URI);
-        System.out.println("Accede a la web en: http://localhost:8080/api/");
-        System.out.println("Presiona ENTER para detener el servidor...");
+        System.out.println("Accede a la web en: https://dsa2.upc.edu");
+        System.out.println("Presiona ^C para detener el servidor...");
         System.out.println("----------------------------------------------");
 
         try {

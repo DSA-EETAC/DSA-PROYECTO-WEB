@@ -145,26 +145,28 @@ public class JuegoManagerImpl implements JuegoManager {
 
     @Override
     public boolean unirUsuarioAGrupo(String nombreUsuario, String idGrupo) {
-        Session session = null;
-        try {
-            session = FactorySession.openSession();
+        log.info("INICIO unirUsuarioAGrupo: usuario=" + nombreUsuario + ", grupo=" + idGrupo);
 
-            // 1. Obtenemos el usuario real para saber su ID
+        try {
+            // 1. Obtenemos el usuario real desde el DAO
             User u = usuarioDAO.getUsuario(nombreUsuario);
 
             if (u != null) {
+                // 2. Le asignamos el ID del grupo (convirtiéndolo de String a int)
                 u.setId_grupo(Integer.parseInt(idGrupo));
-                session.update(u);
 
-                return true; // Éxito al guardar
+                // 3. Guardamos los cambios usando el DAO (igual que haces en comprarObjeto)
+                usuarioDAO.updateUsuario(u);
+
+                log.info("FIN unirUsuarioAGrupo: Usuario " + nombreUsuario + " unido al grupo " + idGrupo + " con éxito.");
+                return true;
+            } else {
+                log.warn("FIN unirUsuarioAGrupo: El usuario " + nombreUsuario + " no existe.");
             }
         } catch (Exception e) {
             log.error("Error al unir usuario al grupo: ", e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
+
         return false;
     }
 }

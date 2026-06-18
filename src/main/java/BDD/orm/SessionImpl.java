@@ -101,14 +101,19 @@ public class SessionImpl implements Session {
 
         if (object instanceof User) {
             User usuario = (User) object;
-            String sql = "UPDATE User SET nombre = ?, password = ?, mail = ?, monedas = ? WHERE id = ?";
+            String sql = "UPDATE User SET nombre = ?, password = ?, mail = ?, monedas = ?, id_grupo = ? WHERE id = ?";
 
             try (PreparedStatement ptsm = conn.prepareStatement(sql)) {
                 ptsm.setString(1, usuario.getNombre());
                 ptsm.setString(2, usuario.getPassword());
                 ptsm.setString(3, usuario.getMail());
                 ptsm.setInt(4, usuario.getMonedas());
-                ptsm.setInt(5, usuario.getId());
+                if (usuario.getId_grupo() > 0) {
+                    ptsm.setInt(5, usuario.getId_grupo());
+                } else {
+                    ptsm.setNull(5, java.sql.Types.INTEGER);
+                }
+                ptsm.setInt(6, usuario.getId());
 
                 int filasModificadas = ptsm.executeUpdate();
                 if (filasModificadas > 0) {

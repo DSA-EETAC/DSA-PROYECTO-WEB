@@ -92,9 +92,6 @@ public class User {
         this.defensa += 1;
     }
 
-    /*public void añadirAlInventario(String nombreObjeto) {
-        this.inventario.add(nombreObjeto);
-    }*/
 
 
     @Override
