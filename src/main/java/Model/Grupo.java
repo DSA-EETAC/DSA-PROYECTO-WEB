@@ -1,8 +1,5 @@
 package Model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Grupo {
     private int id;
     private String nombre;
@@ -11,11 +8,11 @@ public class Grupo {
     // Constructor vacío obligatorio
     public Grupo() { }
 
-    // Le añadimos estas etiquetas al constructor con datos para que Jackson sepa mapearlo
-    @JsonCreator
-    public Grupo(@JsonProperty("id") int id, @JsonProperty("nombre") String nombre) {
+
+    public Grupo( int id, String nombre, int miembros) {
         this.id = id;
         this.nombre = nombre;
+        this.miembros = miembros;
     }
 
     public int getId() { return id; }
