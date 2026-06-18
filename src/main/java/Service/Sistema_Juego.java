@@ -152,7 +152,8 @@ public class Sistema_Juego {
     @Produces(MediaType.APPLICATION_JSON)
     public Response obtenerUsuarios() {
         List<User> usuarios = manager.obtenerUsuarios();
-        return Response.status(200).entity(usuarios).build();
+        ListaUsuarios respuesta = new ListaUsuarios(usuarios);
+        return Response.status(200).entity(respuesta).build();
     }
 
     @GET
