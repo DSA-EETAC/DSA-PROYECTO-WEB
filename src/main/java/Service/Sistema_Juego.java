@@ -1,11 +1,8 @@
 package Service;
 
-import Model.Item;
-import Model.User;
-import Model.Grupo;
+import Model.*;
 import Manager.JuegoManagerImpl;
 import Manager.JuegoManager;
-import Model.PeticionCompra;
 import org.apache.log4j.Logger;
 import org.apache.commons.validator.routines.EmailValidator;
 import BDD.orm.dao.*;
@@ -163,9 +160,9 @@ public class Sistema_Juego {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getListaGrupos() {
         List<Grupo> listaGrupos = manager.obtenerGrupos();
-
-        if (listaGrupos != null) {
-            return Response.status(200).entity(listaGrupos).build();
+        ListaGrupos respuesta = new ListaGrupos(listaGrupos);
+        if (respuesta != null) {
+            return Response.status(200).entity(respuesta).build();
         } else {
             return Response.status(500).entity("Error al obtener los grupos de la base de datos").build();
         }
