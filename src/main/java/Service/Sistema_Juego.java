@@ -163,27 +163,27 @@ public class Sistema_Juego {
     @Path("/grupos")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getListaGrupos() {
-        System.out.println("Enviando lista de grupos dummy al móvil...");
+        List<Grupo> listaGrupos = manager.obtenerGrupos();
 
-        // TRUCO: Usamos un Array nativo de Java en lugar de ArrayList.
-        // Jersey convierte esto a JSON de forma instantánea sin dar el error de MessageBodyWriter.
-        Grupo[] arrayGrupos = new Grupo[3];
-        arrayGrupos[0] = new Grupo("1", "Gryffindor");
-        arrayGrupos[1] = new Grupo("2", "Equipo Alfa Buena Maravilla");
-        arrayGrupos[2] = new Grupo("3", "Los Porxinos");
-
-        // Lo metemos directo en el entity
-        return Response.status(200).entity(arrayGrupos).build();
+        if (listaGrupos != null) {
+            return Response.status(200).entity(listaGrupos).build();
+        } else {
+            return Response.status(500).entity("Error al obtener los grupos de la base de datos").build();
+        }
     }
 
-    // T3: Ruta ficticia para cuando el usuario le da al botón "Unirse"
     @POST
     @Path("/grupos/{id}/unirse")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response unirseAlGrupo(@PathParam("id") String id, User usuario) {
-        // Solo lo imprimimos por la consola de IntelliJ para demostrar que funciona
-        System.out.println("¡ÉXITO! El usuario " + usuario.getNombre() + " se quiere unir al grupo con ID: " + id);
 
-        return Response.status(200).build();
+        // Llamamos al manager pasando el nombre del jugador y el ID del grupo
+        boolean exito = manager.unirUsuarioAGrupo(usuario.getNombre(), id);
+
+        if (exito) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(400).entity("Error: No se ha podido unir al grupo.").build();
+        }
     }
 }

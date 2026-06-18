@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Grupo {
     private String id;
     private String nombre;
+    private int miembros;
 
     // Constructor vacío obligatorio
     public Grupo() { }
@@ -21,4 +22,6 @@ public class Grupo {
     public void setId(String id) { this.id = id; }
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
+    public int getMiembros() { return miembros; }
+    public void setMiembros(int miembros) { this.miembros = miembros; }
 }
