@@ -6,6 +6,7 @@ import BDD.orm.dao.IItemDAO;
 import BDD.orm.dao.IUsuarioDAO;
 import BDD.orm.dao.ItemDAOImpl;
 import BDD.orm.dao.UsuarioDAOImpl;
+import Model.DetalleGrupo;
 import Model.Item;
 import Model.User;
 import Model.Grupo;
@@ -168,6 +169,41 @@ public class JuegoManagerImpl implements JuegoManager {
         }
 
         return false;
+    }
+    @Override
+    public DetalleGrupo obtenerDetalleGrupoUsuario(String nombreUsuario) {
+        log.info("Buscando grupo y miembros para el usuario: " + nombreUsuario);
+
+        User u = usuarioDAO.getUsuario(nombreUsuario);
+
+        // Si el usuario no existe, o su id_grupo es null o es 0, significa que no tiene grupo
+        if (u == null || u.getId_grupo() < 0 || u.getId_grupo() == 0) {
+            return new DetalleGrupo(); // Devuelve el objeto con tieneGrupo = false
+        }
+
+        int idGrupoDelUsuario = u.getId_grupo();
+        String nombreGrupo = "Equipo " + idGrupoDelUsuario; // Nombre por defecto
+
+        // 1. Conseguimos el nombre real del grupo buscando en tu lista de grupos existente
+        List<Grupo> listaGrupos = obtenerGrupos();
+        for (Grupo g : listaGrupos) {
+            if (g.getId() == idGrupoDelUsuario) { // Asumiendo que tu clase Grupo tiene getId() y getNombre()
+                nombreGrupo = g.getNombre();
+                break;
+            }
+        }
+
+        // 2. Conseguimos los nombres de los miembros filtrando tu lista de usuarios existente
+        List<User> todosLosUsuarios = obtenerUsuarios();
+        List<String> nombresMiembros = new ArrayList<>();
+        for (User user : todosLosUsuarios) {
+            if (user.getId_grupo() > 0 && user.getId_grupo() == idGrupoDelUsuario) {
+                nombresMiembros.add(user.getNombre());
+            }
+        }
+
+        // Devolvemos el detalle completo preparado para el Frontend
+        return new DetalleGrupo(nombreGrupo, nombresMiembros);
     }
 }
 

@@ -418,3 +418,68 @@ async function unirseGrupo(idGrupo, nombreGrupo) {
         avisar("El servidor de clanes no responde.", true);
     }
 }
+async function consultarMiGrupo() {
+    // Usamos la misma clave que usas en unirseGrupo
+    const nombreJugador = localStorage.getItem("jugadorActual");
+
+    if (!nombreJugador) {
+        avisar("No se ha detectado ninguna sesión activa.", true);
+        return;
+    }
+
+    try {
+        // Hacemos la petición GET usando tu URL_BASE
+        const respuesta = await fetch(`${URL_BASE}/usuarios/${nombreJugador}/grupo`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (respuesta.status === 200) {
+            // Transformamos la respuesta a JSON
+            const data = await respuesta.json();
+
+            // Obtenemos los elementos del HTML
+            const contenedor = document.getElementById("contenedor-grupo");
+            const titulo = document.getElementById("grupo-titulo");
+            const mensaje = document.getElementById("grupo-mensaje");
+            const lista = document.getElementById("grupo-lista-miembros");
+
+            // Limpiamos el contenido anterior
+            titulo.innerText = "";
+            mensaje.innerText = "";
+            lista.innerHTML = "";
+
+            // Mostramos el contenedor (quitando la clase que lo oculta)
+            contenedor.classList.remove("hidden");
+
+            if (data.tieneGrupo) {
+                // SÍ TIENE GRUPO
+                titulo.innerText = "Mi Equipo: " + data.nombreGrupo;
+                mensaje.innerText = "Integrantes del grupo:";
+
+                data.miembros.forEach(miembro => {
+                    let li = document.createElement("li");
+                    li.innerText = miembro;
+
+                    // Resaltamos en negrita si es el propio jugador
+                    if (miembro === nombreJugador) {
+                        li.style.fontWeight = "bold";
+                        li.innerText += " (Tú)";
+                    }
+                    lista.appendChild(li);
+                });
+            } else {
+                // NO TIENE GRUPO
+                titulo.innerText = "Sin Grupo";
+                mensaje.innerText = "Actualmente no perteneces a ningún grupo. ¡Únete a uno en la sección de grupos!";
+            }
+
+        } else {
+            avisar("Error al intentar obtener la información de tu grupo.", true);
+        }
+    } catch (error) {
+        avisar("El servidor de clanes no responde.", true);
+    }
+}

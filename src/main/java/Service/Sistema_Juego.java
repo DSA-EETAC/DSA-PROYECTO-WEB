@@ -183,4 +183,13 @@ public class Sistema_Juego {
             return Response.status(400).entity("Error: No se ha podido unir al grupo.").build();
         }
     }
+    @GET
+    @Path("/usuarios/{nombre}/grupo")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response obtenerGrupoUsuario(@PathParam("nombre") String nombreUsuario) {
+        Model.DetalleGrupo detalle = manager.obtenerDetalleGrupoUsuario(nombreUsuario);
+
+        // Retornamos un código 200 con el objeto JSON estructurado
+        return Response.status(200).entity(detalle).build();
+    }
 }

@@ -1,4 +1,5 @@
 package Manager;
+import Model.DetalleGrupo;
 import Model.Grupo;
 import Model.User;
 import Model.Item;
@@ -28,5 +29,7 @@ public interface JuegoManager {
     List<Grupo> obtenerGrupos();
 
     boolean unirUsuarioAGrupo(String nombreUsuario, String idGrupo);
+    public DetalleGrupo obtenerDetalleGrupoUsuario(String nombreUsuario);
+
 
 }
