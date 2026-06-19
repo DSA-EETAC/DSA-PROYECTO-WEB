@@ -238,35 +238,40 @@ function actualizarMochilaHTML(nuevoObjeto) {
 }
 
 // Función mejorada para cambiar entre pestañas
+
 function cambiarPestana(idPestana, idBoton) {
-    // ocultamos todas las cajas
+    // 1. Ocultamos TODAS las cajas (¡Incluida la de eventos!)
     document.getElementById('tab-tienda').style.display = 'none';
     document.getElementById('tab-inventario').style.display = 'none';
     document.getElementById('tab-perfil').style.display = 'none';
     document.getElementById('tab-grupos').style.display = 'none';
     document.getElementById('tab-eventos').style.display = 'none';
 
-    // quitamos el color 'activo' a todos los botones
+    // 2. Le quitamos el color 'activo' a TODOS los botones
     document.getElementById('btn-tienda').classList.remove('active');
     document.getElementById('btn-inventario').classList.remove('active');
     document.getElementById('btn-perfil').classList.remove('active');
     document.getElementById('btn-grupos').classList.remove('active');
     document.getElementById('btn-eventos').classList.remove('active');
 
-    // mostramos la caja pedida y encendemos su botón
+    // 3. Mostramos la caja pedida y encendemos su botón
     document.getElementById(idPestana).style.display = 'block';
     document.getElementById(idBoton).classList.add('active');
 
-    // borramos cualquier mensaje que hubiera en pantalla
+    // Borramos cualquier mensaje que hubiera en pantalla
     document.getElementById('mensaje-sistema').innerText = "";
-    // cargamos los grupos al abrir la pestaña
+
+    // 4. Cargamos la información del servidor según la pestaña abierta
     if (idPestana === 'tab-grupos') {
         cargarGrupos();
     }
     if (idPestana === 'tab-eventos') {
-            cargarEventos();
-        }
+        cargarEventos(); // ¡Esto es lo que hace que deje de poner "Buscando pergaminos..."!
+    }
 }
+
+
+
 
 // Función para cerrar sesión y volver a la pantalla de inicio
 function cerrarSesion() {
