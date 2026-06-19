@@ -64,10 +64,12 @@
 
 <div id="seccion-dashboard" class="form-fade hidden dashboard-container">
 
-    <div class="dashboard-header" style="text-align: center; border-bottom: 2px solid gold; padding-bottom: 15px; margin-bottom: 20px;">
-        <h2 id="mensaje-bienvenida" style="color: white; font-family: 'Cinzel', serif; margin-bottom: 5px;">CAMPAMENTO BASE</h2>
-        <p style="color: gold; font-size: 1.2em; font-weight: bold; margin: 0;">🪙 Monedas: <span id="contador-monedas">0</span></p>
-        <button class="btn-primary" style="background-color: #d35400; border-color: #e67e22; margin-top: 15px;" onclick="abrirUnity()">🏃 ADENTRARSE EN LA MAZMORRA</button>
+    <div class="dashboard-header">
+        <h2 id="mensaje-bienvenida">CAMPAMENTO BASE</h2>
+        <div class="header-stats">
+            <p class="monedas-display">🪙 Monedas: <span id="contador-monedas">0</span></p>
+            <button class="btn-primary btn-accion" onclick="abrirUnity()">🏃 ADENTRARSE EN LA MAZMORRA</button>
+        </div>
     </div>
 
     <div class="tabs-menu flex-wrap-mobile">
@@ -79,50 +81,53 @@
     </div>
 
     <div id="tab-tienda" class="tab-content" style="display: none;">
-        <h3 style="color: white; text-align: center;">Bienes del Mercader</h3>
+        <h3 class="tab-titulo">Bienes del Mercader</h3>
         <div id="contenedor-items-tienda" class="grid-fluido"></div>
     </div>
 
     <div id="tab-inventario" class="tab-content" style="display: none;">
         <div id="contenedor-inventario">
-            <h3 style="color: white; text-align: center;">Tus Pertinencias</h3>
-            <p style="color: #aaa; text-align: center;">Cargando inventario desde el servidor...</p>
+            <h3 class="tab-titulo">Tus Pertinencias</h3>
+            <p class="texto-vacio">Cargando inventario desde el servidor...</p>
         </div>
     </div>
 
     <div id="tab-perfil" class="tab-content">
-        <h3 style="color: white; text-align: center;">Datos del Explorador</h3>
-        <p style="color: white;">Nombre: <span id="perfil-nombre"></span></p>
-        <button class="btn-primary" style="background: transparent; border: 1px solid red; color: red;" onclick="cerrarSesion()">Abandonar Campamento (Cerrar Sesión)</button>
-
-        <button class="btn-mostrar-grupo" onclick="consultarMiGrupo()">MOSTRAR GRUPO</button>
+        <h3 class="tab-titulo">Datos del Explorador</h3>
+        <div class="perfil-info">
+            <p>Nombre: <span id="perfil-nombre" class="resaltado-oro"></span></p>
+            <div class="perfil-botones">
+                <button class="btn-mostrar-grupo" onclick="consultarMiGrupo()">MOSTRAR GRUPO</button>
+                <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Abandonar Campamento</button>
+            </div>
+        </div>
 
         <div id="contenedor-grupo" class="hidden">
             <h3 id="grupo-titulo"></h3>
             <p id="grupo-mensaje"></p>
             <ul id="grupo-lista-miembros"></ul>
-            <button class="btn-primary" style="margin-top: 10px; padding: 0.5rem;" onclick="document.getElementById('contenedor-grupo').classList.add('hidden')">CERRAR</button>
+            <button class="btn-primary" style="margin-top: 15px;" onclick="document.getElementById('contenedor-grupo').classList.add('hidden')">CERRAR</button>
         </div>
     </div>
 
     <div id="tab-grupos" class="tab-content" style="display: none;">
-        <h3 style="color: white; text-align: center;">Grupos de Exploradores</h3>
+        <h3 class="tab-titulo">Grupos de Exploradores</h3>
         <div id="contenedor-grupos" class="grid-fluido">
-            <p style="color: #aaa; text-align: center; grid-column: 1 / -1;">Buscando grupos en la zona...</p>
+            <p class="texto-vacio" style="grid-column: 1 / -1;">Buscando grupos en la zona...</p>
         </div>
     </div>
 
     <div id="tab-eventos" class="tab-content" style="display: none;">
-        <h3 style="color: white; text-align: center;">Misiones Especiales</h3>
+        <h3 class="tab-titulo">Misiones Especiales</h3>
         <div id="contenedor-eventos" class="grid-fluido">
-            <p style="color: #aaa; text-align: center; grid-column: 1 / -1;">Buscando pergaminos de misiones en el servidor...</p>
+            <p class="texto-vacio" style="grid-column: 1 / -1;">Buscando pergaminos de misiones en el servidor...</p>
         </div>
     </div>
 
 </div>
 
-<footer id="mensaje-sistema" style="position: absolute; bottom: 20px; width: 100%; text-align: center; z-index: 10;"></footer>
+<footer id="mensaje-sistema"></footer>
 
-<script src="script.js?v=4"></script>
+<script src="script.js?v=5"></script>
 </body>
 </html>

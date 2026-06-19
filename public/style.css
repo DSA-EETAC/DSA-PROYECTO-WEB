@@ -6,24 +6,30 @@
     --fire: #e25822;
 }
 
+/* 1. BODY LIBERADO (Adiós a la camisa de fuerza) */
 body {
     margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    min-height: 100vh; /* Permite crecer más allá de la pantalla si hay scroll */
     background: #0a0a0a url('https://www.transparenttextures.com/patterns/dark-matter.png');
     font-family: 'Roboto', sans-serif;
-    overflow: hidden;
+    color: white;
 }
 
-/* Efecto de sombra en los bordes de la pantalla */
+/* Efecto de sombra de fondo */
 .dungeon-overlay {
     position: fixed;
     top:0; left:0; width:100%; height:100%;
     background: radial-gradient(circle, transparent 20%, black 120%);
     pointer-events: none;
     z-index: 1;
+}
+
+/* 2. CENTRADO ABSOLUTO SÓLO PARA EL LOGIN */
+#contenedor-login {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .card {
@@ -38,7 +44,6 @@ body {
     text-align: center;
 }
 
-/* Borde dorado de lujo */
 .card::before {
     content: '';
     position: absolute;
@@ -65,55 +70,15 @@ h1 {
     margin-bottom: 2rem;
 }
 
-/* --- INPUTS MODERNOS (Estilo Material Design pero oscuro) --- */
-.input-container {
-    position: relative;
-    margin-bottom: 2.5rem;
-}
+/* --- INPUTS --- */
+.input-container { position: relative; margin-bottom: 2.5rem; }
+.input-container input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #444; color: white; padding: 10px 0; font-size: 1.1rem; outline: none; transition: 0.3s; }
+.input-container label { position: absolute; top: 10px; left: 0; color: #555; pointer-events: none; transition: 0.3s; font-size: 0.8rem; letter-spacing: 1px; }
+.input-container input:focus ~ label, .input-container input:valid ~ label { top: -15px; color: var(--gold); font-size: 0.7rem; }
+.input-container .bar { position: absolute; bottom: 0; left: 0; height: 2px; width: 0; background: var(--gold); transition: 0.4s; }
+.input-container input:focus ~ .bar { width: 100%; }
 
-.input-container input {
-    width: 100%;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid #444;
-    color: white;
-    padding: 10px 0;
-    font-size: 1.1rem;
-    outline: none;
-    transition: 0.3s;
-}
-
-.input-container label {
-    position: absolute;
-    top: 10px; left: 0;
-    color: #555;
-    pointer-events: none;
-    transition: 0.3s;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-}
-
-/* Animación del label al escribir */
-.input-container input:focus ~ label,
-.input-container input:valid ~ label {
-    top: -15px;
-    color: var(--gold);
-    font-size: 0.7rem;
-}
-
-.input-container .bar {
-    position: absolute;
-    bottom: 0; left: 0;
-    height: 2px; width: 0;
-    background: var(--gold);
-    transition: 0.4s;
-}
-
-.input-container input:focus ~ .bar {
-    width: 100%;
-}
-
-/* --- BOTÓN DE ACCIÓN --- */
+/* --- BOTONES PRINCIPALES --- */
 .btn-primary {
     background: transparent;
     border: 1px solid var(--gold);
@@ -124,226 +89,177 @@ h1 {
     cursor: pointer;
     transition: 0.4s;
     width: 100%;
-    position: relative;
-    overflow: hidden;
+    text-transform: uppercase;
 }
-
 .btn-primary:hover {
     background: var(--gold);
     color: black;
     box-shadow: 0 0 20px var(--gold-glow);
 }
 
-/* ---  BOTÓN MOSTRAR GRUPO --- */
-.btn-mostrar-grupo {
-    background-color: var(--gold);
-    color: black;
-    border: 2px solid #b38b22;
-    padding: 1rem;
-    margin-top: 15px;
-    width: 100%;
-    font-family: 'Cinzel', serif;
-    font-weight: bold;
-    font-size: 1.2rem;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: 0.3s;
-    border-radius: 4px;
+.btn-cerrar-sesion {
+    background: transparent; border: 1px solid #ff4444; color: #ff4444;
+    padding: 1rem; font-family: 'Cinzel', serif; font-size: 1rem; cursor: pointer; transition: 0.3s; width: 100%;
 }
+.btn-cerrar-sesion:hover { background: #ff4444; color: white; box-shadow: 0 0 15px rgba(255, 68, 68, 0.4); }
 
-.btn-mostrar-grupo:hover {
-    background-color: #f1c43f;
-    box-shadow: 0 0 15px var(--gold-glow);
-    transform: scale(1.02);
-}
-
-/* --- NUEVO CONTENEDOR DE GRUPO --- */
-#contenedor-grupo {
-    color: white;
-    background-color: rgba(0, 0, 0, 0.75);
-    border: 1px solid var(--gold);
-    border-radius: 4px;
-    padding: 15px;
-    margin-top: 15px;
-    text-align: left;
-    font-family: 'Roboto', sans-serif;
-}
-
-#contenedor-grupo h3 {
-    color: var(--gold);
-    margin-top: 0;
-    font-family: 'Cinzel', serif;
-    text-align: center;
-    text-shadow: 0 0 5px var(--gold-glow);
-}
-
-#contenedor-grupo ul {
-    list-style-type: square;
-    padding-left: 20px;
-}
-
-/* --- OTROS ESTILOS --- */
-.switch-text {
-    margin-top: 2rem;
-    font-size: 0.8rem;
-    color: #888;
-}
-
-.switch-text span {
-    color: var(--gold);
-    cursor: pointer;
-    text-decoration: underline;
-}
-
-.hidden { display: none; }
+.switch-text { margin-top: 2rem; font-size: 0.8rem; color: #888; }
+.switch-text span { color: var(--gold); cursor: pointer; text-decoration: underline; }
+.hidden { display: none !important; }
 
 #mensaje-sistema {
-    margin-top: 2rem;
-    min-height: 1.2rem;
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
     font-weight: bold;
     text-transform: uppercase;
-    font-size: 0.8rem;
+    font-size: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
-
-/* --- TABS DEL CAMPAMENTO (Dashboard) --- */
-.tabs-menu {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 204, 51, 0.3);
-}
-
-.tab-btn {
-    flex: 1;
-    background: rgba(0, 0, 0, 0.6);
-    color: #888;
-    border: 1px solid #444;
-    padding: 10px;
-    cursor: pointer;
-    font-family: 'Cinzel', serif;
-    transition: 0.3s;
-    border-radius: 4px 4px 0 0;
-    text-transform: uppercase;
-}
-
-.tab-btn:hover {
-    background: rgba(255, 204, 51, 0.1);
-    color: var(--gold);
-}
-
-.tab-btn.active {
-    background: rgba(255, 204, 51, 0.2);
-    color: var(--gold);
-    border-color: var(--gold);
-    border-bottom: none;
-}
-
-/* --- TARJETAS DEL BAZAR --- */
-.item-card {
-    flex: 1;
-    border: 1px solid #444;
-    padding: 15px;
-    border-radius: 5px;
-    background: rgba(0,0,0,0.5);
-    transition: 0.3s;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.item-card:hover {
-    border-color: var(--gold);
-    box-shadow: 0 0 15px var(--gold-glow);
-}
-
-.item-card h4 {
-    color: white;
-    margin: 0 0 5px 0;
-    font-family: 'Cinzel', serif;
-}
-
-.item-card .precio {
-    color: var(--gold);
-    font-weight: bold;
-    margin-bottom: 15px;
-}
 
 .dashboard-container {
     position: relative;
     z-index: 2;
-    background: linear-gradient(145deg, #222, #111);
-    padding: 2rem;
-    border-radius: 8px;
-    border: 2px solid #333;
-    box-shadow: 0 0 30px rgba(0,0,0,0.8);
-    width: 90%; /* Ocupa el 90% del ancho en móviles */
-    max-width: 1000px; /* Pero no se hace infinito en monitores gigantes */
-    margin: 20px auto; /* Centrado */
-    /* Para móviles, asegúrate de que se puede scrollear si es muy largo */
-    max-height: 90vh;
-    overflow-y: auto;
+    background: rgba(15, 15, 15, 0.95);
+    border: 1px solid rgba(255, 204, 51, 0.3);
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+
+    /* Expansión Dinámica */
+    width: 95%;
+    max-width: 1400px; /* Tamaño máximo para que no se deforme en monitores 4K */
+    min-height: 85vh;
+    margin: 40px auto;
+    padding: 3rem;
+    border-radius: 12px;
 }
 
-/* 2. La Magia: Grid Fluido para las tarjetas (Eventos, Tienda, Grupos) */
-.grid-fluido {
-    display: grid;
-    /* Crea columnas de al menos 250px. Si cabe otra, la pone. Si no, baja de línea */
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+/* Cabecera Pro: Título a la izq, Stats a la der */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.dashboard-header h2 {
+    color: white;
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.header-stats {
+    display: flex;
+    align-items: center;
     gap: 20px;
-    padding-top: 15px;
 }
 
-/* Aseguramos que las tarjetas dentro del grid ocupen todo su espacio */
-.grid-fluido > div {
-    width: 100% !important; /* Sobrescribe el 'width: 280px' que tienes en JS */
-    margin: 0 !important;   /* Sobrescribe los márgenes en JS para usar el 'gap' del grid */
+.monedas-display {
+    color: var(--gold);
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 0;
 }
 
-/* 3. Menú de pestañas para móviles */
+.btn-accion {
+    width: auto;
+    padding: 0.8rem 1.5rem;
+    background-color: rgba(211, 84, 0, 0.2);
+    border-color: #e67e22;
+    color: #e67e22;
+}
+.btn-accion:hover {
+    background-color: #e67e22;
+    color: white;
+}
+
+/* Pestañas (Tabs) */
 .flex-wrap-mobile {
     display: flex;
-    flex-wrap: wrap; /* Si las pestañas no caben en una línea, bajan a la siguiente */
+    gap: 15px;
+    margin-bottom: 30px;
     justify-content: center;
 }
 
-/* 4. Scrollbars personalizadas (Opcional, pero queda genial en el tema oscuro) */
-::-webkit-scrollbar {
-    width: 8px;
-}
-::-webkit-scrollbar-track {
-    background: #111;
-}
-::-webkit-scrollbar-thumb {
-    background: var(--gold);
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #d4af37;
+.tab-btn {
+    flex: 1;
+    max-width: 220px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #888;
+    border: 1px solid #444;
+    padding: 15px;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    transition: 0.3s;
+    border-radius: 6px;
+    text-transform: uppercase;
 }
 
-/* --- MEDIA QUERIES (Ajustes específicos para pantallas muy pequeñas) --- */
+.tab-btn:hover { background: rgba(255, 204, 51, 0.1); color: var(--gold); transform: translateY(-2px); }
+.tab-btn.active { background: linear-gradient(145deg, rgba(255, 204, 51, 0.2), transparent); color: var(--gold); border-color: var(--gold); box-shadow: 0 4px 15px rgba(255, 204, 51, 0.15); }
+
+/* Estilos de Texto del Dashboard */
+.tab-titulo { color: white; text-align: center; font-size: 1.8rem; font-family: 'Cinzel', serif; margin-bottom: 30px; }
+.texto-vacio { color: #aaa; text-align: center; font-size: 1.1rem; font-style: italic; }
+.resaltado-oro { color: var(--gold); font-weight: bold; font-size: 1.2rem; }
+
+/* El Grid Fluido para Misiones, Tienda y Grupos */
+.grid-fluido {
+    display: grid;
+    /* Crea tantas columnas como quepan. Cada tarjeta medirá al menos 300px */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 10px;
+}
+
+/* Área de Perfil */
+.perfil-info {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+    background: rgba(0,0,0,0.5);
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+.perfil-botones { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
+
+.btn-mostrar-grupo {
+    background-color: var(--gold); color: black; border: 2px solid #b38b22;
+    padding: 1rem; width: 100%; font-family: 'Cinzel', serif; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s; border-radius: 4px;
+}
+.btn-mostrar-grupo:hover { background-color: #f1c43f; box-shadow: 0 0 15px var(--gold-glow); transform: scale(1.02); }
+
+#contenedor-grupo { background-color: rgba(0, 0, 0, 0.8); border: 1px solid var(--gold); border-radius: 8px; padding: 25px; margin-top: 20px; text-align: left; }
+#contenedor-grupo h3 { color: var(--gold); margin-top: 0; text-align: center; text-shadow: 0 0 5px var(--gold-glow); }
+#contenedor-grupo ul { list-style-type: none; padding: 0; font-size: 1.1rem; }
+#contenedor-grupo li { padding: 8px 0; border-bottom: 1px solid #333; }
+
+/* Scrollbars doradas */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #111; }
+::-webkit-scrollbar-thumb { background: #886b1c; border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* --- MEDIA QUERIES PARA MÓVILES Y TABLETS --- */
+@media screen and (max-width: 900px) {
+    .dashboard-header { flex-direction: column; gap: 15px; } /* Apila la cabecera en pantallas medianas */
+    .dashboard-container { width: 95%; padding: 1.5rem; margin: 20px auto; }
+}
+
 @media screen and (max-width: 600px) {
-    body {
-        align-items: flex-start; /* Evita que el teclado tape el login en móviles */
-        padding-top: 20px;
-    }
-
-    .card {
-        width: 90%;
-        padding: 1.5rem; /* Menos relleno lateral en móviles */
-    }
-
-    h1 {
-        font-size: 2rem; /* Título un poco más pequeño */
-    }
-
-    .dashboard-container {
-        padding: 1rem;
-    }
-
-    .tab-btn {
-        font-size: 0.8rem; /* Pestañas más pequeñas para que quepan */
-        padding: 8px 5px;
-    }
+    body { padding: 10px 0; }
+    #contenedor-login { width: 90%; padding: 2rem 1.5rem; }
+    h1 { font-size: 2rem; }
+    .tabs-menu { flex-wrap: wrap; }
+    .tab-btn { min-width: 45%; font-size: 0.9rem; padding: 10px; }
+    .dashboard-header h2 { font-size: 1.5rem; }
+    .grid-fluido { grid-template-columns: 1fr; } /* 1 sola columna en móviles */
 }
