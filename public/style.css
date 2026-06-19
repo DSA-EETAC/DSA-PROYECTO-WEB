@@ -1,265 +1,184 @@
-/* --- MODERN DUNGEON STYLE --- */
+/* --- VARIABLES GLOBALES --- */
 :root {
     --gold: #ffcc33;
+    --gold-dim: #b38b22;
     --gold-glow: rgba(255, 204, 51, 0.4);
-    --stone-dark: #1a1a1a;
-    --fire: #e25822;
+    --bg-dark: #0a0a0a;
+    --bg-card: #151515;
+    --bg-panel: #1e1e1e;
+    --danger: #ff4d4d;
+    --success: #2ecc71;
 }
 
-/* 1. BODY LIBERADO (Adiós a la camisa de fuerza) */
+/* 1. BODY LIBERADO DE LA PRESIÓN (Clave para que ocupe la pantalla) */
+* { box-sizing: border-box; }
+
 body {
     margin: 0;
-    min-height: 100vh; /* Permite crecer más allá de la pantalla si hay scroll */
-    background: #0a0a0a url('https://www.transparenttextures.com/patterns/dark-matter.png');
+    padding: 0;
+    min-height: 100vh;
+    background: var(--bg-dark) url('https://www.transparenttextures.com/patterns/dark-matter.png');
     font-family: 'Roboto', sans-serif;
     color: white;
+    overflow-x: hidden; /* Evita scroll horizontal feo */
 }
 
-/* Efecto de sombra de fondo */
 .dungeon-overlay {
     position: fixed;
     top:0; left:0; width:100%; height:100%;
-    background: radial-gradient(circle, transparent 20%, black 120%);
+    background: radial-gradient(circle, transparent 10%, black 150%);
     pointer-events: none;
     z-index: 1;
 }
 
-/* 2. CENTRADO ABSOLUTO SÓLO PARA EL LOGIN */
+/* 2. LOGIN (Centrado clásico) */
 #contenedor-login {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.card {
     position: relative;
     z-index: 2;
     background: linear-gradient(145deg, #222, #111);
     padding: 3rem;
-    border-radius: 5px;
+    border-radius: 8px;
     border: 2px solid #333;
-    box-shadow: 0 0 50px rgba(0,0,0,1), inset 0 0 20px rgba(0,0,0,0.5);
-    width: 400px;
+    box-shadow: 0 0 50px rgba(0,0,0,1);
+    width: 90%;
+    max-width: 400px;
+    margin: 10vh auto; /* Lo centra verticalmente sin usar flex en el body */
     text-align: center;
 }
 
-.card::before {
-    content: '';
-    position: absolute;
+#contenedor-login::before {
+    content: ''; position: absolute;
     top: -5px; left: -5px; right: -5px; bottom: -5px;
-    border: 1px solid var(--gold);
-    border-radius: 8px;
-    opacity: 0.3;
-    pointer-events: none;
+    border: 1px solid var(--gold); border-radius: 10px; opacity: 0.3; pointer-events: none;
 }
 
-h1 {
-    font-family: 'Cinzel', serif;
-    color: var(--gold);
-    font-size: 2.5rem;
-    margin: 0;
-    letter-spacing: 5px;
-    text-shadow: 0 0 10px var(--gold-glow);
-}
+h1 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 2.5rem; margin: 0; letter-spacing: 3px; text-shadow: 0 0 10px var(--gold-glow); }
+.subtitle { color: #888; font-size: 0.8rem; letter-spacing: 2px; margin-bottom: 2rem; }
 
-.subtitle {
-    color: #666;
-    font-size: 0.8rem;
-    letter-spacing: 3px;
-    margin-bottom: 2rem;
-}
-
-/* --- INPUTS --- */
+/* Inputs */
 .input-container { position: relative; margin-bottom: 2.5rem; }
-.input-container input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #444; color: white; padding: 10px 0; font-size: 1.1rem; outline: none; transition: 0.3s; }
-.input-container label { position: absolute; top: 10px; left: 0; color: #555; pointer-events: none; transition: 0.3s; font-size: 0.8rem; letter-spacing: 1px; }
+.input-container input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #555; color: white; padding: 10px 0; font-size: 1.1rem; outline: none; transition: 0.3s; }
+.input-container label { position: absolute; top: 10px; left: 0; color: #777; pointer-events: none; transition: 0.3s; font-size: 0.8rem; letter-spacing: 1px; }
 .input-container input:focus ~ label, .input-container input:valid ~ label { top: -15px; color: var(--gold); font-size: 0.7rem; }
 .input-container .bar { position: absolute; bottom: 0; left: 0; height: 2px; width: 0; background: var(--gold); transition: 0.4s; }
 .input-container input:focus ~ .bar { width: 100%; }
 
-/* --- BOTONES PRINCIPALES --- */
-.btn-primary {
-    background: transparent;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    padding: 1rem 2rem;
-    font-family: 'Cinzel', serif;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: 0.4s;
-    width: 100%;
-    text-transform: uppercase;
-}
-.btn-primary:hover {
-    background: var(--gold);
-    color: black;
-    box-shadow: 0 0 20px var(--gold-glow);
-}
+/* Botones universales */
+.btn-primary { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 1rem; font-family: 'Cinzel', serif; font-size: 1.1rem; cursor: pointer; transition: 0.3s; width: 100%; text-transform: uppercase; border-radius: 4px; }
+.btn-primary:hover { background: var(--gold); color: black; box-shadow: 0 0 20px var(--gold-glow); }
 
-.btn-cerrar-sesion {
-    background: transparent; border: 1px solid #ff4444; color: #ff4444;
-    padding: 1rem; font-family: 'Cinzel', serif; font-size: 1rem; cursor: pointer; transition: 0.3s; width: 100%;
-}
-.btn-cerrar-sesion:hover { background: #ff4444; color: white; box-shadow: 0 0 15px rgba(255, 68, 68, 0.4); }
-
-.switch-text { margin-top: 2rem; font-size: 0.8rem; color: #888; }
+.switch-text { margin-top: 1.5rem; font-size: 0.8rem; color: #aaa; }
 .switch-text span { color: var(--gold); cursor: pointer; text-decoration: underline; }
 .hidden { display: none !important; }
 
+/* 3. SISTEMA DE NOTIFICACIONES TOAST (Alerta Emergente) */
 #mensaje-sistema {
     position: fixed;
-    bottom: 20px;
-    width: 100%;
-    text-align: center;
-    z-index: 10;
+    bottom: 25px;
+    right: 25px;
+    background: rgba(10, 10, 10, 0.95);
+    border-left: 5px solid var(--gold);
+    padding: 15px 25px;
+    border-radius: 6px;
+    color: white;
     font-weight: bold;
-    text-transform: uppercase;
     font-size: 1rem;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    z-index: 9999;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    transform: translateY(0);
 }
+#mensaje-sistema.oculto { opacity: 0; transform: translateY(20px); pointer-events: none; }
 
-
+/* 4. DASHBOARD GIGANTE Y ADAPTABLE */
 .dashboard-container {
     position: relative;
     z-index: 2;
     background: rgba(15, 15, 15, 0.95);
-    border: 1px solid rgba(255, 204, 51, 0.3);
+    border: 1px solid rgba(255, 204, 51, 0.2);
     box-shadow: 0 0 50px rgba(0,0,0,0.8);
 
-    /* Expansión Dinámica */
     width: 95%;
-    max-width: 1400px; /* Tamaño máximo para que no se deforme en monitores 4K */
+    max-width: 1400px; /* Pantallas muy anchas */
     min-height: 85vh;
-    margin: 40px auto;
-    padding: 3rem;
+    margin: 30px auto;
+    padding: 40px;
     border-radius: 12px;
 }
 
-/* Cabecera Pro: Título a la izq, Stats a la der */
-.dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid var(--gold);
-    padding-bottom: 20px;
-    margin-bottom: 30px;
-}
+.dashboard-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+.dashboard-header h2 { color: white; font-family: 'Cinzel', serif; font-size: 2.2rem; margin: 0; }
+.header-stats { display: flex; align-items: center; gap: 25px; }
+.monedas-display { color: var(--gold); font-size: 1.5rem; font-weight: bold; margin: 0; background: rgba(255,204,51,0.1); padding: 10px 20px; border-radius: 8px; border: 1px solid var(--gold-glow); }
 
-.dashboard-header h2 {
-    color: white;
-    font-family: 'Cinzel', serif;
-    font-size: 2rem;
-    margin: 0;
-}
+.btn-accion { background: #d35400; color: white; border: none; padding: 15px 25px; font-size: 1rem; font-weight: bold; cursor: pointer; border-radius: 6px; transition: 0.3s; font-family: 'Cinzel', serif;}
+.btn-accion:hover { background: #e67e22; transform: scale(1.05); box-shadow: 0 0 15px rgba(230, 126, 34, 0.5); }
 
-.header-stats {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
+/* Pestañas de Navegación */
+.tabs-menu { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid #222; }
+.tab-btn { flex: 1; background: var(--bg-card); color: #888; border: none; border-bottom: 3px solid transparent; padding: 15px; cursor: pointer; font-family: 'Cinzel', serif; font-size: 1.1rem; letter-spacing: 1px; transition: 0.3s; }
+.tab-btn:hover { color: white; background: var(--bg-panel); }
+.tab-btn.active { color: var(--gold); border-bottom: 3px solid var(--gold); background: linear-gradient(to top, rgba(255,204,51,0.1), transparent); }
 
-.monedas-display {
-    color: var(--gold);
-    font-size: 1.4rem;
-    font-weight: bold;
-    margin: 0;
-}
-
-.btn-accion {
-    width: auto;
-    padding: 0.8rem 1.5rem;
-    background-color: rgba(211, 84, 0, 0.2);
-    border-color: #e67e22;
-    color: #e67e22;
-}
-.btn-accion:hover {
-    background-color: #e67e22;
-    color: white;
-}
-
-/* Pestañas (Tabs) */
-.flex-wrap-mobile {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 30px;
-    justify-content: center;
-}
-
-.tab-btn {
-    flex: 1;
-    max-width: 220px;
-    background: rgba(0, 0, 0, 0.6);
-    color: #888;
-    border: 1px solid #444;
-    padding: 15px;
-    cursor: pointer;
-    font-family: 'Cinzel', serif;
-    font-size: 1.1rem;
-    letter-spacing: 1px;
-    transition: 0.3s;
-    border-radius: 6px;
-    text-transform: uppercase;
-}
-
-.tab-btn:hover { background: rgba(255, 204, 51, 0.1); color: var(--gold); transform: translateY(-2px); }
-.tab-btn.active { background: linear-gradient(145deg, rgba(255, 204, 51, 0.2), transparent); color: var(--gold); border-color: var(--gold); box-shadow: 0 4px 15px rgba(255, 204, 51, 0.15); }
-
-/* Estilos de Texto del Dashboard */
-.tab-titulo { color: white; text-align: center; font-size: 1.8rem; font-family: 'Cinzel', serif; margin-bottom: 30px; }
-.texto-vacio { color: #aaa; text-align: center; font-size: 1.1rem; font-style: italic; }
-.resaltado-oro { color: var(--gold); font-weight: bold; font-size: 1.2rem; }
-
-/* El Grid Fluido para Misiones, Tienda y Grupos */
+/* Grid de Tarjetas (Eventos, Tienda, Grupos) */
 .grid-fluido {
     display: grid;
-    /* Crea tantas columnas como quepan. Cada tarjeta medirá al menos 300px */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    padding: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
 }
 
-/* Área de Perfil */
-.perfil-info {
-    max-width: 500px;
-    margin: 0 auto;
-    text-align: center;
-    background: rgba(0,0,0,0.5);
-    padding: 30px;
-    border-radius: 8px;
+.tarjeta-grid {
+    background: var(--bg-panel);
     border: 1px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s, border-color 0.2s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
 }
-.perfil-botones { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
+.tarjeta-grid:hover { border-color: var(--gold-dim); transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.8); }
 
-.btn-mostrar-grupo {
-    background-color: var(--gold); color: black; border: 2px solid #b38b22;
-    padding: 1rem; width: 100%; font-family: 'Cinzel', serif; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s; border-radius: 4px;
-}
-.btn-mostrar-grupo:hover { background-color: #f1c43f; box-shadow: 0 0 15px var(--gold-glow); transform: scale(1.02); }
+.tarjeta-grid h4 { color: var(--gold); font-family: 'Cinzel', serif; font-size: 1.3rem; margin: 0 0 10px 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
+.tarjeta-grid p { color: #ccc; line-height: 1.5; margin-bottom: 15px;}
+.tarjeta-img { width: 100%; height: 160px; object-fit: cover; border-radius: 6px; margin-bottom: 15px; border: 1px solid #444; }
 
-#contenedor-grupo { background-color: rgba(0, 0, 0, 0.8); border: 1px solid var(--gold); border-radius: 8px; padding: 25px; margin-top: 20px; text-align: left; }
-#contenedor-grupo h3 { color: var(--gold); margin-top: 0; text-align: center; text-shadow: 0 0 5px var(--gold-glow); }
-#contenedor-grupo ul { list-style-type: none; padding: 0; font-size: 1.1rem; }
-#contenedor-grupo li { padding: 8px 0; border-bottom: 1px solid #333; }
+/* Contenido Interno */
+.tab-titulo { color: white; text-align: left; font-size: 1.8rem; font-family: 'Cinzel', serif; margin-bottom: 25px; padding-left: 10px; border-left: 4px solid var(--gold); }
+.texto-vacio { color: #777; font-size: 1.2rem; font-style: italic; text-align: center; margin-top: 50px; }
 
-/* Scrollbars doradas */
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: #111; }
-::-webkit-scrollbar-thumb { background: #886b1c; border-radius: 5px; }
+/* Ranking Podio */
+.ranking-caja { background: var(--bg-panel); border: 1px solid var(--gold); border-radius: 10px; padding: 30px; max-width: 700px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+.ranking-lista { list-style: none; padding: 0; margin: 0; }
+.ranking-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #333; font-size: 1.1rem; }
+.ranking-item:last-child { border-bottom: none; }
+.r-oro { background: rgba(255, 215, 0, 0.15); border-left: 4px solid gold; }
+.r-plata { background: rgba(192, 192, 192, 0.1); border-left: 4px solid silver; }
+.r-bronce { background: rgba(205, 127, 50, 0.1); border-left: 4px solid #cd7f32; }
+.r-tu { background: rgba(46, 204, 113, 0.15); border: 1px dashed var(--success); border-radius: 5px; margin-top: 10px;}
+
+/* Perfil y Grupos */
+.perfil-info { max-width: 500px; background: var(--bg-panel); padding: 30px; border-radius: 10px; border: 1px solid #333; margin: 0 auto; }
+.resaltado-oro { color: var(--gold); font-weight: bold; }
+.btn-cerrar-sesion { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 1rem; width: 100%; cursor: pointer; border-radius: 4px; margin-top: 15px; font-family: 'Cinzel'; transition: 0.3s; }
+.btn-cerrar-sesion:hover { background: var(--danger); color: white; }
+.btn-mostrar-grupo { background: var(--gold); border: none; color: black; padding: 1rem; width: 100%; cursor: pointer; border-radius: 4px; margin-top: 15px; font-family: 'Cinzel'; font-weight: bold; transition: 0.3s; }
+.btn-mostrar-grupo:hover { background: #ffd700; transform: scale(1.02); }
+
+#contenedor-grupo { background: var(--bg-dark); border: 1px solid #444; padding: 20px; border-radius: 8px; margin-top: 20px; }
+#grupo-lista-miembros li { padding: 10px; border-bottom: 1px solid #222; }
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-/* --- MEDIA QUERIES PARA MÓVILES Y TABLETS --- */
+/* --- RESPONSIVE (Móviles) --- */
 @media screen and (max-width: 900px) {
-    .dashboard-header { flex-direction: column; gap: 15px; } /* Apila la cabecera en pantallas medianas */
-    .dashboard-container { width: 95%; padding: 1.5rem; margin: 20px auto; }
-}
-
-@media screen and (max-width: 600px) {
-    body { padding: 10px 0; }
-    #contenedor-login { width: 90%; padding: 2rem 1.5rem; }
-    h1 { font-size: 2rem; }
+    .dashboard-header { flex-direction: column; gap: 20px; text-align: center; }
     .tabs-menu { flex-wrap: wrap; }
-    .tab-btn { min-width: 45%; font-size: 0.9rem; padding: 10px; }
-    .dashboard-header h2 { font-size: 1.5rem; }
-    .grid-fluido { grid-template-columns: 1fr; } /* 1 sola columna en móviles */
+    .tab-btn { flex: 1 1 40%; font-size: 0.9rem; padding: 10px; }
+    .dashboard-container { padding: 20px; }
 }

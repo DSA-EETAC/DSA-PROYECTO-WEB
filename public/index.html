@@ -44,13 +44,11 @@
                 <label>CONTRASEÑA</label>
                 <div class="bar"></div>
             </div>
-
             <div class="input-container">
                 <input type="password" id="reg-pass-confirm" required>
                 <label>CONFIRMAR CONTRASEÑA</label>
                 <div class="bar"></div>
             </div>
-
             <div class="input-container">
                 <input type="email" id="reg-correo" required>
                 <label>CORREO ELECTRÓNICO</label>
@@ -67,17 +65,17 @@
     <div class="dashboard-header">
         <h2 id="mensaje-bienvenida">CAMPAMENTO BASE</h2>
         <div class="header-stats">
-            <p class="monedas-display">🪙 Monedas: <span id="contador-monedas">0</span></p>
-            <button class="btn-primary btn-accion" onclick="abrirUnity()">🏃 ADENTRARSE EN LA MAZMORRA</button>
+            <p class="monedas-display">🪙 <span id="contador-monedas">0</span></p>
+            <button class="btn-accion" onclick="abrirUnity()">🏃 ADENTRARSE EN LA MAZMORRA</button>
         </div>
     </div>
 
-    <div class="tabs-menu flex-wrap-mobile">
-        <button id="btn-perfil" class="tab-btn active" onclick="cambiarPestana('tab-perfil', 'btn-perfil')">Perfil</button>
-        <button id="btn-tienda" class="tab-btn" onclick="cambiarPestana('tab-tienda', 'btn-tienda')">Tienda</button>
-        <button id="btn-inventario" class="tab-btn" onclick="cambiarPestana('tab-inventario', 'btn-inventario')">Mochila</button>
-        <button id="btn-grupos" class="tab-btn" onclick="cambiarPestana('tab-grupos', 'btn-grupos')">Grupos</button>
-        <button id="btn-eventos" class="tab-btn" onclick="cambiarPestana('tab-eventos', 'btn-eventos')">Eventos</button>
+    <div class="tabs-menu">
+        <button id="btn-perfil" class="tab-btn active" onclick="cambiarPestana('tab-perfil', 'btn-perfil')">PERFIL</button>
+        <button id="btn-tienda" class="tab-btn" onclick="cambiarPestana('tab-tienda', 'btn-tienda')">TIENDA</button>
+        <button id="btn-inventario" class="tab-btn" onclick="cambiarPestana('tab-inventario', 'btn-inventario')">MOCHILA</button>
+        <button id="btn-grupos" class="tab-btn" onclick="cambiarPestana('tab-grupos', 'btn-grupos')">GRUPOS</button>
+        <button id="btn-eventos" class="tab-btn" onclick="cambiarPestana('tab-eventos', 'btn-eventos')">MISIONES</button>
     </div>
 
     <div id="tab-tienda" class="tab-content" style="display: none;">
@@ -88,17 +86,17 @@
     <div id="tab-inventario" class="tab-content" style="display: none;">
         <div id="contenedor-inventario">
             <h3 class="tab-titulo">Tus Pertinencias</h3>
-            <p class="texto-vacio">Cargando inventario desde el servidor...</p>
+            <p class="texto-vacio">Cargando inventario...</p>
         </div>
     </div>
 
     <div id="tab-perfil" class="tab-content">
         <h3 class="tab-titulo">Datos del Explorador</h3>
         <div class="perfil-info">
-            <p>Nombre: <span id="perfil-nombre" class="resaltado-oro"></span></p>
+            <p style="font-size: 1.2rem;">Nombre: <span id="perfil-nombre" class="resaltado-oro"></span></p>
             <div class="perfil-botones">
-                <button class="btn-mostrar-grupo" onclick="consultarMiGrupo()">MOSTRAR GRUPO</button>
-                <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Abandonar Campamento</button>
+                <button class="btn-mostrar-grupo" onclick="consultarMiGrupo()">MOSTRAR EQUIPO</button>
+                <button class="btn-cerrar-sesion" onclick="cerrarSesion()">ABANDONAR CAMPAMENTO</button>
             </div>
         </div>
 
@@ -106,28 +104,24 @@
             <h3 id="grupo-titulo"></h3>
             <p id="grupo-mensaje"></p>
             <ul id="grupo-lista-miembros"></ul>
-            <button class="btn-primary" style="margin-top: 15px;" onclick="document.getElementById('contenedor-grupo').classList.add('hidden')">CERRAR</button>
+            <button class="btn-primary" style="margin-top: 15px; width: 100%;" onclick="document.getElementById('contenedor-grupo').classList.add('hidden')">CERRAR</button>
         </div>
     </div>
 
     <div id="tab-grupos" class="tab-content" style="display: none;">
-        <h3 class="tab-titulo">Grupos de Exploradores</h3>
-        <div id="contenedor-grupos" class="grid-fluido">
-            <p class="texto-vacio" style="grid-column: 1 / -1;">Buscando grupos en la zona...</p>
-        </div>
+        <h3 class="tab-titulo">Gremios y Equipos</h3>
+        <div id="contenedor-grupos" class="grid-fluido"></div>
     </div>
 
     <div id="tab-eventos" class="tab-content" style="display: none;">
-        <h3 class="tab-titulo">Misiones Especiales</h3>
-        <div id="contenedor-eventos" class="grid-fluido">
-            <p class="texto-vacio" style="grid-column: 1 / -1;">Buscando pergaminos de misiones en el servidor...</p>
-        </div>
+        <h3 class="tab-titulo">Tablón de Misiones Especiales</h3>
+        <div id="contenedor-eventos" class="grid-fluido"></div>
     </div>
 
 </div>
 
-<footer id="mensaje-sistema"></footer>
+<div id="mensaje-sistema" class="oculto"></div>
 
-<script src="script.js?v=5"></script>
+<script src="script.js?v=6"></script>
 </body>
 </html>
