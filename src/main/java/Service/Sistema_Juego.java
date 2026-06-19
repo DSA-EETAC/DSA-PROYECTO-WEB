@@ -201,6 +201,13 @@ public class Sistema_Juego {
         log.info("Petición de eventos recibida");
         List<Model.Evento> eventos = manager.obtenerListaEventos();
 
+        for (Model.Evento e : eventos) {
+            System.out.println("ID = " + e.getId());
+            System.out.println("NOMBRE = " + e.getNombre());
+            System.out.println("IMAGEN = " + e.getImagen_URL());
+            System.out.println("-------------------");
+        }
+
         GenericEntity<List<Model.Evento>> entity = new GenericEntity<List<Model.Evento>>(eventos) {};
 
         return Response.status(200).entity(entity).build();
