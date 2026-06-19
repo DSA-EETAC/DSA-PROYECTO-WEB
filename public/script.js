@@ -186,18 +186,33 @@ function avisar(texto, esError) {
 
 // Función para comprar objetos en el Tienda
 async function comprarItem(nombreObjeto, precio) {
-    // 1. Sacamos el nombre del jugador de nuestra "mochila temporal"
     const nombreJugador = localStorage.getItem("jugadorActual");
+// 1. CLÁUSULAS DE PROTECCIÓN (Guard Clauses)
+    // Si no hay usuario, o el usuario es "undefined", no hacemos nada.
+    if (!nombreJugador || nombreJugador === "undefined" || nombreJugador === "null") {
+        console.error("Error: No hay un usuario logueado en localStorage.");
+        avisar("Debes iniciar sesión para comprar.", true);
+        return;
+    }
 
-    // 2. Preparamos el paquete de datos (Igual a la clase PeticionCompra de Java)
+    // Comprobamos que URL_BASE existe (evita errores 404 por variables vacías)
+    if (typeof URL_BASE === 'undefined') {
+        console.error("Error crítico: URL_BASE no está definida.");
+        avisar("Error de configuración del cliente.", true);
+        return;
+    }
+
+    // 2. Construcción del paquete
     const datosCompra = {
         nombreJugador: nombreJugador,
         nombreObjeto: nombreObjeto,
         precio: precio
     };
 
+    console.log("Enviando compra a:", `${URL_BASE}/comprar`, "Datos:", datosCompra);
+
     try {
-        // 3. Enviamos los datos al nuevo endpoint /comprar
+        // 3. Envío al servidor
         const respuesta = await fetch(`${URL_BASE}/comprar`, {
             method: 'POST',
             headers: {
@@ -207,24 +222,31 @@ async function comprarItem(nombreObjeto, precio) {
             body: JSON.stringify(datosCompra)
         });
 
-        // 4. Analizamos la respuesta del cajero
+        // 4. Manejo de estados de respuesta
         if (respuesta.status === 200) {
             avisar("¡Has comprado " + nombreObjeto + "!", false);
 
-            // Actualizamos el contador de monedas en el HTML
-            let monedasActuales = parseInt(document.getElementById("contador-monedas").innerText);
-            document.getElementById("contador-monedas").innerText = monedasActuales - precio;
+            // Actualización del contador en la interfaz
+            const contador = document.getElementById("contador-monedas");
+            if (contador) {
+                let monedasActuales = parseInt(contador.innerText) || 0;
+                contador.innerText = monedasActuales - precio;
+            }
 
-            // Añadimos visualmente el objeto a la mochila
-            actualizarMochilaHTML(nombreObjeto);
+            // Añadir a la mochila (asegúrate de que esta función exista)
+            if (typeof actualizarMochilaHTML === 'function') {
+                actualizarMochilaHTML(nombreObjeto);
+            }
 
         } else if (respuesta.status === 402) {
             avisar("No tienes suficientes monedas para " + nombreObjeto + ".", true);
         } else {
-            avisar("Error en la transacción.", true);
+            // Captura errores inesperados del servidor (ej. 500)
+            avisar("Error en la transacción. Código: " + respuesta.status, true);
         }
     } catch (error) {
-        avisar("El servidor de la tienda está caído.", true);
+        console.error("Error en el fetch:", error);
+        avisar("El servidor de la tienda está caído o no responde.", true);
     }
 }
 
