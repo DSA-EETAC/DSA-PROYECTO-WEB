@@ -33,17 +33,25 @@ body {
 
 /* 2. LOGIN (Centrado clásico) */
 #contenedor-login {
-    position: relative;
+    margin: 0 auto;
+
+    position:absolute;
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
     z-index: 2;
-    background: linear-gradient(145deg, #222, #111);
-    padding: 3rem;
-    border-radius: 8px;
-    border: 2px solid #333;
-    box-shadow: 0 0 50px rgba(0,0,0,1);
-    width: 90%;
-    max-width: 400px;
-    margin: 10vh auto; /* Lo centra verticalmente sin usar flex en el body */
-    text-align: center;
+        background: linear-gradient(145deg, #222, #111);
+        padding: 3rem;
+        border-radius: 8px;
+        border: 2px solid #333;
+        box-shadow: 0 0 50px rgba(0,0,0,1);
+
+        width: 90%;
+        max-width: 400px;
+
+        text-align: center;
+
 }
 
 #contenedor-login::before {
@@ -94,40 +102,62 @@ h1 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 2.5rem; margin
 .dashboard-container {
     position: relative;
     z-index: 2;
-    background: rgba(15, 15, 15, 0.95);
-    border: 1px solid rgba(255, 204, 51, 0.2);
+
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 25px;
+
+    background: rgba(15,15,15,0.95);
+    border: 1px solid rgba(255,204,51,0.2);
     box-shadow: 0 0 50px rgba(0,0,0,0.8);
 
-    width: 95%;
-    max-width: 1400px; /* Pantallas muy anchas */
-    min-height: 85vh;
-    margin: 30px auto;
-    padding: 40px;
-    border-radius: 12px;
+    border-radius: 0;
 }
 
-.dashboard-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+.dashboard-header {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+}
 .dashboard-header h2 { color: white; font-family: 'Cinzel', serif; font-size: 2.2rem; margin: 0; }
-.header-stats { display: flex; align-items: center; gap: 25px; }
+
+.header-stats{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+}
 .monedas-display { color: var(--gold); font-size: 1.5rem; font-weight: bold; margin: 0; background: rgba(255,204,51,0.1); padding: 10px 20px; border-radius: 8px; border: 1px solid var(--gold-glow); }
 
 .btn-accion { background: #d35400; color: white; border: none; padding: 15px 25px; font-size: 1rem; font-weight: bold; cursor: pointer; border-radius: 6px; transition: 0.3s; font-family: 'Cinzel', serif;}
 .btn-accion:hover { background: #e67e22; transform: scale(1.05); box-shadow: 0 0 15px rgba(230, 126, 34, 0.5); }
 
 /* Pestañas de Navegación */
-.tabs-menu { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid #222; }
+.tabs-menu { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid #222; flex-wrap: wrap; }
 .tab-btn { flex: 1; background: var(--bg-card); color: #888; border: none; border-bottom: 3px solid transparent; padding: 15px; cursor: pointer; font-family: 'Cinzel', serif; font-size: 1.1rem; letter-spacing: 1px; transition: 0.3s; }
 .tab-btn:hover { color: white; background: var(--bg-panel); }
 .tab-btn.active { color: var(--gold); border-bottom: 3px solid var(--gold); background: linear-gradient(to top, rgba(255,204,51,0.1), transparent); }
 
 /* Grid de Tarjetas (Eventos, Tienda, Grupos) */
+
 .grid-fluido {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(320px,1fr));
+
+    gap:25px;
+
+    align-items:stretch;
 }
 
+
 .tarjeta-grid {
+    height:100%;
     background: var(--bg-panel);
     border: 1px solid #333;
     border-radius: 10px;
@@ -142,7 +172,7 @@ h1 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 2.5rem; margin
 
 .tarjeta-grid h4 { color: var(--gold); font-family: 'Cinzel', serif; font-size: 1.3rem; margin: 0 0 10px 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
 .tarjeta-grid p { color: #ccc; line-height: 1.5; margin-bottom: 15px;}
-.tarjeta-img { width: 100%; height: 160px; object-fit: cover; border-radius: 6px; margin-bottom: 15px; border: 1px solid #444; }
+.tarjeta-img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px;}
 
 /* Contenido Interno */
 .tab-titulo { color: white; text-align: left; font-size: 1.8rem; font-family: 'Cinzel', serif; margin-bottom: 25px; padding-left: 10px; border-left: 4px solid var(--gold); }
@@ -166,6 +196,12 @@ h1 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 2.5rem; margin
 .btn-mostrar-grupo { background: var(--gold); border: none; color: black; padding: 1rem; width: 100%; cursor: pointer; border-radius: 4px; margin-top: 15px; font-family: 'Cinzel'; font-weight: bold; transition: 0.3s; }
 .btn-mostrar-grupo:hover { background: #ffd700; transform: scale(1.02); }
 
+.perfil-botones{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
 #contenedor-grupo { background: var(--bg-dark); border: 1px solid #444; padding: 20px; border-radius: 8px; margin-top: 20px; }
 #grupo-lista-miembros li { padding: 10px; border-bottom: 1px solid #222; }
 
@@ -176,9 +212,67 @@ h1 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 2.5rem; margin
 ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
 /* --- RESPONSIVE (Móviles) --- */
-@media screen and (max-width: 900px) {
-    .dashboard-header { flex-direction: column; gap: 20px; text-align: center; }
-    .tabs-menu { flex-wrap: wrap; }
-    .tab-btn { flex: 1 1 40%; font-size: 0.9rem; padding: 10px; }
-    .dashboard-container { padding: 20px; }
+
+@media screen and (max-width: 1024px){
+
+    .dashboard-container{
+        padding:20px;
+    }
+
+    .dashboard-header{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .tabs-menu{
+        flex-wrap:wrap;
+    }
+
+    .tab-btn{
+        flex:1 1 45%;
+    }
+}
+
+@media screen and (max-width: 768px){
+
+
+    h1{
+        font-size:2rem;
+    }
+
+    .dashboard-header h2{
+        font-size:1.6rem;
+    }
+
+    .dashboard-container{
+        width:100%;
+        padding:15px;
+    }
+
+    .grid-fluido{
+        grid-template-columns:1fr;
+    }
+
+    .tab-btn{
+        flex:1 1 100%;
+        font-size:0.9rem;
+    }
+
+    .btn-accion,
+    .btn-primary,
+    .btn-cerrar-sesion,
+    .btn-mostrar-grupo{
+        width:100%;
+    }
+
+    .tarjeta-img{
+        height:180px;
+    }
+
+    #mensaje-sistema{
+        left:10px;
+        right:10px;
+        bottom:10px;
+        width:auto;
+    }
 }
