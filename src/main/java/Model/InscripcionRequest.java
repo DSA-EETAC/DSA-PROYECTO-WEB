@@ -3,6 +3,7 @@ package Model;
 public class InscripcionRequest {
     private String username;
     private String idEvento;
+    private int puntuacion;
 
     public InscripcionRequest(){}
 
@@ -10,6 +11,7 @@ public class InscripcionRequest {
 
         this.username = username;
         this.idEvento = idEvento;
+        this.puntuacion = 0;
     }
 
     public String getUsername() {
@@ -28,4 +30,11 @@ public class InscripcionRequest {
         this.idEvento = idEvento;
     }
 
+    public int getPuntuacion() {
+        return puntuacion;
+    }
+
+    public void setPuntuacion(int puntuacion) {
+        this.puntuacion = puntuacion;
+    }
 }

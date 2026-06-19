@@ -218,16 +218,19 @@ public class Sistema_Juego {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response inscribirUsuario(InscripcionRequest request){
-        System.out.println("\n[SERVER] -> Petición POST recibida en /juego/eventos/inscripcion");
-        System.out.println("[SERVER] -> Datos recibidos -> Usuario: " + request.getUsername() + " | ID Evento: " + request.getIdEvento());
+        log.info("API REST - Petición de inscripción: " + request.getUsername() + " -> " + request.getIdEvento());
 
-        System.out.println("[SERVER] -> Inscripción procesada con éxito (Simulada).");
+        boolean exito = manager.registrarInscripcion(request);
 
-        return Response.status(201).build();
+        if (exito) {
+            return Response.status(201).build();
+        } else {
+            return Response.status(400).entity("No se pudo realizar la inscripción.").build();
+        }
     }
 
     @PUT
-    @Path("/usuarios/{nommbre}/recompensa/{cantidad}")
+    @Path("/usuarios/{nombre}/recompensa/{cantidad}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response ganarMonedas(@PathParam("nombre") String nombre, @PathParam("cantidad") int cantidad) {
         log.info("API REST - Otorgando " + cantidad + " monedas al usuario: " + nombre);
@@ -239,6 +242,34 @@ public class Sistema_Juego {
             return Response.status(200).entity("Monedas añadidas correctamente").build();
         } else {
             return Response.status(404).entity("Error: No se ha podido actualizar el saldo del usuario.").build();
+        }
+    }
+    @GET
+    @Path("/eventos/{id}/ranking")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRankingEvento(@PathParam("id") String idEvento) {
+        log.info("API REST - Solicitando ranking para el evento: " + idEvento);
+
+        List<Model.JugadorRanking> ranking = manager.obtenerRankingEvento(idEvento);
+        GenericEntity<List<Model.JugadorRanking>> entity = new GenericEntity<List<Model.JugadorRanking>>(ranking) {};
+
+        return Response.status(200).entity(entity).build();
+    }
+    @PUT
+    @Path("/eventos/{idEvento}/jugadores/{nombreJugador}/puntos/{puntosNuevos}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response sumarPuntosEvento(@PathParam("idEvento") String idEvento,
+                                      @PathParam("nombreJugador") String nombreJugador,
+                                      @PathParam("puntosNuevos") int puntosNuevos) {
+
+        log.info("API REST - Petición del juego: Sumar " + puntosNuevos + " pts a " + nombreJugador + " en " + idEvento);
+
+        boolean exito = manager.sumarPuntosAInscripcion(idEvento, nombreJugador, puntosNuevos);
+
+        if (exito) {
+            return Response.status(200).entity("¡Puntuación actualizada con éxito!").build();
+        } else {
+            return Response.status(404).entity("Error: Jugador no encontrado o no inscrito en el evento.").build();
         }
     }
 }

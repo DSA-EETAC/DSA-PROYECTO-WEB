@@ -36,4 +36,8 @@ public interface JuegoManager {
     List<String> obtenerInventarioUsuarioPorNombre(String nombreUsuario);
     DetalleGrupo obtenerDetalleGrupoUsuarioPorNombre(String nombre);
 
+    List<JugadorRanking> obtenerRankingEvento(String idEvento);
+    boolean repartirPremios(String idEvento);
+
+    boolean sumarPuntosAInscripcion(String idEvento, String nombreJugador, int puntosNuevos);
 }

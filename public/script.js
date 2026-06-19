@@ -631,4 +631,218 @@ async function inscribirseEvento(idDelEvento) {
         console.error('Error en la inscripción:', error);
         avisar("Fallo de conexión al enviar la inscripción.", true);
     }
+
+    async function inscribirseEvento(idDelEvento) {
+        const nombreUsuario = localStorage.getItem("jugadorActual");
+
+        if (!nombreUsuario || nombreUsuario === "undefined") {
+            avisar("¡Debes estar logueado para inscribirte!", true);
+            return;
+        }
+
+        const requestData = { username: nombreUsuario, idEvento: idDelEvento };
+
+        try {
+            const respuesta = await fetch(`${URL_BASE}/eventos/inscripcion`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(requestData)
+            });
+
+            if (respuesta.status === 201 || respuesta.status === 200) {
+                avisar('¡Inscripción realizada! Cargando el ranking...', false);
+                cargarRankingEvento(idDelEvento);
+            } else {
+                avisar('No se pudo realizar la inscripción. ¿Ya estás apuntado?', true);
+                cargarRankingEvento(idDelEvento);
+            }
+        } catch (error) {
+            console.error('Error en la inscripción:', error);
+            avisar("Fallo de conexión al enviar la inscripción.", true);
+        }
+    }
+
+    // pedir el ranking al servidor
+    async function cargarRankingEvento(idEvento) {
+        try {
+            const respuesta = await fetch(`${URL_BASE}/eventos/${idEvento}/ranking`, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (respuesta.status === 200) {
+                const ranking = await respuesta.json();
+                dibujarRanking(ranking);
+            } else {
+                avisar("No hay datos de ranking para este evento todavía.", true);
+            }
+        } catch (error) {
+            console.error('Error cargando el ranking:', error);
+        }
+    }
+
+    // pintar el podio en la pantalla
+    function dibujarRanking(listaJugadores) {
+        const contenedor = document.getElementById('contenedor-eventos');
+
+        let htmlRanking = `
+            <div style="background: rgba(0,0,0,0.9); border: 2px solid gold; padding: 20px; border-radius: 10px; width: 100%; max-width: 500px; margin: 0 auto; text-align: center;">
+                <h2 style="color: gold; font-family: 'Cinzel', serif;">🏆 CLASIFICACIÓN 🏆</h2>
+                <ul style="list-style: none; padding: 0; color: white; font-size: 1.2em;">
+        `;
+
+        // Recorremos la lista y asignamos medallas y premios visuales
+        listaJugadores.forEach((jugador, index) => {
+            let medalla = "🏅";
+            let premio = "";
+
+            if (index === 0) { medalla = "🥇"; premio = "<span style='color: gold;'> (+1000 🪙)</span>"; }
+            if (index === 1) { medalla = "🥈"; premio = "<span style='color: silver;'> (+500 🪙)</span>"; }
+            if (index === 2) { medalla = "🥉"; premio = "<span style='color: #cd7f32;'> (+100 🪙)</span>"; }
+
+            htmlRanking += `
+                <li style="margin: 10px 0; border-bottom: 1px solid #444; padding-bottom: 5px;">
+                    ${medalla} <strong>${jugador.nombreJugador}</strong> - ${jugador.puntuacion} pts ${premio}
+                </li>
+            `;
+        });
+
+        htmlRanking += `
+                </ul>
+                <button class="btn-primary" style="margin-top: 15px;" onclick="cargarEventos()">VOLVER A MISIONES</button>
+            </div>
+        `;
+
+        // Reemplazamos las tarjetas de eventos por el ranking
+        contenedor.innerHTML = htmlRanking;
+    }
+    // MODIFICAMOS INSCRIBIRSE PARA QUE ABRA EL RANKING AL TERMINAR
+    async function inscribirseEvento(idDelEvento) {
+        const nombreUsuario = localStorage.getItem("jugadorActual");
+
+        if (!nombreUsuario || nombreUsuario === "undefined") {
+            avisar("¡Debes estar logueado para inscribirte!", true);
+            return;
+        }
+
+        const requestData = {
+            username: nombreUsuario,
+            idEvento: idDelEvento
+        };
+
+        try {
+            const respuesta = await fetch(`${URL_BASE}/eventos/inscripcion`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(requestData)
+            });
+
+            if (respuesta.status === 201 || respuesta.status === 200) {
+                avisar('¡Inscripción realizada! Cargando clasificación...', false);
+                cargarRankingEvento(idDelEvento); // Llamamos al ranking
+            } else {
+                avisar('Ya estás apuntado. Viendo clasificación actual...', false);
+                cargarRankingEvento(idDelEvento); // Lo mostramos igual para que vea su posición
+            }
+        } catch (error) {
+            console.error('Error en la inscripción:', error);
+            avisar("Fallo de conexión al enviar la inscripción.", true);
+        }
+    }
+
+    // PEDIR EL RANKING A JAVA
+    async function cargarRankingEvento(idEvento) {
+        const contenedor = document.getElementById('contenedor-eventos');
+        contenedor.innerHTML = '<p style="color: white; text-align: center;">Calculando puntuaciones...</p>';
+
+        try {
+            const respuesta = await fetch(`${URL_BASE}/eventos/${idEvento}/ranking`, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (respuesta.status === 200) {
+                const ranking = await respuesta.json();
+                dibujarRanking(ranking);
+            } else {
+                contenedor.innerHTML = '<p style="color: #ff4444; text-align: center;">Error al cargar la clasificación.</p>';
+            }
+        } catch (error) {
+            console.error('Error cargando el ranking:', error);
+        }
+    }
+
+    // DIBUJAR EL PODIO EN PANTALLA
+    function dibujarRanking(listaJugadores) {
+        const contenedor = document.getElementById('contenedor-eventos');
+        const jugadorActual = localStorage.getItem("jugadorActual"); // Necesitamos saber quién eres
+
+        let htmlRanking = `
+            <div style="background: rgba(0,0,0,0.9); border: 2px solid gold; padding: 20px; border-radius: 10px; width: 100%; max-width: 600px; margin: 0 auto; text-align: center;">
+                <h2 style="color: gold; font-family: 'Cinzel', serif; margin-bottom: 20px;">🏆 CLASIFICACIÓN 🏆</h2>
+                <ul style="list-style: none; padding: 0; color: white; font-size: 1.1em; text-align: left;">
+        `;
+
+        if (listaJugadores.length === 0) {
+            htmlRanking += `<li style="text-align: center;">Nadie ha puntuado aún. ¡Sé el primero!</li></ul></div>`;
+            contenedor.innerHTML = htmlRanking;
+            return;
+        }
+
+        // Cortamos la lista para sacar solo a los 5 primeros
+        const top5 = listaJugadores.slice(0, 5);
+        let yoEstoyEnElTop5 = false;
+
+        // Dibujamos el Top 5
+        top5.forEach((jugador, index) => {
+            let medalla = "🏅";
+            let colorFondo = "transparent";
+
+            if (index === 0) { medalla = "🥇"; colorFondo = "rgba(255, 215, 0, 0.2)"; }
+            else if (index === 1) { medalla = "🥈"; colorFondo = "rgba(192, 192, 192, 0.2)"; }
+            else if (index === 2) { medalla = "🥉"; colorFondo = "rgba(205, 127, 50, 0.2)"; }
+
+            // Comprobamos si el jugador actual está entre estos dioses del Olimpo
+            let textoNombre = jugador.nombreJugador;
+            if (jugador.nombreJugador === jugadorActual) {
+                yoEstoyEnElTop5 = true;
+                textoNombre = `<span style="color: #2ecc71;">${jugador.nombreJugador} (Tú)</span>`;
+                colorFondo = "rgba(46, 204, 113, 0.2)"; // Resaltamos en verde si eres tú
+            }
+
+            htmlRanking += `
+                <li style="margin: 5px 0; padding: 10px; border-bottom: 1px solid #444; background: ${colorFondo}; border-radius: 5px; display: flex; justify-content: space-between;">
+                    <span>${medalla} <strong>${textoNombre}</strong></span>
+                    <span style="color: #ccc;">${jugador.puntuacion} pts</span>
+                </li>
+            `;
+        });
+
+        // Si NO estás en el Top 5, te buscamos en la lista completa para añadirte al final
+        if (!yoEstoyEnElTop5) {
+            // Buscamos tu posición real en el array (sumamos 1 porque los arrays empiezan en 0)
+            const miIndice = listaJugadores.findIndex(j => j.nombreJugador === jugadorActual);
+
+            if (miIndice !== -1) {
+                const miPuntuacion = listaJugadores[miIndice].puntuacion;
+                const miPosicionReal = miIndice + 1;
+
+                htmlRanking += `
+                    <li style="text-align: center; color: #888; margin: 10px 0;">...</li>
+                    <li style="margin: 5px 0; padding: 10px; border: 1px dashed #2ecc71; background: rgba(46, 204, 113, 0.1); border-radius: 5px; display: flex; justify-content: space-between;">
+                        <span>${miPosicionReal}º <strong><span style="color: #2ecc71;">${jugadorActual} (Tú)</span></strong></span>
+                        <span style="color: #ccc;">${miPuntuacion} pts</span>
+                    </li>
+                `;
+            }
+        }
+
+        htmlRanking += `
+                </ul>
+                <button class="btn-primary" style="margin-top: 25px; padding: 10px 20px;" onclick="cargarEventos()">⬅ VOLVER AL TABLÓN</button>
+            </div>
+        `;
+
+        contenedor.innerHTML = htmlRanking;
+    }
 }

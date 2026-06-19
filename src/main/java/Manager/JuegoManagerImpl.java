@@ -286,6 +286,102 @@ public class JuegoManagerImpl implements JuegoManager {
         }
         return new DetalleGrupo();
     }
+    @Override
+    public boolean repartirPremios(String idEvento) {
+
+        List<JugadorRanking> ranking = obtenerRankingEvento(idEvento);
+        // Reparticion de premios
+        if (ranking.size() > 0) {
+            sumarMonedas(ranking.get(0).getNombreJugador(), 1000); // 1º Puesto
+        }
+        if (ranking.size() > 1) {
+            sumarMonedas(ranking.get(1).getNombreJugador(), 500);  // 2º Puesto
+        }
+        if (ranking.size() > 2) {
+            sumarMonedas(ranking.get(2).getNombreJugador(), 100);  // 3º Puesto
+        }
+
+        return true;
+    }
+    @Override
+    public List<JugadorRanking> obtenerRankingEvento(String idEvento) {
+        Session session = null;
+        List<JugadorRanking> ranking = new ArrayList<>();
+        try {
+            session = FactorySession.openSession();
+
+            // Traemos todas las inscripciones (dependiendo de tu ORM, lo ideal es un filtro en BD,
+            // pero esto funciona filtrando en Java)
+            List<Object> objetos = session.findAll(InscripcionEvento.class);
+
+            if (objetos != null) {
+                for (Object obj : objetos) {
+                    InscripcionEvento inscripcion = (InscripcionEvento) obj;
+
+                    // Solo nos interesan los que están apuntados a ESTE evento
+                    if (inscripcion.getEvento_id().equals(idEvento)) {
+                        // Buscamos el nombre del usuario a partir de su ID
+                        User u = usuarioDAO.getUsuario(inscripcion.getUser_id());
+                        if (u != null) {
+                            ranking.add(new JugadorRanking(u.getNombre(), inscripcion.getPuntuacion()));
+                        }
+                    }
+                }
+            }
+
+            // Ordenamos la lista de mayor a menor puntuación
+            ranking.sort((j1, j2) -> Integer.compare(j2.getPuntuacion(), j1.getPuntuacion()));
+
+        } catch (Exception e) {
+            log.error("Error al obtener ranking del evento: ", e);
+        } finally {
+            if (session != null) session.close();
+        }
+        return ranking;
+    }
+    @Override
+    public boolean sumarPuntosAInscripcion(String idEvento, String nombreJugador, int puntosNuevos) {
+        Session session = null;
+        try {
+            //Buscamos al usuario para obtener su ID real
+            User u = usuarioDAO.getUsuario(nombreJugador);
+            if (u == null) {
+                log.warn("sumarPuntos: El jugador " + nombreJugador + " no existe.");
+                return false;
+            }
+
+            session = FactorySession.openSession();
+
+            // Obtenemos todas las inscripciones (filtraremos en Java)
+            List<Object> objetos = session.findAll(InscripcionEvento.class);
+
+            if (objetos != null) {
+                for (Object obj : objetos) {
+                    InscripcionEvento inscripcion = (InscripcionEvento) obj;
+
+                    if (inscripcion.getEvento_id().equals(idEvento) && inscripcion.getUser_id() == u.getId()) {
+
+                        int nuevaPuntuacion = inscripcion.getPuntuacion() + puntosNuevos;
+                        inscripcion.setPuntuacion(nuevaPuntuacion);
+
+                        // Actualizamos el registro en MariaDB usando tu ORM
+                        session.update(inscripcion);
+
+                        log.info("¡Puntos sumados! " + nombreJugador + " ahora tiene " + nuevaPuntuacion + " pts en " + idEvento);
+                        return true;
+                    }
+                }
+            }
+            log.warn("sumarPuntos: No se encontró la inscripción del jugador " + nombreJugador + " en el evento " + idEvento);
+
+        } catch (Exception e) {
+            log.error("Error crítico al sumar puntos en el evento: ", e);
+        } finally {
+            if (session != null) session.close();
+        }
+        return false;
+    }
+
 }
 
 
