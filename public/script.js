@@ -492,7 +492,7 @@ async function consultarMiGrupo() {
     } catch (error) {
         avisar("El servidor de clanes no responde.", true);
     }
-
+}
 async function cargarEventos() {
     try {
         const respuesta = await fetch(`${URL_BASE}/eventos`, {
@@ -560,8 +560,4 @@ async function inscribirseEvento(idDelEvento) {
         console.error('Error en la inscripción:', error);
         avisar("Fallo de conexión al enviar la inscripción.", true);
     }
-}
-
-
-
 }
