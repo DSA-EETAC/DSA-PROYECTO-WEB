@@ -85,7 +85,6 @@ async function hacerLogin() {
     const nombre = document.getElementById('login-nombre').value;
     const password = document.getElementById('login-pass').value;
 
-    // 1. CORRECCIÓN: Todo dentro de las llaves del if
     if (!nombre || !password) {
         avisar("Rellena tus credenciales, explorador.", true);
         return; // Ahora solo corta la ejecución si falta algún campo
@@ -97,7 +96,6 @@ async function hacerLogin() {
     };
 
     try {
-        // 2. CORRECCIÓN: El fetch envuelve correctamente a los parámetros y se cierra al final
         const respuesta = await fetch(`${URL_BASE}/login`, {
             method: 'POST',
             headers: {
@@ -139,6 +137,9 @@ async function hacerLogin() {
 }
 
 async function actualizarMochilaDesdeBaseDeDatos(nombreUsuario) {
+
+    console.log("DEPURACIÓN MOCHILA: Intentando acceder a ->", `${URL_BASE}/inventario/${nombreUsuario}`);
+
     try {
         const respuesta = await fetch(`${URL_BASE}/inventario/${nombreUsuario}`, {
             method: 'GET',
@@ -269,9 +270,6 @@ function cambiarPestana(idPestana, idBoton) {
         cargarEventos(); // ¡Esto es lo que hace que deje de poner "Buscando pergaminos..."!
     }
 }
-
-
-
 
 // Función para cerrar sesión y volver a la pantalla de inicio
 function cerrarSesion() {
