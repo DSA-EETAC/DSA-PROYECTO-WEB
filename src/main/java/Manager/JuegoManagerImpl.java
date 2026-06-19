@@ -6,10 +6,7 @@ import BDD.orm.dao.IItemDAO;
 import BDD.orm.dao.IUsuarioDAO;
 import BDD.orm.dao.ItemDAOImpl;
 import BDD.orm.dao.UsuarioDAOImpl;
-import Model.DetalleGrupo;
-import Model.Item;
-import Model.User;
-import Model.Grupo;
+import Model.*;
 import org.apache.log4j.Logger;
 import java.util.*;
 
@@ -207,6 +204,38 @@ public class JuegoManagerImpl implements JuegoManager {
 
         // Devolvemos el detalle completo preparado para el Frontend
         return new DetalleGrupo(nombreGrupo, nombresMiembros);
+    }
+    @Override
+    public java.util.List<Model.Evento> obtenerListaEventos(){
+        java.util.List<Model.Evento> listaDummies = new java.util.ArrayList<>();
+
+        Model.Evento evento1 = new Model.Evento (
+                "EV-01",
+                "Evento de Verano",
+                "Juega al TempleRun ya para conseguir monedas en este nuevo evento de verano",
+                "2026-06-02 17:00",
+                "2026-09-30 17:00",
+                "https://png.pngtree.com/background/20230319/original/pngtree-beautiful-beach-hot-sunny-scenery-picture-image_2150869.jpg"
+        );
+        Model.Evento evento2 = new Model.Evento (
+
+                "EV-02",
+                "Evento de Halloween",
+                "Juega al TempleRun ya para conseguir monedas en este nuevo evento de halloween ",
+                "2026-10-15 17:00",
+                "2026-11-15 17:00",
+                "https://cdn.pixabay.com/photo/2017/10/10/16/55/halloween-2837936_1280.png"
+        );
+
+        listaDummies.add(evento1);
+        listaDummies.add(evento2);
+
+        return listaDummies;
+    }
+
+    @Override
+    public boolean registrarInscripcion (InscripcionRequest request){
+        return true;
     }
 }
 

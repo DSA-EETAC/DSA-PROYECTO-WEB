@@ -193,4 +193,29 @@ public class Sistema_Juego {
         // Retornamos un código 200 con el objeto JSON estructurado
         return Response.status(200).entity(detalle).build();
     }
+    @GET
+    @Path("/eventos")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getEventos(){
+
+        log.info("Petición de eventos recibida");
+        List<Model.Evento> eventos = manager.obtenerListaEventos();
+
+        GenericEntity<List<Model.Evento>> entity = new GenericEntity<List<Model.Evento>>(eventos) {};
+
+        return Response.status(200).entity(entity).build();
+    }
+
+    @POST
+    @Path("/eventos/inscripcion")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response inscribirUsuario(InscripcionRequest request){
+        System.out.println("\n[SERVER] -> Petición POST recibida en /juego/eventos/inscripcion");
+        System.out.println("[SERVER] -> Datos recibidos -> Usuario: " + request.getUsername() + " | ID Evento: " + request.getIdEvento());
+
+        System.out.println("[SERVER] -> Inscripción procesada con éxito (Simulada).");
+
+        return Response.status(201).build();
+    }
 }

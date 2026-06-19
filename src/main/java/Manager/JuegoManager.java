@@ -1,8 +1,5 @@
 package Manager;
-import Model.DetalleGrupo;
-import Model.Grupo;
-import Model.User;
-import Model.Item;
+import Model.*;
 
 import java.util.List;
 
@@ -27,6 +24,10 @@ public interface JuegoManager {
     List<Item> obtenerItemsTienda();
 
     List<Grupo> obtenerGrupos();
+
+    java.util.List<Model.Evento> obtenerListaEventos();
+
+    boolean registrarInscripcion(InscripcionRequest request);
 
     boolean unirUsuarioAGrupo(int idUsuario, int idGrupo);
     public DetalleGrupo obtenerDetalleGrupoUsuario(int id);
