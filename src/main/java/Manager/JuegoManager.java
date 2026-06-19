@@ -32,5 +32,5 @@ public interface JuegoManager {
     boolean unirUsuarioAGrupo(int idUsuario, int idGrupo);
     public DetalleGrupo obtenerDetalleGrupoUsuario(int id);
 
-
+    boolean sumarMonedas(String nombreJugador, int cantidad);
 }

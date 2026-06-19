@@ -218,4 +218,22 @@ public class Sistema_Juego {
 
         return Response.status(201).build();
     }
+
+    @PUT
+    @Path("/usuarios/{nommbre}/recompensa/{cantidad}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response ganarMonedas(@PathParam("nombre") String nombre, @PathParam("cantidad") int cantidad) {
+        log.info("API REST - Otorgando " + cantidad + " monedas al usuario: " + nombre);
+
+        // Llamamos al manager para que sume las monedas en la base de datos
+        boolean exito = manager.sumarMonedas(nombre, cantidad);
+
+        if (exito) {
+            return Response.status(200).entity("Monedas añadidas correctamente").build();
+        } else {
+            return Response.status(404).entity("Error: No se ha podido actualizar el saldo del usuario.").build();
+        }
+    }
+
+
 }

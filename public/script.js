@@ -239,28 +239,33 @@ function actualizarMochilaHTML(nuevoObjeto) {
 
 // Función mejorada para cambiar entre pestañas
 function cambiarPestana(idPestana, idBoton) {
-    // 1. Ocultamos todas las cajas
+    // ocultamos todas las cajas
     document.getElementById('tab-tienda').style.display = 'none';
     document.getElementById('tab-inventario').style.display = 'none';
     document.getElementById('tab-perfil').style.display = 'none';
     document.getElementById('tab-grupos').style.display = 'none';
+    document.getElementById('tab-eventos').style.display = 'none';
 
-    // 2. Le quitamos el color 'activo' a todos los botones
+    // quitamos el color 'activo' a todos los botones
     document.getElementById('btn-tienda').classList.remove('active');
     document.getElementById('btn-inventario').classList.remove('active');
     document.getElementById('btn-perfil').classList.remove('active');
     document.getElementById('btn-grupos').classList.remove('active');
+    document.getElementById('btn-eventos').classList.remove('active');
 
-    // 3. Mostramos la caja pedida y encendemos su botón
+    // mostramos la caja pedida y encendemos su botón
     document.getElementById(idPestana).style.display = 'block';
     document.getElementById(idBoton).classList.add('active');
 
-    // Borramos cualquier mensaje que hubiera en pantalla
+    // borramos cualquier mensaje que hubiera en pantalla
     document.getElementById('mensaje-sistema').innerText = "";
-    //cargamos los grupos al abrir la pestaña
+    // cargamos los grupos al abrir la pestaña
     if (idPestana === 'tab-grupos') {
         cargarGrupos();
     }
+    if (idPestana === 'tab-eventos') {
+            cargarEventos();
+        }
 }
 
 // Función para cerrar sesión y volver a la pantalla de inicio
@@ -482,4 +487,76 @@ async function consultarMiGrupo() {
     } catch (error) {
         avisar("El servidor de clanes no responde.", true);
     }
+
+async function cargarEventos() {
+    try {
+        const respuesta = await fetch(`${URL_BASE}/eventos`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+
+        if (respuesta.status === 200) {
+            const eventos = await respuesta.json();
+            const contenedor = document.getElementById('contenedor-eventos');
+            contenedor.innerHTML = ''; // Limpiamos el texto de "Buscando pergaminos..."
+
+            // Recorremos la lista de eventos que nos da MariaDB
+            eventos.forEach(evento => {
+                const tarjetaHtml = `
+                    <div style="background: rgba(0,0,0,0.8); border: 1px solid #e67e22; padding: 15px; border-radius: 8px; width: 280px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.5);">
+                        <img src="${evento.imagen}" alt="${evento.nombre}" style="width: 100%; height: 140px; object-fit: cover; border-radius: 4px; border: 1px solid #444; margin-bottom: 10px;">
+                        <h4 style="color: gold; margin: 0 0 8px 0; font-family: 'Cinzel', serif;">${evento.nombre}</h4>
+                        <p style="color: #ddd; font-size: 0.9em; margin-bottom: 12px; line-height: 1.4;">${evento.descripcion}</p>
+                        <p style="color: #aaa; font-size: 0.8em; margin-bottom: 15px;">⏳ ${evento.fecha_inicio.split(' ')[0]} al ${evento.fecha_fin.split(' ')[0]}</p>
+                        <button class="btn-primary" style="padding: 8px 15px; font-size: 0.9em;" onclick="inscribirseEvento('${evento.id}')">INSCRIBIRSE</button>
+                    </div>
+                `;
+                contenedor.innerHTML += tarjetaHtml;
+            });
+        } else {
+            document.getElementById('contenedor-eventos').innerHTML = '<p style="color: #ff4444; text-align: center;">Error al cargar las misiones.</p>';
+        }
+    } catch (error) {
+        console.error('Error cargando eventos:', error);
+        document.getElementById('contenedor-eventos').innerHTML = '<p style="color: #ff4444; text-align: center;">El tablón de misiones está caído.</p>';
+    }
+}
+
+// Función para cuando el usuario hace clic en el botón de Inscribirse
+async function inscribirseEvento(idDelEvento) {
+    const nombreUsuario = localStorage.getItem("jugadorActual");
+
+    if (!nombreUsuario) {
+        avisar("¡Debes estar logueado para inscribirte!", true);
+        return;
+    }
+
+    const requestData = {
+        username: nombreUsuario,
+        idEvento: idDelEvento
+    };
+
+    try {
+        const respuesta = await fetch(`${URL_BASE}/eventos/inscripcion`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        if (respuesta.status === 201 || respuesta.status === 200) {
+            avisar('¡Inscripción realizada con éxito! Nos vemos en el evento.', false);
+        } else {
+            avisar('No se pudo realizar la inscripción. ¿Ya estás apuntado a este evento?', true);
+        }
+    } catch (error) {
+        console.error('Error en la inscripción:', error);
+        avisar("Fallo de conexión al enviar la inscripción.", true);
+    }
+}
+
+
+
 }

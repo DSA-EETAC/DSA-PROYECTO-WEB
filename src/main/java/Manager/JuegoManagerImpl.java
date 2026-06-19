@@ -207,36 +207,68 @@ public class JuegoManagerImpl implements JuegoManager {
     }
     @Override
     public java.util.List<Model.Evento> obtenerListaEventos(){
-        java.util.List<Model.Evento> listaDummies = new java.util.ArrayList<>();
 
-        Model.Evento evento1 = new Model.Evento (
-                "EV-01",
-                "Evento de Verano",
-                "Juega al TempleRun ya para conseguir monedas en este nuevo evento de verano",
-                "2026-06-02 17:00",
-                "2026-09-30 17:00",
-                "https://png.pngtree.com/background/20230319/original/pngtree-beautiful-beach-hot-sunny-scenery-picture-image_2150869.jpg"
-        );
-        Model.Evento evento2 = new Model.Evento (
+        Session session = null;
+        List<Model.Evento> listaEventos = new ArrayList<>();
+        try {
+            session = FactorySession.openSession();
+            // el ORM busca todos los registros de la tabla 'evento'
+            List<Object> objetos = session.findAll(Model.Evento.class);
 
-                "EV-02",
-                "Evento de Halloween",
-                "Juega al TempleRun ya para conseguir monedas en este nuevo evento de halloween ",
-                "2026-10-15 17:00",
-                "2026-11-15 17:00",
-                "https://cdn.pixabay.com/photo/2017/10/10/16/55/halloween-2837936_1280.png"
-        );
-
-        listaDummies.add(evento1);
-        listaDummies.add(evento2);
-
-        return listaDummies;
+            if (objetos != null) {
+                for (Object obj : objetos) {
+                    listaEventos.add((Model.Evento) obj);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error al obtener los eventos desde la BD: ", e);
+        } finally {
+            if (session != null) session.close();
+        }
+        return listaEventos;
     }
 
     @Override
     public boolean registrarInscripcion (InscripcionRequest request){
-        return true;
+        Session session = null;
+        try {
+            // buscamos al usuario para obtener su ID numérico real
+            User u = usuarioDAO.getUsuario(request.getUsername());
+            if (u == null) return false;
+
+            session = FactorySession.openSession();
+
+            // creamos el objeto puente y lo guardamos con el ORM
+            InscripcionEvento nuevaInscripcion = new InscripcionEvento(u.getId(), request.getIdEvento());
+            session.save(nuevaInscripcion);
+
+            log.info("Inscripción real guardada en BD: Usuario " + u.getId() + " en " + request.getIdEvento());
+            return true;
+        } catch (Exception e) {
+            log.error("Error al inscribir en evento (¿Quizás ya estaba inscrito?): ", e);
+            return false;
+        } finally {
+            if (session != null) session.close();
+        }
     }
+
+    @Override
+    public boolean sumarMonedas(String nombreJugador, int cantidad){
+        log.info("INICIO sumarMonedas: Añadiendo " + cantidad + " a " + nombreJugador);
+        User jugador = usuarioDAO.getUsuario(nombreJugador);
+
+        if (jugador != null) {
+            // Sumamos las monedas al saldo actual
+            jugador.setMonedas(jugador.getMonedas() + cantidad);
+
+            // Guardamos el nuevo saldo en la base de datos
+            usuarioDAO.updateUsuario(jugador);
+            log.info("FIN sumarMonedas: Saldo actualizado correctamente.");
+            return true;
+        }
+        return false;
+    }
+
 }
 
 
