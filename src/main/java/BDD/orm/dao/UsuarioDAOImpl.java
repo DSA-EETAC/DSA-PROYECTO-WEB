@@ -28,6 +28,11 @@ public class UsuarioDAOImpl implements IUsuarioDAO {
     }
 
     public User getUsuario(String nombre) {return getUsuario("nombre", nombre); }
+
+    public User getUsuario(int id) {
+        return getUsuario("id", String.valueOf(id));
+    }
+
     public User getUsuario(String key, String val) {
         Session session = null;
         User usuario = null;

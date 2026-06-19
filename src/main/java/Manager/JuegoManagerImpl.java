@@ -90,12 +90,15 @@ public class JuegoManagerImpl implements JuegoManager {
         return false;
     }
     @Override
-    public List<String> obtenerInventarioUsuario(String nombreUsuario) {
-        User u = usuarioDAO.getUsuario(nombreUsuario);
-        if(u != null) {
-            return usuarioDAO.getNombresItemsUsuario(u.getId());
+    public List<String> obtenerInventarioUsuario(int idUsuario) {
+        // Llamamos directamente al metodo del DAO que recibe el userId
+        List<String> items = usuarioDAO.getNombresItemsUsuario(idUsuario);
+
+        // Si el DAO devuelve null (por si acaso), devolvemos una lista vacía para evitar errores
+        if (items == null) {
+            return new ArrayList<>();
         }
-        return new ArrayList<>(); // Devuelve vacío si no existe
+        return items;
     }
 
     @Override
@@ -145,24 +148,24 @@ public class JuegoManagerImpl implements JuegoManager {
     }
 
     @Override
-    public boolean unirUsuarioAGrupo(String nombreUsuario, String idGrupo) {
-        log.info("INICIO unirUsuarioAGrupo: usuario=" + nombreUsuario + ", grupo=" + idGrupo);
+    public boolean unirUsuarioAGrupo(int idUsuario, int  idGrupo) {
+        log.info("INICIO unirUsuarioAGrupo: usuario=" + idUsuario + ", grupo=" + idGrupo);
 
         try {
             // 1. Obtenemos el usuario real desde el DAO
-            User u = usuarioDAO.getUsuario(nombreUsuario);
+            User u = usuarioDAO.getUsuario(idUsuario);
 
             if (u != null) {
                 // 2. Le asignamos el ID del grupo (convirtiéndolo de String a int)
-                u.setId_grupo(Integer.parseInt(idGrupo));
+                u.setId_grupo(idGrupo);
 
                 // 3. Guardamos los cambios usando el DAO (igual que haces en comprarObjeto)
                 usuarioDAO.updateUsuario(u);
 
-                log.info("FIN unirUsuarioAGrupo: Usuario " + nombreUsuario + " unido al grupo " + idGrupo + " con éxito.");
+                log.info("FIN unirUsuarioAGrupo: Usuario " + idUsuario + " unido al grupo " + idGrupo + " con éxito.");
                 return true;
             } else {
-                log.warn("FIN unirUsuarioAGrupo: El usuario " + nombreUsuario + " no existe.");
+                log.warn("FIN unirUsuarioAGrupo: El usuario " + idUsuario + " no existe.");
             }
         } catch (Exception e) {
             log.error("Error al unir usuario al grupo: ", e);
@@ -171,10 +174,10 @@ public class JuegoManagerImpl implements JuegoManager {
         return false;
     }
     @Override
-    public DetalleGrupo obtenerDetalleGrupoUsuario(String nombreUsuario) {
-        log.info("Buscando grupo y miembros para el usuario: " + nombreUsuario);
+    public DetalleGrupo obtenerDetalleGrupoUsuario(int id) {
+        log.info("Buscando grupo y miembros para el usuario: " +  id);
 
-        User u = usuarioDAO.getUsuario(nombreUsuario);
+        User u = usuarioDAO.getUsuario(id);
 
         // Si el usuario no existe, o su id_grupo es null o es 0, significa que no tiene grupo
         if (u == null || u.getId_grupo() < 0 || u.getId_grupo() == 0) {

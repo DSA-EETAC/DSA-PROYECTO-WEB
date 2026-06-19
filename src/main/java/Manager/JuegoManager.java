@@ -16,7 +16,7 @@ public interface JuegoManager {
 
     boolean comprarObjeto(String nombreJugador, String nombreObjeto);
 
-    List<String> obtenerInventarioUsuario(String nombreUsuario);
+    List<String> obtenerInventarioUsuario(int idUsuario);
 
     int obtenerNumeroUsuarios();
 
@@ -28,8 +28,8 @@ public interface JuegoManager {
 
     List<Grupo> obtenerGrupos();
 
-    boolean unirUsuarioAGrupo(String nombreUsuario, String idGrupo);
-    public DetalleGrupo obtenerDetalleGrupoUsuario(String nombreUsuario);
+    boolean unirUsuarioAGrupo(int idUsuario, int idGrupo);
+    public DetalleGrupo obtenerDetalleGrupoUsuario(int id);
 
 
 }
