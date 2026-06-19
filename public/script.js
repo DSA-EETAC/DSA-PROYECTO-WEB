@@ -151,6 +151,10 @@ async function actualizarMochilaDesdeBaseDeDatos(nombreUsuario) {
             const listaItems = inventarioJugador.objetos; // Esto recibe el array de Strings de Java
             cargarMochilaDesdeJava(listaItems); // Se lo pasamos a la función que pinta en HTML
         }
+        if (!nombreUsuario || nombreUsuario === "undefined") {
+                console.warn("Mochila: No hay usuario logueado, abortando carga.");
+                return;
+            }
     } catch (error) {
         console.error("Error al recuperar el inventario relacional:", error);
     }
