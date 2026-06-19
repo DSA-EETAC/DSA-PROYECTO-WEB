@@ -138,6 +138,11 @@ async function hacerLogin() {
 
 async function actualizarMochilaDesdeBaseDeDatos(nombreUsuario) {
 
+    if (!nombreUsuario || nombreUsuario === "undefined") {
+        console.warn("Mochila: No hay usuario logueado, abortando carga.");
+        return;
+    }
+
     console.log("DEPURACIÓN MOCHILA: Intentando acceder a ->", `${URL_BASE}/inventario/${nombreUsuario}`);
 
     try {
@@ -151,10 +156,7 @@ async function actualizarMochilaDesdeBaseDeDatos(nombreUsuario) {
             const listaItems = inventarioJugador.objetos; // Esto recibe el array de Strings de Java
             cargarMochilaDesdeJava(listaItems); // Se lo pasamos a la función que pinta en HTML
         }
-        if (!nombreUsuario || nombreUsuario === "undefined") {
-                console.warn("Mochila: No hay usuario logueado, abortando carga.");
-                return;
-            }
+
     } catch (error) {
         console.error("Error al recuperar el inventario relacional:", error);
     }
@@ -531,17 +533,24 @@ async function cargarEventos() {
 
             // Recorremos la lista de eventos que nos da MariaDB
             eventos.forEach(evento => {
-                const tarjetaHtml = `
-                    <div style="background: rgba(0,0,0,0.8); border: 1px solid #e67e22; padding: 15px; border-radius: 8px; width: 280px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.5);">
-                        <img src="${evento.imagen}" alt="${evento.nombre}" style="width: 100%; height: 140px; object-fit: cover; border-radius: 4px; border: 1px solid #444; margin-bottom: 10px;">
-                        <h4 style="color: gold; margin: 0 0 8px 0; font-family: 'Cinzel', serif;">${evento.nombre}</h4>
-                        <p style="color: #ddd; font-size: 0.9em; margin-bottom: 12px; line-height: 1.4;">${evento.descripcion}</p>
-                        <p style="color: #aaa; font-size: 0.8em; margin-bottom: 15px;">⏳ ${evento.fecha_inicio.split(' ')[0]} al ${evento.fecha_fin.split(' ')[0]}</p>
-                        <button class="btn-primary" style="padding: 8px 15px; font-size: 0.9em;" onclick="inscribirseEvento('${evento.id}')">INSCRIBIRSE</button>
-                    </div>
-                `;
-                contenedor.innerHTML += tarjetaHtml;
-            });
+                            // Si la imagen está vacía, usamos una de relleno
+                            const imagenValida = (evento.imagen && evento.imagen.trim() !== "" && evento.imagen !== "undefined")
+                                                 ? evento.imagen
+                                                 : 'https://via.placeholder.com/280x140?text=Sin+Imagen';
+
+                            const tarjetaHtml = `
+                                <div style="background: rgba(0,0,0,0.8); border: 1px solid #e67e22; padding: 15px; border-radius: 8px; width: 280px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.5);">
+                                    <img src="${imagenValida}" alt="${evento.nombre}" style="width: 100%; height: 140px; object-fit: cover; border-radius: 4px; border: 1px solid #444; margin-bottom: 10px;">
+                                    <h4 style="color: gold; margin: 0 0 8px 0; font-family: 'Cinzel', serif;">${evento.nombre}</h4>
+                                    <p style="color: #ddd; font-size: 0.9em; margin-bottom: 12px; line-height: 1.4;">${evento.descripcion}</p>
+                                    <p style="color: #aaa; font-size: 0.8em; margin-bottom: 15px;">⏳ ${evento.fecha_inicio.split(' ')[0]} al ${evento.fecha_fin.split(' ')[0]}</p>
+                                    <button class="btn-primary" style="padding: 8px 15px; font-size: 0.9em;" onclick="inscribirseEvento('${evento.id}')">INSCRIBIRSE</button>
+                                </div>
+                            `;
+                            contenedor.innerHTML += tarjetaHtml;
+                        });
+
+
         } else {
             document.getElementById('contenedor-eventos').innerHTML = '<p style="color: #ff4444; text-align: center;">Error al cargar las misiones.</p>';
         }
