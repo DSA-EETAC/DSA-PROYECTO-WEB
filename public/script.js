@@ -542,33 +542,52 @@ const contenedor = document.getElementById('contenedor-eventos');
             }
 
             // Recorremos la lista de eventos que nos da MariaDB
+
             eventos.forEach(evento => {
-                // Si la imagen viene vacía o es 'undefined' como texto, usamos un placeholder absoluto
-                // IMPORTANTE: URL absoluta con https:// para evitar el error ERR_CONNECTION_CLOSED
-                const imgValida = (evento.imagen && evento.imagen.trim() !== "" && evento.imagen !== "undefined")
-                                  ? evento.imagen
-                                  : 'https://via.placeholder.com/280x140?text=Sin+Imagen';
+
+                console.log("EVENTO RECIBIDO:", evento);
+                console.log("URL IMAGEN:", evento.imagen_URL);
+
+                const imgValida =
+                    (evento.imagen_URL &&
+                     evento.imagen_URL.trim() !== "" &&
+                     evento.imagen_URL !== "undefined")
+                        ? evento.imagen_URL
+                        : "img/sin-imagen.jpg";
 
                 const tarjetaHtml = `
                     <div style="background: rgba(0,0,0,0.8); border: 1px solid #e67e22; padding: 15px; border-radius: 8px; width: 280px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.5); margin: 10px;">
+
                         <img src="${imgValida}"
                              alt="${evento.nombre}"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/280x140?text=Imagen+No+Disponible';"
+                             onerror="this.onerror=null; this.src='img/sin-imagen.jpg';"
                              style="width: 100%; height: 140px; object-fit: cover; border-radius: 4px; border: 1px solid #444; margin-bottom: 10px;">
 
-                        <h4 style="color: gold; margin: 0 0 8px 0; font-family: 'Cinzel', serif;">${evento.nombre}</h4>
-                        <p style="color: #ddd; font-size: 0.9em; margin-bottom: 12px; line-height: 1.4;">${evento.descripcion}</p>
+                        <h4 style="color: gold; margin: 0 0 8px 0; font-family: 'Cinzel', serif;">
+                            ${evento.nombre}
+                        </h4>
+
+                        <p style="color: #ddd; font-size: 0.9em; margin-bottom: 12px; line-height: 1.4;">
+                            ${evento.descripcion}
+                        </p>
 
                         <p style="color: #aaa; font-size: 0.8em; margin-bottom: 15px;">
                             ⏳ ${evento.fecha_inicio ? evento.fecha_inicio.split(' ')[0] : 'Hoy'}
                             al ${evento.fecha_fin ? evento.fecha_fin.split(' ')[0] : '...'}
                         </p>
 
-                        <button class="btn-primary" style="padding: 8px 15px; font-size: 0.9em;" onclick="inscribirseEvento('${evento.id}')">INSCRIBIRSE</button>
+                        <button class="btn-primary"
+                                style="padding: 8px 15px; font-size: 0.9em;"
+                                onclick="inscribirseEvento('${evento.id}')">
+                            INSCRIBIRSE
+                        </button>
                     </div>
                 `;
+
                 contenedor.innerHTML += tarjetaHtml;
             });
+
+
         } else {
             contenedor.innerHTML = '<p style="color: #ff4444; text-align: center;">Error al contactar con el tablón de misiones.</p>';
         }
