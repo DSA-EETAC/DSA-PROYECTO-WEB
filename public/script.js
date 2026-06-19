@@ -21,7 +21,7 @@ async function hacerRegistro() {
     const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Comprobacion de formato de correo
     if (!regexCorreo.test(correo)) {
         avisar("El formato del correo electrónico no es válido.", true);
-        return; // Cortamos la ejecución aquí
+        return;
     }
 
     // Creamos objeto formato JSON
@@ -29,20 +29,16 @@ async function hacerRegistro() {
         nombre: nombre,
         password: password,
         mail: correo
-        //telefono: telefono
     };
 
     try {
         // Enviamos petición POST a backend
         const respuesta = await fetch(`${URL_BASE}/registro`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json',
-                'Accept' : 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json', 'Accept' : 'application/json' },
             body: JSON.stringify(datosUsuario)
         });
 
-        // 4. Analizamos qué nos dice BackEnd
         if (respuesta.status === 201) {
             avisar("¡Explorador registrado con éxito!", false);
             const datosUsuario = await respuesta.json();
@@ -54,14 +50,19 @@ async function hacerRegistro() {
 
             await actualizarMochilaDesdeBaseDeDatos(datosUsuario.nombre);
 
-            //Limpiar campos de register
+            // Limpiar campos de register
             document.getElementById('reg-nombre').value = "";
             document.getElementById('reg-pass').value = "";
             document.getElementById('reg-pass-confirm').value = "";
             document.getElementById('reg-correo').value = "";
 
-            document.getElementById("seccion-registro").classList.add("hidden");
+            // Ocultamos la caja del login entera y mostramos el dashboard ancho
+            document.getElementById("contenedor-login").classList.add("hidden");
             document.getElementById("seccion-dashboard").classList.remove("hidden");
+
+            // Restablecemos internamente la vista a 'login' por si cierra sesión después
+            document.getElementById("seccion-registro").classList.add("hidden");
+            document.getElementById("seccion-login").classList.remove("hidden");
 
             cambiarPestana('tab-perfil', 'btn-perfil');
 
@@ -80,14 +81,13 @@ async function hacerRegistro() {
     }
 }
 
-
 async function hacerLogin() {
     const nombre = document.getElementById('login-nombre').value;
     const password = document.getElementById('login-pass').value;
 
     if (!nombre || !password) {
         avisar("Rellena tus credenciales, explorador.", true);
-        return; // Ahora solo corta la ejecución si falta algún campo
+        return;
     }
 
     const credenciales = {
@@ -98,12 +98,9 @@ async function hacerLogin() {
     try {
         const respuesta = await fetch(`${URL_BASE}/login`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify(credenciales)
-        }); // <-- Ahora se cierra en el lugar correcto
+        });
 
         if (respuesta.status === 200) {
             avisar("¡Acceso concedido! Abriendo el campamento...", false);
@@ -118,8 +115,10 @@ async function hacerLogin() {
 
             await actualizarMochilaDesdeBaseDeDatos(datosUsuario.nombre);
 
-            document.getElementById("seccion-login").classList.add("hidden");
+            // Ocultamos la caja del login entera y mostramos el dashboard ancho
+            document.getElementById("contenedor-login").classList.add("hidden");
             document.getElementById("seccion-dashboard").classList.remove("hidden");
+
             cambiarPestana('tab-perfil', 'btn-perfil');
 
         } else if (respuesta.status === 400) {
@@ -137,7 +136,6 @@ async function hacerLogin() {
 }
 
 async function actualizarMochilaDesdeBaseDeDatos(nombreUsuario) {
-
     if (!nombreUsuario || nombreUsuario === "undefined") {
         console.warn("Mochila: No hay usuario logueado, abortando carga.");
         return;
@@ -153,17 +151,14 @@ async function actualizarMochilaDesdeBaseDeDatos(nombreUsuario) {
 
         if (respuesta.status === 200) {
             const inventarioJugador = await respuesta.json();
-            const listaItems = inventarioJugador.objetos; // Esto recibe el array de Strings de Java
-            cargarMochilaDesdeJava(listaItems); // Se lo pasamos a la función que pinta en HTML
+            const listaItems = inventarioJugador.objetos;
+            cargarMochilaDesdeJava(listaItems);
         }
-
     } catch (error) {
         console.error("Error al recuperar el inventario relacional:", error);
     }
 }
 
-
-// Cambio visual entre Login y Registro
 function cambiarVista(vista) {
     const login = document.getElementById('seccion-login');
     const registro = document.getElementById('seccion-registro');
@@ -178,33 +173,21 @@ function cambiarVista(vista) {
     }
 }
 
-// Muestra mensajes en la pantalla (Dorado OK, Rojo error)
 function avisar(texto, esError) {
     const divMensaje = document.getElementById('mensaje-sistema');
     divMensaje.innerText = texto;
     divMensaje.style.color = esError ? "#ff4444" : "#ffcc33";
 }
 
-
-// Función para comprar objetos en el Tienda
 async function comprarItem(nombreObjeto, precio) {
     const nombreJugador = localStorage.getItem("jugadorActual");
-// 1. CLÁUSULAS DE PROTECCIÓN (Guard Clauses)
-    // Si no hay usuario, o el usuario es "undefined", no hacemos nada.
+
     if (!nombreJugador || nombreJugador === "undefined" || nombreJugador === "null") {
         console.error("Error: No hay un usuario logueado en localStorage.");
         avisar("Debes iniciar sesión para comprar.", true);
         return;
     }
 
-    // Comprobamos que URL_BASE existe (evita errores 404 por variables vacías)
-    if (typeof URL_BASE === 'undefined') {
-        console.error("Error crítico: URL_BASE no está definida.");
-        avisar("Error de configuración del cliente.", true);
-        return;
-    }
-
-    // 2. Construcción del paquete
     const datosCompra = {
         nombreJugador: nombreJugador,
         nombreObjeto: nombreObjeto,
@@ -214,28 +197,21 @@ async function comprarItem(nombreObjeto, precio) {
     console.log("Enviando compra a:", `${URL_BASE}/comprar`, "Datos:", datosCompra);
 
     try {
-        // 3. Envío al servidor
         const respuesta = await fetch(`${URL_BASE}/comprar`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify(datosCompra)
         });
 
-        // 4. Manejo de estados de respuesta
         if (respuesta.status === 200) {
             avisar("¡Has comprado " + nombreObjeto + "!", false);
 
-            // Actualización del contador en la interfaz
             const contador = document.getElementById("contador-monedas");
             if (contador) {
                 let monedasActuales = parseInt(contador.innerText) || 0;
                 contador.innerText = monedasActuales - precio;
             }
 
-            // Añadir a la mochila (asegúrate de que esta función exista)
             if (typeof actualizarMochilaHTML === 'function') {
                 actualizarMochilaHTML(nombreObjeto);
             }
@@ -243,7 +219,6 @@ async function comprarItem(nombreObjeto, precio) {
         } else if (respuesta.status === 402) {
             avisar("No tienes suficientes monedas para " + nombreObjeto + ".", true);
         } else {
-            // Captura errores inesperados del servidor (ej. 500)
             avisar("Error en la transacción. Código: " + respuesta.status, true);
         }
     } catch (error) {
@@ -252,67 +227,57 @@ async function comprarItem(nombreObjeto, precio) {
     }
 }
 
-// Función extra para pintar el objeto en la pestaña de la mochila
 function actualizarMochilaHTML(nuevoObjeto) {
     const cajaInventario = document.getElementById("tab-inventario");
 
-    // Si la mochila está vacía, borramos el texto y preparamos una lista
     if (cajaInventario.innerHTML.includes("Tu mochila está vacía por ahora.")) {
         cajaInventario.innerHTML = `<h3 style="color: white; text-align: center;">Tus Pertinencias</h3><ul id="lista-mochila" style="color: gold; font-size: 1.1em;"></ul>`;
     }
 
-    // Añadimos el nuevo objeto a la lista
     const lista = document.getElementById("lista-mochila");
     lista.innerHTML += `<li>✨ ${nuevoObjeto}</li>`;
 }
 
-// Función mejorada para cambiar entre pestañas
-
 function cambiarPestana(idPestana, idBoton) {
-    // 1. Ocultamos TODAS las cajas (¡Incluida la de eventos!)
     document.getElementById('tab-tienda').style.display = 'none';
     document.getElementById('tab-inventario').style.display = 'none';
     document.getElementById('tab-perfil').style.display = 'none';
     document.getElementById('tab-grupos').style.display = 'none';
     document.getElementById('tab-eventos').style.display = 'none';
 
-    // 2. Le quitamos el color 'activo' a TODOS los botones
     document.getElementById('btn-tienda').classList.remove('active');
     document.getElementById('btn-inventario').classList.remove('active');
     document.getElementById('btn-perfil').classList.remove('active');
     document.getElementById('btn-grupos').classList.remove('active');
     document.getElementById('btn-eventos').classList.remove('active');
 
-    // 3. Mostramos la caja pedida y encendemos su botón
     document.getElementById(idPestana).style.display = 'block';
     document.getElementById(idBoton).classList.add('active');
 
-    // Borramos cualquier mensaje que hubiera en pantalla
     document.getElementById('mensaje-sistema').innerText = "";
 
-    // 4. Cargamos la información del servidor según la pestaña abierta
     if (idPestana === 'tab-grupos') {
         cargarGrupos();
     }
     if (idPestana === 'tab-eventos') {
-        cargarEventos(); // ¡Esto es lo que hace que deje de poner "Buscando pergaminos..."!
+        cargarEventos();
     }
 }
 
-// Función para cerrar sesión y volver a la pantalla de inicio
 function cerrarSesion() {
     localStorage.removeItem("jugadorActual");
 
-    // Ocultamos el dashboard y mostramos el login
     document.getElementById("seccion-dashboard").classList.add("hidden");
+    document.getElementById("contenedor-login").classList.remove("hidden");
     document.getElementById("seccion-login").classList.remove("hidden");
+    document.getElementById("seccion-registro").classList.add("hidden");
 
-    // Limpiamos los campos de texto
     document.getElementById("login-nombre").value = "";
     document.getElementById("login-pass").value = "";
+
+    document.getElementById('mensaje-sistema').innerText = "";
 }
 
-// Funcion que dibuja el inventario
 function cargarMochilaDesdeJava(listaInventario) {
     const cajaInventario = document.getElementById("tab-inventario");
     if (!listaInventario || listaInventario.length === 0) {
@@ -332,17 +297,13 @@ function cargarMochilaDesdeJava(listaInventario) {
     cajaInventario.innerHTML = htmlLista;
 }
 
-// Función para pedir los ítems al servidor
 function cargarTienda() {
     fetch(`${URL_BASE}/tienda`)
         .then(response => {
-            if (!response.ok) {
-                throw new Error("Error en la respuesta del servidor");
-            }
+            if (!response.ok) throw new Error("Error en la respuesta del servidor");
             return response.json();
         })
         .then(datosTienda => {
-            // ¡OJO AQUÍ! Extraemos la lista 'items' de dentro del objeto
             const listaItems = datosTienda.items;
             dibujarTienda(listaItems);
         })
@@ -353,37 +314,33 @@ function cargarTienda() {
         });
 }
 
-// Función que pinta el HTML de la tienda
 function dibujarTienda(listaItems) {
     const contenedor = document.getElementById('contenedor-items-tienda');
-    contenedor.innerHTML = ''; // Vaciamos por si acaso
+    contenedor.innerHTML = '';
 
     if (!listaItems || listaItems.length === 0) {
         contenedor.innerHTML = '<p style="color: #aaa; text-align: center;">El mercader no tiene existencias hoy.</p>';
         return;
     }
 
-    // Recorremos el array de JSON (cada item tiene id, nombre, precio, tipo)
     listaItems.forEach(item => {
-        // Ponemos el item.id a comprarItem en lugar del nombre.
+        // Estilos limpios adaptados a CSS Grid
         const tarjetaHtml = `
-            <div style="flex: 1; min-width: 150px; border: 1px solid rgba(255,255,255,0.2); padding: 10px; text-align: center; background: rgba(0,0,0,0.5);">
-                <h4 style="color: white;">${item.nombre}</h4>
-                <p style="color: gold;">${item.precio} 🪙</p>
-                <p style="color: #ccc; font-size: 0.8em; margin-bottom: 8px;">${item.tipo}</p>
-                <button class="btn-primary" style="padding: 5px; font-size: 0.8em;" onclick="comprarItem('${item.nombre}', ${item.precio})">COMPRAR</button>
+            <div style="border: 1px solid rgba(255,255,255,0.2); padding: 15px; text-align: center; background: rgba(0,0,0,0.5); border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                <h4 style="color: white; margin: 0 0 5px 0; font-family: 'Cinzel', serif;">${item.nombre}</h4>
+                <p style="color: gold; font-weight: bold; margin-bottom: 5px;">${item.precio} 🪙</p>
+                <p style="color: #ccc; font-size: 0.8em; margin-bottom: 12px;">${item.tipo}</p>
+                <button class="btn-primary" style="padding: 8px; font-size: 0.9em;" onclick="comprarItem('${item.nombre}', ${item.precio})">COMPRAR</button>
             </div>
         `;
         contenedor.innerHTML += tarjetaHtml;
     });
 }
 
-// Llamar a cargarTienda() cuando la página arranque
 window.onload = function() {
     cargarTienda();
 };
 
-// Función para pedir los grupos al servidor
 async function cargarGrupos() {
     try {
         const respuesta = await fetch(`${URL_BASE}/grupos`, {
@@ -403,10 +360,9 @@ async function cargarGrupos() {
     }
 }
 
-// Función para pintar el HTML de los grupos
 function dibujarGrupos(listaGrupos) {
     const contenedor = document.getElementById('contenedor-grupos');
-    contenedor.innerHTML = ''; // Vaciamos primero
+    contenedor.innerHTML = '';
 
     if (!listaGrupos || listaGrupos.length === 0) {
         contenedor.innerHTML = '<p style="color: #aaa; text-align: center;">No hay grupos disponibles ahora mismo.</p>';
@@ -414,11 +370,12 @@ function dibujarGrupos(listaGrupos) {
     }
 
     listaGrupos.forEach(grupo => {
+        // Estilos limpios adaptados a CSS Grid
         const tarjetaHtml = `
-            <div style="flex: 1; min-width: 150px; border: 1px solid rgba(255,255,255,0.2); padding: 10px; text-align: center; background: rgba(0,0,0,0.5);">
-                <h4 style="color: white;">${grupo.nombre}</h4>
-                <p style="color: #ccc; font-size: 0.8em; margin-bottom: 8px;">ID: ${grupo.id}</p>
-                <button class="btn-primary" style="padding: 5px; font-size: 0.8em; background-color: #27ae60; border-color: #2ecc71;" 
+            <div style="border: 1px solid rgba(255,255,255,0.2); padding: 15px; text-align: center; background: rgba(0,0,0,0.5); border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                <h4 style="color: white; margin: 0 0 5px 0; font-family: 'Cinzel', serif;">${grupo.nombre}</h4>
+                <p style="color: #ccc; font-size: 0.8em; margin-bottom: 12px;">ID: ${grupo.id}</p>
+                <button class="btn-primary" style="padding: 8px; font-size: 0.9em; background-color: #27ae60; border-color: #2ecc71;"
                 onclick="unirseGrupo('${grupo.id}', '${grupo.nombre}')">UNIRSE</button>
             </div>
         `;
@@ -426,22 +383,14 @@ function dibujarGrupos(listaGrupos) {
     });
 }
 
-// Función para unirse a un grupo
 async function unirseGrupo(idGrupo, nombreGrupo) {
     const nombreJugador = localStorage.getItem("jugadorActual");
-
-    // Tu backend actual pide un objeto User en el body del POST para unirse
-    const datosUsuario = {
-        nombre: nombreJugador
-    };
+    const datosUsuario = { nombre: nombreJugador };
 
     try {
         const respuesta = await fetch(`${URL_BASE}/grupos/${idGrupo}/unirse`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify(datosUsuario)
         });
 
@@ -454,8 +403,8 @@ async function unirseGrupo(idGrupo, nombreGrupo) {
         avisar("El servidor de clanes no responde.", true);
     }
 }
+
 async function consultarMiGrupo() {
-    // Usamos la misma clave que usas en unirseGrupo
     const nombreJugador = localStorage.getItem("jugadorActual");
 
     if (!nombreJugador) {
@@ -464,42 +413,30 @@ async function consultarMiGrupo() {
     }
 
     try {
-        // Hacemos la petición GET usando tu URL_BASE
         const respuesta = await fetch(`${URL_BASE}/usuarios/${nombreJugador}/grupo`, {
             method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
+            headers: { 'Accept': 'application/json' }
         });
 
         if (respuesta.status === 200) {
-            // Transformamos la respuesta a JSON
             const data = await respuesta.json();
-
-            // Obtenemos los elementos del HTML
             const contenedor = document.getElementById("contenedor-grupo");
             const titulo = document.getElementById("grupo-titulo");
             const mensaje = document.getElementById("grupo-mensaje");
             const lista = document.getElementById("grupo-lista-miembros");
 
-            // Limpiamos el contenido anterior
             titulo.innerText = "";
             mensaje.innerText = "";
             lista.innerHTML = "";
-
-            // Mostramos el contenedor (quitando la clase que lo oculta)
             contenedor.classList.remove("hidden");
 
             if (data.tieneGrupo) {
-                // SÍ TIENE GRUPO
                 titulo.innerText = "Mi Equipo: " + data.nombreGrupo;
                 mensaje.innerText = "Integrantes del grupo:";
 
                 data.miembros.forEach(miembro => {
                     let li = document.createElement("li");
                     li.innerText = miembro;
-
-                    // Resaltamos en negrita si es el propio jugador
                     if (miembro === nombreJugador) {
                         li.style.fontWeight = "bold";
                         li.innerText += " (Tú)";
@@ -507,11 +444,9 @@ async function consultarMiGrupo() {
                     lista.appendChild(li);
                 });
             } else {
-                // NO TIENE GRUPO
                 titulo.innerText = "Sin Grupo";
                 mensaje.innerText = "Actualmente no perteneces a ningún grupo. ¡Únete a uno en la sección de grupos!";
             }
-
         } else {
             avisar("Error al intentar obtener la información de tu grupo.", true);
         }
@@ -519,11 +454,9 @@ async function consultarMiGrupo() {
         avisar("El servidor de clanes no responde.", true);
     }
 }
+
 async function cargarEventos() {
-
-const contenedor = document.getElementById('contenedor-eventos');
-
-    // Limpiamos y ponemos un aviso de carga inicial
+    const contenedor = document.getElementById('contenedor-eventos');
     contenedor.innerHTML = '<p style="text-align: center; color: white;">Buscando pergaminos en el tablón...</p>';
 
     try {
@@ -534,30 +467,23 @@ const contenedor = document.getElementById('contenedor-eventos');
 
         if (respuesta.status === 200) {
             const eventos = await respuesta.json();
-            contenedor.innerHTML = ''; // Limpiamos el mensaje de carga
+            contenedor.innerHTML = '';
 
             if (!eventos || eventos.length === 0) {
                 contenedor.innerHTML = '<p style="color: #aaa; text-align: center;">No hay misiones disponibles actualmente.</p>';
                 return;
             }
 
-            // Recorremos la lista de eventos que nos da MariaDB
-
             eventos.forEach(evento => {
-
                 console.log("EVENTO RECIBIDO:", evento);
-                console.log("URL IMAGEN:", evento.imagen_URL);
 
-                const imgValida =
-                    (evento.imagen_URL &&
-                     evento.imagen_URL.trim() !== "" &&
-                     evento.imagen_URL !== "undefined")
-                        ? evento.imagen_URL
-                        : "img/sin-imagen.jpg";
+                const imgValida = (evento.imagen_URL && evento.imagen_URL.trim() !== "" && evento.imagen_URL !== "undefined")
+                    ? evento.imagen_URL
+                    : "img/sin-imagen.jpg";
 
+                // Estilos limpios y distribuidos sin anchos fijos para CSS Grid
                 const tarjetaHtml = `
-                    <div style="background: rgba(0,0,0,0.8); border: 1px solid #e67e22; padding: 15px; border-radius: 8px; width: 280px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.5); margin: 10px;">
-
+                    <div style="background: rgba(0,0,0,0.8); border: 1px solid #e67e22; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.5); display: flex; flex-direction: column; justify-content: space-between;">
                         <img src="${imgValida}"
                              alt="${evento.nombre}"
                              onerror="this.onerror=null; this.src='img/sin-imagen.jpg';"
@@ -583,11 +509,8 @@ const contenedor = document.getElementById('contenedor-eventos');
                         </button>
                     </div>
                 `;
-
                 contenedor.innerHTML += tarjetaHtml;
             });
-
-
         } else {
             contenedor.innerHTML = '<p style="color: #ff4444; text-align: center;">Error al contactar con el tablón de misiones.</p>';
         }
@@ -595,10 +518,7 @@ const contenedor = document.getElementById('contenedor-eventos');
         console.error('Error cargando eventos:', error);
         contenedor.innerHTML = '<p style="color: #ff4444; text-align: center;">El servidor de misiones está caído.</p>';
     }
-
 }
-
-// Función para cuando el usuario hace clic en el botón de Inscribirse
 
 async function inscribirseEvento(idDelEvento) {
     console.log("🚀 PASO 1: Botón presionado. Intentando inscribir en:", idDelEvento);
@@ -633,34 +553,31 @@ async function inscribirseEvento(idDelEvento) {
     }
 }
 
-    // pedir el ranking al servidor
-    async function cargarRankingEvento(idEvento) {
-        console.log("🏆 RANKING PASO 1: Pidiendo datos para el evento:", idEvento);
-        const contenedor = document.getElementById('contenedor-eventos');
+async function cargarRankingEvento(idEvento) {
+    console.log("🏆 RANKING PASO 1: Pidiendo datos para el evento:", idEvento);
+    const contenedor = document.getElementById('contenedor-eventos');
 
-        if (contenedor) {
-            contenedor.innerHTML = '<p style="color: white; text-align: center;">Calculando puntuaciones...</p>';
-        }
-
-        try {
-            const respuesta = await fetch(`${URL_BASE}/eventos/${idEvento}/ranking`, {
-                method: 'GET',
-                headers: { 'Accept': 'application/json' }
-            });
-
-            if (respuesta.status === 200) {
-                const ranking = await respuesta.json();
-                console.log("🏆 RANKING PASO 2: Datos recibidos:", ranking);
-                dibujarRanking(ranking);
-            } else {
-                if (contenedor) contenedor.innerHTML = '<p style="color: #ff4444; text-align: center;">Error al cargar la clasificación.</p>';
-            }
-        } catch (error) {
-            console.error('Error cargando el ranking:', error);
-        }
+    if (contenedor) {
+        contenedor.innerHTML = '<p style="color: white; text-align: center;">Calculando puntuaciones...</p>';
     }
 
-    // pintar el podio en la pantalla
+    try {
+        const respuesta = await fetch(`${URL_BASE}/eventos/${idEvento}/ranking`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+
+        if (respuesta.status === 200) {
+            const ranking = await respuesta.json();
+            console.log("🏆 RANKING PASO 2: Datos recibidos:", ranking);
+            dibujarRanking(ranking);
+        } else {
+            if (contenedor) contenedor.innerHTML = '<p style="color: #ff4444; text-align: center;">Error al cargar la clasificación.</p>';
+        }
+    } catch (error) {
+        console.error('Error cargando el ranking:', error);
+    }
+}
 
 function dibujarRanking(listaJugadores) {
     const contenedor = document.getElementById('contenedor-eventos');

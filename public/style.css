@@ -268,3 +268,82 @@ h1 {
     font-weight: bold;
     margin-bottom: 15px;
 }
+
+.dashboard-container {
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(145deg, #222, #111);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 2px solid #333;
+    box-shadow: 0 0 30px rgba(0,0,0,0.8);
+    width: 90%; /* Ocupa el 90% del ancho en móviles */
+    max-width: 1000px; /* Pero no se hace infinito en monitores gigantes */
+    margin: 20px auto; /* Centrado */
+    /* Para móviles, asegúrate de que se puede scrollear si es muy largo */
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* 2. La Magia: Grid Fluido para las tarjetas (Eventos, Tienda, Grupos) */
+.grid-fluido {
+    display: grid;
+    /* Crea columnas de al menos 250px. Si cabe otra, la pone. Si no, baja de línea */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding-top: 15px;
+}
+
+/* Aseguramos que las tarjetas dentro del grid ocupen todo su espacio */
+.grid-fluido > div {
+    width: 100% !important; /* Sobrescribe el 'width: 280px' que tienes en JS */
+    margin: 0 !important;   /* Sobrescribe los márgenes en JS para usar el 'gap' del grid */
+}
+
+/* 3. Menú de pestañas para móviles */
+.flex-wrap-mobile {
+    display: flex;
+    flex-wrap: wrap; /* Si las pestañas no caben en una línea, bajan a la siguiente */
+    justify-content: center;
+}
+
+/* 4. Scrollbars personalizadas (Opcional, pero queda genial en el tema oscuro) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #111;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #d4af37;
+}
+
+/* --- MEDIA QUERIES (Ajustes específicos para pantallas muy pequeñas) --- */
+@media screen and (max-width: 600px) {
+    body {
+        align-items: flex-start; /* Evita que el teclado tape el login en móviles */
+        padding-top: 20px;
+    }
+
+    .card {
+        width: 90%;
+        padding: 1.5rem; /* Menos relleno lateral en móviles */
+    }
+
+    h1 {
+        font-size: 2rem; /* Título un poco más pequeño */
+    }
+
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    .tab-btn {
+        font-size: 0.8rem; /* Pestañas más pequeñas para que quepan */
+        padding: 8px 5px;
+    }
+}

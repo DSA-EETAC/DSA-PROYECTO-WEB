@@ -218,7 +218,30 @@ public class SessionImpl implements Session {
     }
 
     public void delete(Object object) {
+        // borrar una inscripción en concreto
+        if (object instanceof Model.InscripcionEvento) {
+            Model.InscripcionEvento insc = (Model.InscripcionEvento) object;
+            String sql = "DELETE FROM InscripcionEvento WHERE user_id = ? AND evento_id = ?";
+            try (PreparedStatement ptsm = conn.prepareStatement(sql)) {
+                ptsm.setInt(1, insc.getUser_id());
+                ptsm.setString(2, insc.getEvento_id());
+                ptsm.executeUpdate();
+            } catch (SQLException e) {
+                System.err.println("Error al borrar inscripción: " + e.getMessage());
+            }
+            return;
+        }
 
+        // Borrado genérico para User, Item, Grupo asumiendo la columna id
+        String sql = "DELETE FROM " + object.getClass().getSimpleName() + " WHERE id = ?";
+        try (PreparedStatement ptsm = conn.prepareStatement(sql)) {
+            // Usamos tu ObjectHelper para sacar la ID automáticamente
+            ptsm.setObject(1, ObjectHelper.getter(object, "id"));
+            int filas = ptsm.executeUpdate();
+            if (filas > 0) System.out.println("¡Objeto eliminado correctamente de la BD!");
+        } catch (SQLException e) {
+            System.err.println("Error al borrar el objeto: " + e.getMessage());
+        }
     }
 
     public List<Object> findAll(Class theClass) {
