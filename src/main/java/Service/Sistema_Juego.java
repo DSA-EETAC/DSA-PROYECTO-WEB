@@ -130,11 +130,11 @@ public class Sistema_Juego {
     }
 
     @GET
-    @Path("/inventario/{id}")
+    @Path("/inventario/{nombre}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerInventario(@PathParam("id") int idUsuario) {
+    public Response obtenerInventario(@PathParam("nombre") String nombreUsuario) {
         // Le pasamos el ID numérico al manager
-        List<String> inventario = manager.obtenerInventarioUsuario(idUsuario);
+        List<String> inventario = manager.obtenerInventarioUsuarioPorNombre(nombreUsuario);
         Model.InventarioJugador respuesta = new Model.InventarioJugador(inventario);
         return Response.status(200).entity(respuesta).build();
     }
@@ -185,10 +185,10 @@ public class Sistema_Juego {
         }
     }
     @GET
-    @Path("/usuarios/{id}/grupo")
+    @Path("/usuarios/{nombre}/grupo")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerGrupoUsuario(@PathParam("id") int id) {
-        Model.DetalleGrupo detalle = manager.obtenerDetalleGrupoUsuario(id);
+    public Response obtenerGrupoUsuario(@PathParam("nombre") String nombre) {
+        Model.DetalleGrupo detalle = manager.obtenerDetalleGrupoUsuarioPorNombre(nombre);
 
         // Retornamos un código 200 con el objeto JSON estructurado
         return Response.status(200).entity(detalle).build();
@@ -234,6 +234,4 @@ public class Sistema_Juego {
             return Response.status(404).entity("Error: No se ha podido actualizar el saldo del usuario.").build();
         }
     }
-
-
 }

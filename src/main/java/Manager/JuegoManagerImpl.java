@@ -268,7 +268,24 @@ public class JuegoManagerImpl implements JuegoManager {
         }
         return false;
     }
+    @Override
+    public List<String> obtenerInventarioUsuarioPorNombre(String nombreUsuario) {
+        // 1. Buscamos el usuario por nombre para obtener su ID real
+        User u = usuarioDAO.getUsuario(nombreUsuario);
+        if (u != null) {
+            return obtenerInventarioUsuario(u.getId());
+        }
+        return new ArrayList<>();
+    }
 
+    @Override
+    public DetalleGrupo obtenerDetalleGrupoUsuarioPorNombre(String nombre) {
+        User u = usuarioDAO.getUsuario(nombre);
+        if (u != null) {
+            return obtenerDetalleGrupoUsuario(u.getId());
+        }
+        return new DetalleGrupo();
+    }
 }
 
 

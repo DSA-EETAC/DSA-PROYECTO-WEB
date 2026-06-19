@@ -33,4 +33,7 @@ public interface JuegoManager {
     public DetalleGrupo obtenerDetalleGrupoUsuario(int id);
 
     boolean sumarMonedas(String nombreJugador, int cantidad);
+    List<String> obtenerInventarioUsuarioPorNombre(String nombreUsuario);
+    DetalleGrupo obtenerDetalleGrupoUsuarioPorNombre(String nombre);
+
 }
