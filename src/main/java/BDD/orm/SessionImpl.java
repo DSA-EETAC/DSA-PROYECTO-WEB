@@ -34,6 +34,26 @@ public class SessionImpl implements Session {
             return; // ¡Importante! Salimos para que no intente ejecutar el QueryHelper de abajo
         }
 
+        if (entity instanceof Model.User) {
+            Model.User u = (Model.User) entity;
+            String sql = "INSERT INTO User (nombre, password, mail, monedas) VALUES (?, ?, ?, ?)";
+
+            try (PreparedStatement ptsm = conn.prepareStatement(sql)) {
+                ptsm.setString(1, u.getNombre());
+                ptsm.setString(2, u.getPassword());
+                ptsm.setString(3, u.getMail());
+                ptsm.setInt(4, 0); // Les damos 0 monedas al empezar
+
+                ptsm.executeUpdate();
+                System.out.println("¡ÉXITO! Usuario registrado en BD usando SQL manual.");
+            } catch (SQLException e) {
+                System.err.println("Error al insertar User (¿El nombre o correo ya existe?): " + e.getMessage());
+            }
+            return;
+        }
+
+
+
         String insertQuery = QueryHelper.createQueryINSERT(entity);
         PreparedStatement pstm = null;
 
