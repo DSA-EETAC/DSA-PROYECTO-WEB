@@ -17,12 +17,24 @@ public class SessionImpl implements Session {
 
     public void save(Object entity) {
 
+        if (entity instanceof Model.InscripcionEvento) {
+            Model.InscripcionEvento inscripcion = (Model.InscripcionEvento) entity;
+            String sql = "INSERT INTO InscripcionEvento (user_id, evento_id, puntuacion) VALUES (?, ?, ?)";
 
-        // INSERT INTO Partida () ()
+            try (PreparedStatement ptsm = conn.prepareStatement(sql)) {
+                ptsm.setInt(1, inscripcion.getUser_id());
+                ptsm.setString(2, inscripcion.getEvento_id());
+                ptsm.setInt(3, inscripcion.getPuntuacion());
+
+                ptsm.executeUpdate();
+                System.out.println("¡ÉXITO! Inscripción guardada en la Base de Datos usando SQL manual.");
+            } catch (SQLException e) {
+                System.err.println("Error al insertar (¿El usuario ya estaba apuntado a este evento?): " + e.getMessage());
+            }
+            return; // ¡Importante! Salimos para que no intente ejecutar el QueryHelper de abajo
+        }
+
         String insertQuery = QueryHelper.createQueryINSERT(entity);
-        // INSERT INTO User (ID, lastName, firstName, address, city) VALUES (0, ?, ?, ?,?)
-
-
         PreparedStatement pstm = null;
 
         try {
@@ -36,10 +48,12 @@ public class SessionImpl implements Session {
             pstm.executeUpdate();
 
         } catch (SQLException e) {
+            System.err.println("Error del QueryHelper en el ORM:");
             e.printStackTrace();
         }
-
     }
+
+
 
     public void close() {
 
