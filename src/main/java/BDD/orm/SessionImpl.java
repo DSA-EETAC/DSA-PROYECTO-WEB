@@ -156,6 +156,27 @@ public class SessionImpl implements Session {
             }
         }
 
+        else if (object instanceof Model.InscripcionEvento) {
+            Model.InscripcionEvento inscripcion = (Model.InscripcionEvento) object;
+            // Actualizamos la puntuación filtrando por el ID del usuario y el ID del evento
+            String sql = "UPDATE InscripcionEvento SET puntuacion = ? WHERE user_id = ? AND evento_id = ?";
+
+            try (PreparedStatement ptsm = conn.prepareStatement(sql)) {
+                ptsm.setInt(1, inscripcion.getPuntuacion());
+                ptsm.setInt(2, inscripcion.getUser_id());
+                ptsm.setString(3, inscripcion.getEvento_id());
+
+                int filasModificadas = ptsm.executeUpdate();
+                if (filasModificadas > 0) {
+                    System.out.println("¡Puntuación de la inscripción actualizada con éxito!");
+                } else {
+                    System.out.println("Cuidado: No se encontró la inscripción para actualizar.");
+                }
+            } catch (SQLException e) {
+                System.out.println("Error al actualizar la inscripción: " + e.getMessage());
+            }
+        }
+
         // CASO DE ERROR
         else {
             System.out.println("Error: El ORM no sabe cómo actualizar el objeto de tipo " + object.getClass().getSimpleName());
