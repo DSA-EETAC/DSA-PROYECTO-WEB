@@ -309,4 +309,26 @@ public class Sistema_Juego {
 
         return Response.status(200).entity(entity).build();
     }
+
+    @POST
+    @ApiOperation(value = "Registrar fin de partida", notes = "Actualiza monedas, historial y consume objetos")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Partida registrada correctamente"),
+            @ApiResponse(code = 404, message = "Usuario no encontrado"),
+            @ApiResponse(code = 500, message = "Error del servidor")
+    })
+    @Path("/partida/fin")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response finalizarPartida(FinPartidaVO datosPartida) {
+        log.info("API REST - Petición de fin de partida recibida de: " + datosPartida.getUsername());
+
+        boolean exito = this.manager.procesarFinPartida(datosPartida);
+
+        if (exito) {
+            return Response.status(200).build();
+        } else {
+            return Response.status(404).entity("Error al procesar la partida. ¿Existe el usuario?").build();
+        }
+    }
+
 }

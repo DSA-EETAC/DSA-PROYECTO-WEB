@@ -52,6 +52,23 @@ public class SessionImpl implements Session {
             return;
         }
 
+        // PARCHE PARA HISTORIAL DE PARTIDAS
+        if (entity instanceof Model.Partida) {
+            Model.Partida p = (Model.Partida) entity;
+            String sql = "INSERT INTO HistorialPartidas (user_id, puntuacion) VALUES (?, ?)";
+
+            try (PreparedStatement ptsm = conn.prepareStatement(sql)) {
+                ptsm.setInt(1, p.getUser_id());
+                ptsm.setInt(2, p.getPuntuacion());
+                ptsm.executeUpdate();
+                System.out.println("¡Historial de partida guardado con éxito!");
+            } catch (SQLException e) {
+                System.err.println("Error al guardar historial: " + e.getMessage());
+            }
+            return;
+        }
+
+
 
 
         String insertQuery = QueryHelper.createQueryINSERT(entity);

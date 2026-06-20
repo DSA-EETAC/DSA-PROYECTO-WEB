@@ -448,6 +448,63 @@ public class JuegoManagerImpl implements JuegoManager {
         }
         return usuariosEvento;
     }
+
+    @Override
+    public boolean procesarFinPartida(FinPartidaVO datos) {
+        log.info("Procesando fin de partida para: " + datos.getUsername());
+        Session session = null;
+
+        try {
+            session = FactorySession.openSession();
+
+            // 1. Buscar al usuario
+            User usuario = (User) session.get(User.class, "nombre", datos.getUsername());
+            if (usuario == null) {
+                log.warn("Usuario no encontrado.");
+                return false;
+            }
+
+            // 2. Sumar el dinero/puntuación al usuario
+            usuario.setMonedas(usuario.getMonedas() + datos.getMonedasGanadas());
+            session.update(usuario);
+
+            // 3. Guardar el récord en el historial
+            Partida nuevaPartida = new Partida(usuario.getId(), datos.getMonedasGanadas());
+            session.save(nuevaPartida);
+
+            // 4. Eliminar los objetos consumidos del inventario
+            if (datos.getObjetosConsumidos() != null && !datos.getObjetosConsumidos().isEmpty()) {
+                List<Inventario> inventarioCompleto = session.findAll(Inventario.class);
+
+                for (Integer itemId : datos.getObjetosConsumidos()) {
+                    for (Inventario inv : inventarioCompleto) {
+                        // Buscamos si el usuario tiene ese objeto
+                        if (inv.getUser_id() == usuario.getId() && inv.getItem_id() == itemId) {
+                            if (inv.getQuantity() > 1) {
+                                // Si tiene más de 1, le restamos 1
+                                inv.setQuantity(inv.getQuantity() - 1);
+                                session.update(inv);
+                            } else {
+                                // Si solo le queda 1, borramos la fila entera
+                                session.delete(inv);
+                            }
+                            break; // Objeto restado, pasamos al siguiente
+                        }
+                    }
+                }
+            }
+
+            log.info("Partida procesada con éxito.");
+            return true;
+
+        } catch (Exception e) {
+            log.error("Error al procesar la partida", e);
+            return false;
+        } finally {
+            if (session != null) session.close();
+        }
+    }
+
 }
 
 

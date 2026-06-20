@@ -43,4 +43,6 @@ public interface JuegoManager {
     public boolean abandonarEvento(String username, String idEvento);
 
     List<User> obtenerUsuariosEvento(String idEvento);//Añadido para sacar los Usuarios de un evento
+
+    public boolean procesarFinPartida(Model.FinPartidaVO datos);
 }
