@@ -672,3 +672,5 @@ async function salirDelEvento(idEvento) {
 
     contenedor.innerHTML = htmlRanking;
 }
+
+*/
