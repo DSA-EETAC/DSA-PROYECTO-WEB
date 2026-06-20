@@ -457,145 +457,170 @@ async function consultarMiGrupo() {
 
 async function cargarEventos() {
     const contenedor = document.getElementById('contenedor-eventos');
-    contenedor.innerHTML = '<p style="text-align: center; color: white;">Buscando pergaminos en el tablón...</p>';
+    const jugadorActual = localStorage.getItem("jugadorActual");
 
-    try {
-        const respuesta = await fetch(`${URL_BASE}/eventos`, {
-            method: 'GET',
-            headers: { 'Accept': 'application/json' }
-        });
-
-        if (respuesta.status === 200) {
-            const eventos = await respuesta.json();
-            contenedor.innerHTML = '';
-
-            if (!eventos || eventos.length === 0) {
-                contenedor.innerHTML = '<p style="color: #aaa; text-align: center;">No hay misiones disponibles actualmente.</p>';
-                return;
-            }
-
-            eventos.forEach(evento => {
-                console.log("EVENTO RECIBIDO:", evento);
-
-                const imgValida = (evento.imagen_URL && evento.imagen_URL.trim() !== "" && evento.imagen_URL !== "undefined")
-                    ? evento.imagen_URL
-                    : "img/sin-imagen.jpg";
-
-                // Estilos limpios y distribuidos sin anchos fijos para CSS Grid
-                const tarjetaHtml = `
-                    <div style="background: rgba(0,0,0,0.8); border: 1px solid #e67e22; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.5); display: flex; flex-direction: column; justify-content: space-between;">
-                        <img src="${imgValida}"
-                             alt="${evento.nombre}"
-                             onerror="this.onerror=null; this.src='img/sin-imagen.jpg';"
-                             style="width: 100%; height: 140px; object-fit: cover; border-radius: 4px; border: 1px solid #444; margin-bottom: 10px;">
-
-                        <h4 style="color: gold; margin: 0 0 8px 0; font-family: 'Cinzel', serif;">
-                            ${evento.nombre}
-                        </h4>
-
-                        <p style="color: #ddd; font-size: 0.9em; margin-bottom: 12px; line-height: 1.4;">
-                            ${evento.descripcion}
-                        </p>
-
-                        <p style="color: #aaa; font-size: 0.8em; margin-bottom: 15px;">
-                            ⏳ ${evento.fecha_inicio ? evento.fecha_inicio.split(' ')[0] : 'Hoy'}
-                            al ${evento.fecha_fin ? evento.fecha_fin.split(' ')[0] : '...'}
-                        </p>
-
-                        <button class="btn-primary"
-                                style="padding: 8px 15px; font-size: 0.9em;"
-                                onclick="inscribirseEvento('${evento.id}')">
-                            INSCRIBIRSE
-                        </button>
-                    </div>
-                `;
-                contenedor.innerHTML += tarjetaHtml;
-            });
-        } else {
-            contenedor.innerHTML = '<p style="color: #ff4444; text-align: center;">Error al contactar con el tablón de misiones.</p>';
-        }
-    } catch (error) {
-        console.error('Error cargando eventos:', error);
-        contenedor.innerHTML = '<p style="color: #ff4444; text-align: center;">El servidor de misiones está caído.</p>';
-    }
-}
-
-async function inscribirseEvento(idDelEvento) {
-    console.log("🚀 PASO 1: Botón presionado. Intentando inscribir en:", idDelEvento);
-    const nombreUsuario = localStorage.getItem("jugadorActual");
-
-    if (!nombreUsuario || nombreUsuario === "undefined") {
-        avisar("¡Debes estar logueado para inscribirte!", true);
+    // Solo puedes un evento
+    const misionActiva = localStorage.getItem("misionActual_" + jugadorActual);
+    if (misionActiva) {
+        // Si está en una misión, NO le enseñamos el tablón, le metemos directo al ranking
+        cargarRankingEvento(misionActiva);
         return;
     }
 
-    const requestData = { username: nombreUsuario, idEvento: idDelEvento };
+    // Si no está en ninguna misión, cargamos el tablón normal
+    contenedor.innerHTML = '<p class="texto-vacio">Buscando pergaminos en el tablón...</p>';
 
     try {
-        const respuesta = await fetch(`${URL_BASE}/eventos/inscripcion`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify(requestData)
+        const res = await fetch(`${URL_BASE}/eventos`);
+        if (res.status === 200) {
+            const eventos = await res.json();
+            contenedor.innerHTML = '';
+
+            if (!eventos || eventos.length === 0) return contenedor.innerHTML = '<p class="texto-vacio">No hay misiones disponibles.</p>';
+
+            eventos.forEach(ev => {
+                const img = (ev.imagen_URL && ev.imagen_URL.trim() !== "") ? ev.imagen_URL : "img/sin-imagen.jpg";
+                const fechaInicio = new Date(ev.fecha_inicio.replace(/-/g, "/"));
+                const ahora = new Date();
+                let botonHTML = '';
+
+                if (fechaInicio > ahora) {
+                    // Si la fecha del evento es en el futuro (ej. Halloween), se bloquea
+                    botonHTML = `<button class="btn-primary" style="background: #222; color: #666; border-color: #444; cursor: not-allowed;" disabled>⏳ PRÓXIMAMENTE</button>`;
+                } else {
+                    botonHTML = `<button class="btn-primary" onclick="inscribirseEvento('${ev.id}')">INSCRIBIRSE</button>`;
+                }
+
+                contenedor.innerHTML += `
+                    <div class="tarjeta-grid">
+                        <div>
+                            <img src="${img}" class="tarjeta-img" onerror="this.src='img/sin-imagen.jpg';">
+                            <h4>${ev.nombre}</h4>
+                            <p>${ev.descripcion}</p>
+                            <p style="color:var(--gold-dim); font-size:0.9rem;">⏳ ${ev.fecha_inicio.split(' ')[0]} - ${ev.fecha_fin.split(' ')[0]}</p>
+                        </div>
+                        ${botonHTML}
+                    </div>`;
+            });
+        }
+    } catch (e) { contenedor.innerHTML = '<p class="texto-vacio">Servidor de misiones caído.</p>'; }
+}
+
+async function inscribirseEvento(idEvento) {
+    const username = localStorage.getItem("jugadorActual");
+    try {
+        const res = await fetch(`${URL_BASE}/eventos/inscripcion`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, idEvento })
         });
 
-        if (respuesta.status === 201 || respuesta.status === 200) {
-            console.log("🚀 PASO 2: Inscripción nueva OK. Cargando ranking...");
-            try { avisar('¡Inscripción realizada! Cargando clasificación...', false); } catch(e){}
-            cargarRankingEvento(idDelEvento);
+        if (res.status === 201 || res.status === 200) {
+            avisar('¡Te has unido a la misión!', false);
+
+            localStorage.setItem("misionActual_" + username, idEvento);
         } else {
-            console.log("🚀 PASO 2 (Alt): Ya inscrito. Cargando ranking actual...");
-            try { avisar('Ya estás apuntado. Viendo clasificación actual...', false); } catch(e){}
-            cargarRankingEvento(idDelEvento);
+            // Si falla porque ya estaba en la Base de Datos, lo guardamos localmente para arreglar el bug visual
+            localStorage.setItem("misionActual_" + username, idEvento);
         }
-    } catch (error) {
-        console.error('❌ ERROR en la inscripción:', error);
-        avisar("Fallo de conexión al enviar la inscripción.", true);
-    }
+
+        cargarRankingEvento(idEvento);
+
+    } catch (e) { avisar("Error al inscribirse.", true); }
 }
 
 async function cargarRankingEvento(idEvento) {
-    console.log("🏆 RANKING PASO 1: Pidiendo datos para el evento:", idEvento);
-    const contenedor = document.getElementById('contenedor-eventos');
-
-    if (contenedor) {
-        contenedor.innerHTML = '<p style="color: white; text-align: center;">Calculando puntuaciones...</p>';
-    }
-
+    const cont = document.getElementById('contenedor-eventos');
+    cont.innerHTML = '<p class="texto-vacio">Cargando clasificación de la misión...</p>';
     try {
-        const respuesta = await fetch(`${URL_BASE}/eventos/${idEvento}/ranking`, {
-            method: 'GET',
-            headers: { 'Accept': 'application/json' }
-        });
-
-        if (respuesta.status === 200) {
-            const ranking = await respuesta.json();
-            console.log("🏆 RANKING PASO 2: Datos recibidos:", ranking);
-            dibujarRanking(ranking);
+        const res = await fetch(`${URL_BASE}/eventos/${idEvento}/ranking`);
+        if (res.status === 200) {
+            // Le pasamos también el idEvento para que la función de dibujar sepa dónde estamos
+            dibujarRanking(await res.json(), idEvento);
         } else {
-            if (contenedor) contenedor.innerHTML = '<p style="color: #ff4444; text-align: center;">Error al cargar la clasificación.</p>';
+            cont.innerHTML = '<p class="texto-vacio">Aún no hay clasificación.</p>';
         }
-    } catch (error) {
-        console.error('Error cargando el ranking:', error);
-    }
+    } catch (e) { cont.innerHTML = '<p class="texto-vacio">Error de conexión.</p>'; }
 }
 
-function dibujarRanking(listaJugadores) {
-    const contenedor = document.getElementById('contenedor-eventos');
-    const jugadorActual = localStorage.getItem("jugadorActual");
+function dibujarRanking(lista, idEvento) {
+    const cont = document.getElementById('contenedor-eventos');
+    const yo = localStorage.getItem("jugadorActual");
 
-    let htmlRanking = `
-        <div style="background: rgba(0,0,0,0.9); border: 2px solid gold; padding: 20px; border-radius: 10px; width: 100%; max-width: 600px; margin: 0 auto; text-align: center;">
-            <h2 style="color: gold; font-family: 'Cinzel', serif; margin-bottom: 20px;">🏆 CLASIFICACIÓN 🏆</h2>
-            <ul style="list-style: none; padding: 0; color: white; font-size: 1.1em; text-align: left;">
+    let html = `
+        <div class="ranking-caja" style="grid-column: 1 / -1;">
+            <h2 style="text-align:center; color:var(--gold); font-family:'Cinzel';">🏆 CLASIFICACIÓN DE LA MISIÓN 🏆</h2>
+            <ul class="ranking-lista">
     `;
 
-    if (listaJugadores.length === 0) {
-        htmlRanking += `<li style="text-align: center;">Nadie ha puntuado aún. ¡Sé el primero!</li></ul></div>`;
-        contenedor.innerHTML = htmlRanking;
-        return;
+    if (lista.length === 0) {
+        html += `<li class="texto-vacio" style="margin-bottom: 20px;">Nadie ha puntuado aún. ¡Sé el primero!</li>`;
+    } else {
+        const top5 = lista.slice(0, 5);
+        let estoyTop5 = false;
+
+        top5.forEach((j, i) => {
+            let claseColor = "";
+            let medalla = "🏅";
+            if (i===0) { claseColor = "r-oro"; medalla = "🥇"; }
+            else if (i===1) { claseColor = "r-plata"; medalla = "🥈"; }
+            else if (i===2) { claseColor = "r-bronce"; medalla = "🥉"; }
+
+            let nombreTx = j.nombreJugador;
+            if (j.nombreJugador === yo) { estoyTop5 = true; nombreTx = `<span style="color:var(--success)">${yo} (Tú)</span>`; }
+
+            html += `<li class="ranking-item ${claseColor}"><span>${medalla} <strong>${nombreTx}</strong></span> <span style="color:#ccc">${j.puntuacion} pts</span></li>`;
+        });
+
+        if (!estoyTop5) {
+            const miIndice = lista.findIndex(j => j.nombreJugador === yo);
+            if (miIndice !== -1) {
+                html += `
+                    <li style="text-align:center; padding: 10px; color:#666;">•••</li>
+                    <li class="ranking-item r-tu"><span>${miIndice + 1}º <strong><span style="color:var(--success)">${yo} (Tú)</span></strong></span> <span style="color:#ccc">${lista[miIndice].puntuacion} pts</span></li>
+                `;
+            }
+        }
     }
 
-    // Top 5
+const estoyEnMision = localStorage.getItem("misionActual_" + yo);
+
+    if (estoyEnMision) {
+        html += `</ul>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top:25px;">
+                <button class="btn-primary" onclick="cargarRankingEvento('${idEvento}')">🔄 ACTUALIZAR CLASIFICACIÓN</button>
+                <button class="btn-primary" style="border-color: var(--danger); color: var(--danger);" onclick="salirDelEvento('${idEvento}')">❌ ABANDONAR MISIÓN</button>
+            </div>
+        </div>`;
+    } else {
+        html += `</ul><button class="btn-primary" style="margin-top:25px;" onclick="cargarEventos()">⬅ VOLVER AL TABLÓN</button></div>`;
+    }
+
+    cont.innerHTML = html;
+}
+
+async function salirDelEvento(idEvento) {
+    const jugador = localStorage.getItem("jugadorActual");
+
+    // Alerta de confirmación del navegador
+    const seguro = confirm("⚠️ ¿Estás seguro de que quieres abandonar la misión? Si te vas, tu plaza quedará libre.");
+    if (!seguro) return;
+
+    // Liberamos al usuario visualmente borrándolo de la memoria del navegador
+    localStorage.removeItem("misionActual_" + jugador);
+
+    // Intentamos avisar a Java para que lo borre de verdad de MariaDB
+    try {
+        await fetch(`${URL_BASE}/eventos/inscripcion/${jugador}/${idEvento}`, { method: 'DELETE' });
+    } catch (e) {
+        console.log("El servidor aún no maneja el DELETE, pero se ha expulsado visualmente.");
+    }
+
+    avisar("Has abandonado la misión.", false);
+
+    // Al cargar eventos ahora, como ya no está en la misión, volverá a ver el tablón normal
+    cargarEventos();
+}
+
+    /*
     const top5 = listaJugadores.slice(0, 5);
     let yoEstoyEnElTop5 = false;
 

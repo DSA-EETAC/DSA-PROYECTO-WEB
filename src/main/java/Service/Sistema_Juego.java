@@ -272,4 +272,29 @@ public class Sistema_Juego {
             return Response.status(404).entity("Error: Jugador no encontrado o no inscrito en el evento.").build();
         }
     }
+    @DELETE
+    @ApiOperation(value = "Abandonar una misión", notes = "Borra la inscripción de un usuario a un evento")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Inscripción borrada con éxito"),
+            @ApiResponse(code = 404, message = "Usuario o inscripción no encontrada"),
+            @ApiResponse(code = 500, message = "Error interno del servidor")
+    })
+    @Path("/eventos/inscripcion/{username}/{idEvento}")
+    public Response abandonarEvento(@PathParam("username") String username, @PathParam("idEvento") String idEvento) {
+        log.info("API REST - Petición para abandonar misión: " + username + " del evento " + idEvento);
+
+        try {
+            // Llamamos a nuestro manager para que se encargue del trabajo sucio
+            boolean borrado = this.manager.abandonarEvento(username, idEvento);
+
+            if (borrado) {
+                return Response.status(200).build();
+            } else {
+                return Response.status(404).entity("No se encontró la inscripción para borrar").build();
+            }
+        } catch (Exception e) {
+            log.error("Error al abandonar el evento: ", e);
+            return Response.status(500).build();
+        }
+    }
 }

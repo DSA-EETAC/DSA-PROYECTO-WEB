@@ -40,4 +40,5 @@ public interface JuegoManager {
     boolean repartirPremios(String idEvento);
 
     boolean sumarPuntosAInscripcion(String idEvento, String nombreJugador, int puntosNuevos);
+    public boolean abandonarEvento(String username, String idEvento);
 }

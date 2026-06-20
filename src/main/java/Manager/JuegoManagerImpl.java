@@ -382,6 +382,41 @@ public class JuegoManagerImpl implements JuegoManager {
         return false;
     }
 
+    @Override
+    public boolean abandonarEvento(String username, String idEvento) {
+        log.info("INICIO abandonarEvento: Usuario=" + username + " | Evento=" + idEvento);
+
+        Session session = null;
+        try {
+            session = FactorySession.openSession();
+
+            // 1. Buscamos el ID real del usuario en MariaDB usando su nombre
+            User usuario = (User) session.get(User.class, "nombre", username);
+            if (usuario == null) {
+                log.warn("El usuario " + username + " no existe.");
+                return false;
+            }
+
+            // 2. Fabricamos una inscripción "señuelo" con las IDs clave
+            Model.InscripcionEvento inscripcion = new Model.InscripcionEvento();
+            inscripcion.setUser_id(usuario.getId());
+            inscripcion.setEvento_id(idEvento);
+
+            // 3. Le decimos al ORM que la fulmine (usando el delete que arreglamos antes)
+            session.delete(inscripcion);
+
+            log.info("FIN abandonarEvento: Inscripción borrada correctamente.");
+            return true;
+
+        } catch (Exception e) {
+            log.error("Error crítico en abandonarEvento", e);
+            return false;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
 }
 
 
