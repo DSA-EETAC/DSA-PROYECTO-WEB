@@ -297,4 +297,16 @@ public class Sistema_Juego {
             return Response.status(500).build();
         }
     }
+
+    @GET
+    @Path("/eventos/{idEvento}/usuarios")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUsuariosEvento(@PathParam("idEvento") String idEvento) {
+        log.info("API REST - Usuarios inscrits al evento: " + idEvento);
+
+        List<User> usuarios = manager.obtenerUsuariosEvento(idEvento);
+        GenericEntity<List<User>> entity = new GenericEntity<List<User>>(usuarios) {};
+
+        return Response.status(200).entity(entity).build();
+    }
 }

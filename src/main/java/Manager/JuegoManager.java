@@ -41,4 +41,6 @@ public interface JuegoManager {
 
     boolean sumarPuntosAInscripcion(String idEvento, String nombreJugador, int puntosNuevos);
     public boolean abandonarEvento(String username, String idEvento);
+
+    List<User> obtenerUsuariosEvento(String idEvento);//Añadido para sacar los Usuarios de un evento
 }

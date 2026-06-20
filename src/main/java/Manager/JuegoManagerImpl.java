@@ -417,6 +417,37 @@ public class JuegoManagerImpl implements JuegoManager {
             }
         }
     }
+
+    @Override
+    public List<User> obtenerUsuariosEvento(String idEvento) {
+        Session session = null;
+        List<User> usuariosEvento = new ArrayList<>();
+        try {
+            session = FactorySession.openSession();
+
+            List<Object> objetos = session.findAll(InscripcionEvento.class);
+
+            if (objetos != null) {
+                for (Object obj : objetos) {
+                    InscripcionEvento inscripcion = (InscripcionEvento) obj;
+
+                    if (inscripcion.getEvento_id().equals(idEvento)) {
+                        User u = usuarioDAO.getUsuario(inscripcion.getUser_id());
+                        if (u != null) {
+                            usuariosEvento.add(u);
+                        }
+                    }
+                }
+            }
+            log.info("Usuarios del evento " + idEvento + ": " + usuariosEvento.size());
+
+        } catch (Exception e) {
+            log.error("Error al obtener usuarios del evento: ", e);
+        } finally {
+            if (session != null) session.close();
+        }
+        return usuariosEvento;
+    }
 }
 
 
