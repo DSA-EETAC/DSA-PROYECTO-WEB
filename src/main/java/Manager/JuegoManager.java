@@ -13,7 +13,7 @@ public interface JuegoManager {
 
     boolean comprarObjeto(String nombreJugador, String nombreObjeto);
 
-    List<String> obtenerInventarioUsuario(int idUsuario);
+    List<String> obtenerInventarioUsuario(String nombreUsuario);
 
     int obtenerNumeroUsuarios();
 
@@ -29,12 +29,12 @@ public interface JuegoManager {
 
     boolean registrarInscripcion(InscripcionRequest request);
 
-    boolean unirUsuarioAGrupo(int idUsuario, int idGrupo);
-    public DetalleGrupo obtenerDetalleGrupoUsuario(int id);
+    boolean unirUsuarioAGrupo(String nombreUsuario, int idGrupo);
+    public DetalleGrupo obtenerDetalleGrupoUsuario(String nombreUsuario);
 
     boolean sumarMonedas(String nombreJugador, int cantidad);
-    List<String> obtenerInventarioUsuarioPorNombre(String nombreUsuario);
-    DetalleGrupo obtenerDetalleGrupoUsuarioPorNombre(String nombre);
+//    List<String> obtenerInventarioUsuarioPorNombre(String nombreUsuario);
+//    DetalleGrupo obtenerDetalleGrupoUsuarioPorNombre(String nombre);
 
     List<JugadorRanking> obtenerRankingEvento(String idEvento);
     boolean repartirPremios(String idEvento);

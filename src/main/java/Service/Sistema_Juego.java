@@ -134,7 +134,7 @@ public class Sistema_Juego {
     @Produces(MediaType.APPLICATION_JSON)
     public Response obtenerInventario(@PathParam("nombre") String nombreUsuario) {
         // Le pasamos el ID numérico al manager
-        List<String> inventario = manager.obtenerInventarioUsuarioPorNombre(nombreUsuario);
+        List<String> inventario = manager.obtenerInventarioUsuario(nombreUsuario);
         Model.InventarioJugador respuesta = new Model.InventarioJugador(inventario);
         return Response.status(200).entity(respuesta).build();
     }
@@ -176,7 +176,7 @@ public class Sistema_Juego {
     public Response unirseAlGrupo(@PathParam("idGrupo") int idGrupo, User usuario) {
 
         // Llamamos al manager pasando el nombre del jugador y el ID del grupo
-        boolean exito = manager.unirUsuarioAGrupo(usuario.getId(), idGrupo);
+        boolean exito = manager.unirUsuarioAGrupo(usuario.getNombre(), idGrupo);
 
         if (exito) {
             return Response.status(200).build();
@@ -188,7 +188,7 @@ public class Sistema_Juego {
     @Path("/usuarios/{nombre}/grupo")
     @Produces(MediaType.APPLICATION_JSON)
     public Response obtenerGrupoUsuario(@PathParam("nombre") String nombre) {
-        Model.DetalleGrupo detalle = manager.obtenerDetalleGrupoUsuarioPorNombre(nombre);
+        Model.DetalleGrupo detalle = manager.obtenerDetalleGrupoUsuario(nombre);
 
         // Retornamos un código 200 con el objeto JSON estructurado
         return Response.status(200).entity(detalle).build();
