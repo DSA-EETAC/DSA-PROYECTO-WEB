@@ -10,56 +10,87 @@
 <body>
 <div class="dungeon-overlay"></div>
 
-<div id="contenedor-login" class="card">
-    <header>
-        <div class="idol-icon"></div>
-        <h1>TEMPLE RUN</h1>
-        <p class="subtitle">MAZMORRA DE ACCESO</p>
-    </header>
+<!-- LOGIN PAGE - Layout 50/50 -->
+<div id="contenedor-login" class="login-split-container">
 
-    <main>
-        <div id="seccion-login" class="form-fade">
-            <div class="input-container">
-                <input type="text" id="login-nombre" required>
-                <label>NOMBRE DEL EXPLORADOR</label>
-                <div class="bar"></div>
-            </div>
-            <div class="input-container">
-                <input type="password" id="login-pass" required>
-                <label>CONTRASEÑA</label>
-                <div class="bar"></div>
-            </div>
-            <button class="btn-primary" onclick="hacerLogin()">DESCENDER</button>
-            <p class="switch-text">¿Eres nuevo? <span onclick="cambiarVista('registro')">CREA UN AVATAR</span></p>
-        </div>
+    <!-- ESQUERRA: Login / Registre -->
+    <div class="login-left">
+        <div class="card">
+            <header>
+                <div class="idol-icon"></div>
+                <h1>TEMPLE RUN</h1>
+                <p class="subtitle">MAZMORRA DE ACCESO</p>
+            </header>
 
-        <div id="seccion-registro" class="form-fade hidden">
-            <div class="input-container">
-                <input type="text" id="reg-nombre" required>
-                <label>NUEVO ALIAS</label>
-                <div class="bar"></div>
-            </div>
-            <div class="input-container">
-                <input type="password" id="reg-pass" required>
-                <label>CONTRASEÑA</label>
-                <div class="bar"></div>
-            </div>
-            <div class="input-container">
-                <input type="password" id="reg-pass-confirm" required>
-                <label>CONFIRMAR CONTRASEÑA</label>
-                <div class="bar"></div>
-            </div>
-            <div class="input-container">
-                <input type="email" id="reg-correo" required>
-                <label>CORREO ELECTRÓNICO</label>
-                <div class="bar"></div>
-            </div>
-            <button class="btn-primary" onclick="hacerRegistro()">UNIRSE A LA EXPEDICIÓN</button>
-            <p class="switch-text">¿Ya tienes cuenta? <span onclick="cambiarVista('login')">VOLVER</span></p>
+            <main>
+                <div id="seccion-login" class="form-fade">
+                    <div class="input-container">
+                        <input type="text" id="login-nombre" required>
+                        <label>NOMBRE DEL EXPLORADOR</label>
+                        <div class="bar"></div>
+                    </div>
+                    <div class="input-container">
+                        <input type="password" id="login-pass" required>
+                        <label>CONTRASEÑA</label>
+                        <div class="bar"></div>
+                    </div>
+                    <button class="btn-primary" onclick="hacerLogin()">DESCENDER</button>
+                    <p class="switch-text">¿Eres nuevo? <span onclick="cambiarVista('registro')">CREA UN AVATAR</span></p>
+                </div>
+
+                <div id="seccion-registro" class="form-fade hidden">
+                    <div class="input-container">
+                        <input type="text" id="reg-nombre" required>
+                        <label>NUEVO ALIAS</label>
+                        <div class="bar"></div>
+                    </div>
+                    <div class="input-container">
+                        <input type="password" id="reg-pass" required>
+                        <label>CONTRASEÑA</label>
+                        <div class="bar"></div>
+                    </div>
+                    <div class="input-container">
+                        <input type="password" id="reg-pass-confirm" required>
+                        <label>CONFIRMAR CONTRASEÑA</label>
+                        <div class="bar"></div>
+                    </div>
+                    <div class="input-container">
+                        <input type="email" id="reg-correo" required>
+                        <label>CORREO ELECTRÓNICO</label>
+                        <div class="bar"></div>
+                    </div>
+                    <button class="btn-primary" onclick="hacerRegistro()">UNIRSE A LA EXPEDICIÓN</button>
+                    <p class="switch-text">¿Ya tienes cuenta? <span onclick="cambiarVista('login')">VOLVER</span></p>
+                </div>
+            </main>
         </div>
-    </main>
+    </div>
+
+    <!-- DRETA: Vídeo -->
+    <div class="login-right">
+        <div class="video-container">
+            <h2 class="video-titulo">⚔️ DUNGEON RUN</h2>
+            <p class="video-subtitol">Descobreix el joc</p>
+            <!-- Quan tinguis el link del vídeo, canvia AQUI_EL_LINK per la ID del vídeo de YouTube -->
+            <!-- Exemple: https://www.youtube.com/watch?v=XXXXXXXXXXX → posa XXXXXXXXXXX -->
+            <div class="video-wrapper">
+                <iframe
+                        id="video-demo"
+                        width="100%"
+                        height="100%"
+                        src="https://www.youtube.com/embed/AQUI_EL_ID_DEL_VIDEO"
+                        title="Dungeon Run Demo"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </div>
+
 </div>
 
+<!-- DASHBOARD (igual que abans) -->
 <div id="seccion-dashboard" class="form-fade hidden dashboard-container">
 
     <div class="dashboard-header">
